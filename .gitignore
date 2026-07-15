@@ -427,3 +427,10 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# resource フォルダの中身を全部無視
+000_GameDevelopment/resource/*
+
+# ただし、このファイルだけは無視しない
+!000_GameDevelopment/resource/PUT_ASSETS_HERE
+
