@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{fe899459-c12f-4a99-ac76-4d9d21e6d0ec}</ProjectGuid>
+    <RootNamespace>My000GameDevelopment</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\common\dxe\imgui;..\common;..\common\dxe;..\common\DirectXTex\Inc\DirectXTex;..\common\DirectXTK\Inc;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath)</IncludePath>
+    <LibraryPath>..\common\DirectXTex\lib_debug;..\common\DirectXTK\lib_debug;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\common\imgui;..\common\dxe;..\common\DirectXTex\Inc\DirectXTex;..\common\DirectXTK\Inc;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath)</IncludePath>
+    <LibraryPath>..\common\DirectXTK\lib_release;..\common\DirectXTex\lib_release;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DirectXTex.lib;DirectXTK.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\dxe\dxe.h" />
+    <ClInclude Include="..\common\dxe\dxe_build_setting.h" />
+    <ClInclude Include="..\common\dxe\dxe_camera.h" />
+    <ClInclude Include="..\common\dxe\dxe_data.h" />
+    <ClInclude Include="..\common\dxe\dxe_font_text.h" />
+    <ClInclude Include="..\common\dxe\dxe_graphics_layer.h" />
+    <ClInclude Include="..\common\dxe\dxe_input.h" />
+    <ClInclude Include="..\common\dxe\dxe_prototype.h" />
+    <ClInclude Include="..\common\dxe\dxe_render_param.h" />
+    <ClInclude Include="..\common\dxe\dxe_sprite.h" />
+    <ClInclude Include="..\common\dxe\dxe_texture.h" />
+    <ClInclude Include="..\common\dxe\effects\dxe_erea_projection.h" />
+    <ClInclude Include="..\common\dxe\effects\dxe_particle.h" />
+    <ClInclude Include="..\common\dxe\effects\dxe_shadow_map.h" />
+    <ClInclude Include="..\common\dxe\effects\dxe_water_plane.h" />
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_check_box.h" />
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_drag_box.h" />
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_input_box.h" />
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_menu_selector.h" />
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_value_slider.h" />
+    <ClInclude Include="..\common\dxe\imgui\imconfig.h" />
+    <ClInclude Include="..\common\dxe\imgui\imgui.h" />
+    <ClInclude Include="..\common\dxe\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="..\common\dxe\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="..\common\dxe\imgui\imgui_internal.h" />
+    <ClInclude Include="..\common\dxe\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\common\dxe\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\common\dxe\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\common\dxe\mesh\dxe_inst_mesh.h" />
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh.h" />
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_base.h" />
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_desc.h" />
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_mtrl_gui_controller.h" />
+    <ClInclude Include="..\common\dxe\OBJLoader.h" />
+    <ClInclude Include="..\common\tnl\json11.hpp" />
+    <ClInclude Include="..\common\tnl\stb_image.h" />
+    <ClInclude Include="..\common\tnl\tnl_build_setting.h" />
+    <ClInclude Include="..\common\tnl\tnl_coroutine.h" />
+    <ClInclude Include="..\common\tnl\tnl_csv.h" />
+    <ClInclude Include="..\common\tnl\tnl_folder_tree.h" />
+    <ClInclude Include="..\common\tnl\tnl_font_texture.h" />
+    <ClInclude Include="..\common\tnl\tnl_hierarchy_tree.h" />
+    <ClInclude Include="..\common\tnl\tnl_input.h" />
+    <ClInclude Include="..\common\tnl\tnl_instance.h" />
+    <ClInclude Include="..\common\tnl\tnl_interactor.h" />
+    <ClInclude Include="..\common\tnl\tnl_intersect.h" />
+    <ClInclude Include="..\common\tnl\tnl_link_linear.h" />
+    <ClInclude Include="..\common\tnl\tnl_math.h" />
+    <ClInclude Include="..\common\tnl\tnl_matrix.h" />
+    <ClInclude Include="..\common\tnl\tnl_quaternion.h" />
+    <ClInclude Include="..\common\tnl\tnl_rect.h" />
+    <ClInclude Include="..\common\tnl\tnl_seek_unit.h" />
+    <ClInclude Include="..\common\tnl\tnl_sequence.h" />
+    <ClInclude Include="..\common\tnl\tnl_shared_factory.h" />
+    <ClInclude Include="..\common\tnl\tnl_state_machine.h" />
+    <ClInclude Include="..\common\tnl\tnl_task_scheduler.h" />
+    <ClInclude Include="..\common\tnl\tnl_using.h" />
+    <ClInclude Include="..\common\tnl\tnl_util.h" />
+    <ClInclude Include="..\common\tnl\tnl_vector.h" />
+    <ClInclude Include="..\common\tnl\tnl_vector2f.h" />
+    <ClInclude Include="..\common\tnl\tnl_vector2i.h" />
+    <ClInclude Include="..\common\tnl\tnl_vector3.h" />
+    <ClInclude Include="000_GameDevelopment.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="program\debug\gmKyleAxisCompass.h" />
+    <ClInclude Include="program\debug\gmKyleDebugger.h" />
+    <ClInclude Include="program\debug\gmKyleFreeCameraController.h" />
+    <ClInclude Include="program\debug\gmKyleGridViewer.h" />
+    <ClInclude Include="program\debug\gmKyleWorldRuler.h" />
+    <ClInclude Include="program\gmGameConfig.h" />
+    <ClInclude Include="program\gmGameContext.h" />
+    <ClInclude Include="program\gm_main.h" />
+    <ClInclude Include="program\gui\gmMiniMap.h" />
+    <ClInclude Include="program\gui\gmOceanFlowVisualizer.h" />
+    <ClInclude Include="program\gui\gmUIManager.h" />
+    <ClInclude Include="program\gui\gmUIObjectBase.h" />
+    <ClInclude Include="program\map\gmFlowField.h" />
+    <ClInclude Include="program\map\gmMapLoader.h" />
+    <ClInclude Include="program\map\gmMapManager.h" />
+    <ClInclude Include="program\map\gmOceanFlowLoader.h" />
+    <ClInclude Include="program\mesh_ex\gmMeshEX.h" />
+    <ClInclude Include="program\object\gmIsland.h" />
+    <ClInclude Include="program\object\gmMeshBase.h" />
+    <ClInclude Include="program\object\gmObjectBase.h" />
+    <ClInclude Include="program\object\gmPlayerShip.h" />
+    <ClInclude Include="program\object\gmShip.h" />
+    <ClInclude Include="program\object\gmVirtualWave.h" />
+    <ClInclude Include="program\object\gmWaterPlane.h" />
+    <ClInclude Include="program\scene\gmFadeTransitionEffect.h" />
+    <ClInclude Include="program\scene\gmSceneBase.h" />
+    <ClInclude Include="program\scene\gmSceneManager.h" />
+    <ClInclude Include="program\scene\gmSceneTransitionEffectBase.h" />
+    <ClInclude Include="program\scene\scenes\gmGameScene.h" />
+    <ClInclude Include="program\util\gmRenderUtil.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\dxe\dxe.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_camera.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_data.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_font_text.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_graphics_layer.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_input.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_sprite.cpp" />
+    <ClCompile Include="..\common\dxe\dxe_texture.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_erea_projection.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_particle.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_particle_sub.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_shadow_map.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_water_plane.cpp" />
+    <ClCompile Include="..\common\dxe\effects\dxe_water_plane_sub.cpp" />
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_check_box.cpp" />
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_drag_box.cpp" />
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_input_box.cpp" />
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_menu_selector.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\common\dxe\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_barrel.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_box.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cone.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cone_cylinder.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cube.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cylinder.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_disk.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_disk_ring.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_dome.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_from_height_map.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_half_barrel.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_hollow_out_disk_plane.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_obj.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_plane.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_sphere.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_static_group.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_torus.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_equilateral.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_isosceles.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_right.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\dxe_inst_mesh.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh_base.cpp" />
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh_mtrl_gui_controller.cpp" />
+    <ClCompile Include="..\common\dxe\OBJLoader.cpp" />
+    <ClCompile Include="..\common\tnl\json11.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_font_texture.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_inclution_owner_locked.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_input.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_instance.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_intersect.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_math.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_matrix.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_quaternion.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_rect.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_seek_unit.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_state_machine.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_task_scheduler.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_util.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_vector2f.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_vector2i.cpp" />
+    <ClCompile Include="..\common\tnl\tnl_vector3.cpp" />
+    <ClCompile Include="000_GameDevelopment.cpp" />
+    <ClCompile Include="program\debug\gmKyleAxisCompass.cpp" />
+    <ClCompile Include="program\debug\gmKyleDebugger.cpp" />
+    <ClCompile Include="program\debug\gmKyleFreeCameraController.cpp" />
+    <ClCompile Include="program\debug\gmKyleGridViewer.cpp" />
+    <ClCompile Include="program\debug\gmKyleWorldRuler.cpp" />
+    <ClCompile Include="program\gm_main.cpp" />
+    <ClCompile Include="program\gui\gmMiniMap.cpp" />
+    <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp" />
+    <ClCompile Include="program\gui\gmUIManager.cpp" />
+    <ClCompile Include="program\gui\gmUIObjectBase.cpp" />
+    <ClCompile Include="program\map\gmFlowField.cpp" />
+    <ClCompile Include="program\map\gmMapLoader.cpp" />
+    <ClCompile Include="program\map\gmMapManager.cpp" />
+    <ClCompile Include="program\map\gmOceanFlowLoader.cpp" />
+    <ClCompile Include="program\mesh_ex\gmMeshEX.cpp" />
+    <ClCompile Include="program\object\gmIsland.cpp" />
+    <ClCompile Include="program\object\gmMeshBase.cpp" />
+    <ClCompile Include="program\object\gmObjectBase.cpp" />
+    <ClCompile Include="program\object\gmPlayerShip.cpp" />
+    <ClCompile Include="program\object\gmShip.cpp" />
+    <ClCompile Include="program\object\gmVirtualWave.cpp" />
+    <ClCompile Include="program\object\gmWaterPlane.cpp" />
+    <ClCompile Include="program\scene\gmFadeTransitionEffect.cpp" />
+    <ClCompile Include="program\scene\gmSceneManager.cpp" />
+    <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
+    <ClCompile Include="program\util\gmRenderUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="000_GameDevelopment.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="000_GameDevelopment.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

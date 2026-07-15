@@ -1,0 +1,648 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\[000] tnl">
+      <UniqueIdentifier>{1ae71a76-4c60-4ac3-9b1f-49348832edbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe">
+      <UniqueIdentifier>{d2fe00dc-2ea2-4336-ae02-71b6be6983d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe\effect">
+      <UniqueIdentifier>{3dcb6799-000e-46bc-83fe-6db1903ff102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe\gui">
+      <UniqueIdentifier>{027e65c1-c320-4cb9-aa80-b64f9d1c1c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe\mesh">
+      <UniqueIdentifier>{daf06c27-fda1-46ff-8b8d-1980a1a78a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe\mesh\create_mesh">
+      <UniqueIdentifier>{c77515f6-06d4-40cf-a7b4-56855cffff57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game">
+      <UniqueIdentifier>{059d0b2c-707f-4716-9125-4c9a147873f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[001] dxe\imgui">
+      <UniqueIdentifier>{a52c3d3c-2a53-472b-9862-a6bb17faf5d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\object">
+      <UniqueIdentifier>{d7c17604-6166-4d0e-91b9-a3c9ac8d9e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\mesh_ex">
+      <UniqueIdentifier>{d2811fd8-89fd-46fe-bdb9-b0bc8b244c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\debug">
+      <UniqueIdentifier>{e27ee002-ce95-4003-b978-a492b5d81931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\map">
+      <UniqueIdentifier>{a2a3d889-dbc9-4013-9359-4c472439b7c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\scene">
+      <UniqueIdentifier>{ce624c1f-954d-417c-ab59-c97980d13db6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\scene\scenes">
+      <UniqueIdentifier>{841bfc40-a6c7-4c7e-8a6a-aa8bc032d73e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\gui">
+      <UniqueIdentifier>{ca229ee6-a1d5-4e49-a615-c04f2b19d17d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\util">
+      <UniqueIdentifier>{c9491032-b217-4809-a67a-8188cd95860f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\tnl\json11.hpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\stb_image.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_csv.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_folder_tree.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_font_texture.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_hierarchy_tree.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_input.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_instance.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_interactor.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_intersect.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_link_linear.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_math.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_matrix.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_quaternion.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_rect.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_seek_unit.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_sequence.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_shared_factory.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_using.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_util.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_vector.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_vector2f.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_vector2i.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_vector3.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_camera.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_data.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_font_text.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_graphics_layer.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_input.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_prototype.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_render_param.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_texture.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\OBJLoader.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\mesh\dxe_inst_mesh.h">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh.h">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_base.h">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_desc.h">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\mesh\dxe_mesh_mtrl_gui_controller.h">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_check_box.h">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_drag_box.h">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_input_box.h">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_menu_selector.h">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\gui\dxe_gui_value_slider.h">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\effects\dxe_erea_projection.h">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\effects\dxe_particle.h">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\effects\dxe_shadow_map.h">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\effects\dxe_water_plane.h">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_build_setting.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_build_setting.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gm_main.h">
+      <Filter>Source\[004] game</Filter>
+    </ClInclude>
+    <ClInclude Include="000_GameDevelopment.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\dxe_sprite.h">
+      <Filter>Source\[001] dxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_coroutine.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_task_scheduler.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tnl\tnl_state_machine.h">
+      <Filter>Source\[000] tnl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imconfig.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imgui.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imgui_impl_dx11.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imgui_impl_win32.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imgui_internal.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imstb_rectpack.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imstb_textedit.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dxe\imgui\imstb_truetype.h">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmObjectBase.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmMeshBase.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmShip.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmVirtualWave.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmWaterPlane.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmPlayerShip.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\mesh_ex\gmMeshEX.h">
+      <Filter>Source\[004] game\mesh_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmIsland.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debug\gmKyleDebugger.h">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debug\gmKyleGridViewer.h">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="program\map\gmMapLoader.h">
+      <Filter>Source\[004] game\map</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gmGameConfig.h">
+      <Filter>Source\[004] game</Filter>
+    </ClInclude>
+    <ClInclude Include="program\map\gmOceanFlowLoader.h">
+      <Filter>Source\[004] game\map</Filter>
+    </ClInclude>
+    <ClInclude Include="program\map\gmFlowField.h">
+      <Filter>Source\[004] game\map</Filter>
+    </ClInclude>
+    <ClInclude Include="program\map\gmMapManager.h">
+      <Filter>Source\[004] game\map</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gmGameContext.h">
+      <Filter>Source\[004] game</Filter>
+    </ClInclude>
+    <ClInclude Include="program\scene\gmSceneTransitionEffectBase.h">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="program\scene\gmFadeTransitionEffect.h">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="program\scene\gmSceneManager.h">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="program\scene\gmSceneBase.h">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="program\scene\scenes\gmGameScene.h">
+      <Filter>Source\[004] game\scene\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debug\gmKyleFreeCameraController.h">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmUIObjectBase.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmMiniMap.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmUIManager.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debug\gmKyleAxisCompass.h">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debug\gmKyleWorldRuler.h">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmOceanFlowVisualizer.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\util\gmRenderUtil.h">
+      <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="000_GameDevelopment.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\json11.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_font_texture.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_inclution_owner_locked.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_input.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_instance.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_intersect.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_math.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_matrix.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_quaternion.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_rect.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_seek_unit.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_util.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_vector2f.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_vector2i.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_vector3.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_camera.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_data.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_font_text.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_graphics_layer.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_input.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_texture.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\OBJLoader.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\dxe_inst_mesh.cpp">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh.cpp">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh_base.cpp">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\dxe_mesh_mtrl_gui_controller.cpp">
+      <Filter>Source\[001] dxe\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_barrel.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_box.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cone.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cone_cylinder.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cube.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_cylinder.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_disk.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_disk_ring.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_dome.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_from_height_map.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_half_barrel.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_hollow_out_disk_plane.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_obj.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_plane.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_sphere.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_static_group.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_torus.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_equilateral.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_isosceles.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\mesh\create_mesh\dxe_mesh_triangle_right.cpp">
+      <Filter>Source\[001] dxe\mesh\create_mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_check_box.cpp">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_drag_box.cpp">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_input_box.cpp">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\gui\dxe_gui_menu_selector.cpp">
+      <Filter>Source\[001] dxe\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_erea_projection.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_particle.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_particle_sub.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_shadow_map.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_water_plane.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\effects\dxe_water_plane_sub.cpp">
+      <Filter>Source\[001] dxe\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gm_main.cpp">
+      <Filter>Source\[004] game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\dxe_sprite.cpp">
+      <Filter>Source\[001] dxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_task_scheduler.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tnl\tnl_state_machine.cpp">
+      <Filter>Source\[000] tnl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_demo.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_draw.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_impl_dx11.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_impl_win32.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_tables.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dxe\imgui\imgui_widgets.cpp">
+      <Filter>Source\[001] dxe\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmObjectBase.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmMeshBase.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmShip.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmVirtualWave.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmWaterPlane.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmPlayerShip.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\mesh_ex\gmMeshEX.cpp">
+      <Filter>Source\[004] game\mesh_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmIsland.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debug\gmKyleDebugger.cpp">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debug\gmKyleGridViewer.cpp">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="program\map\gmMapLoader.cpp">
+      <Filter>Source\[004] game\map</Filter>
+    </ClCompile>
+    <ClCompile Include="program\map\gmOceanFlowLoader.cpp">
+      <Filter>Source\[004] game\map</Filter>
+    </ClCompile>
+    <ClCompile Include="program\map\gmFlowField.cpp">
+      <Filter>Source\[004] game\map</Filter>
+    </ClCompile>
+    <ClCompile Include="program\map\gmMapManager.cpp">
+      <Filter>Source\[004] game\map</Filter>
+    </ClCompile>
+    <ClCompile Include="program\scene\gmFadeTransitionEffect.cpp">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="program\scene\gmSceneManager.cpp">
+      <Filter>Source\[004] game\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="program\scene\scenes\gmGameScene.cpp">
+      <Filter>Source\[004] game\scene\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debug\gmKyleFreeCameraController.cpp">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmUIObjectBase.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmMiniMap.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmUIManager.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debug\gmKyleAxisCompass.cpp">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debug\gmKyleWorldRuler.cpp">
+      <Filter>Source\[004] game\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\util\gmRenderUtil.cpp">
+      <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="000_GameDevelopment.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="000_GameDevelopment.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
