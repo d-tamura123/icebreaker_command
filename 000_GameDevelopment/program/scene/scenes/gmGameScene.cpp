@@ -144,7 +144,7 @@ namespace gm
 
         // ★ UIマネージャーの更新処理を呼び出す
         if (uiManager_) {
-            uiManager_->update(dt);
+            uiManager_->update(dt, context_->camera);
         }
 
     }

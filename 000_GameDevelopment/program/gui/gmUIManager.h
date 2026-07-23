@@ -19,7 +19,7 @@ namespace gm {
         ~gmUIManager();
 
         // UI全体の更新
-        void update(float dt);
+        void update(float dt, const Shared<dxe::Camera>& camera);
 
         // UI全体の描画（要件に合わせてrenderという名前にしています）
         void renderTerrainIntegration(const Shared<dxe::Camera>& camera);

@@ -22,10 +22,10 @@ namespace gm {
         // std::unique_ptr が自動的に解放するため、明示的なdeleteは不要です
     }
 
-    void gmUIManager::update(float dt)
+    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera)
     {
         if (flowVisualizer_) {
-            flowVisualizer_->update();
+            flowVisualizer_->update(camera);
         }
 
         if (miniMap_) {
