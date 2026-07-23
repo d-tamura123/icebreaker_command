@@ -39,9 +39,6 @@
     <Filter Include="Source\[004] game\mesh_ex">
       <UniqueIdentifier>{d2811fd8-89fd-46fe-bdb9-b0bc8b244c40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\[004] game\debug">
-      <UniqueIdentifier>{e27ee002-ce95-4003-b978-a492b5d81931}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\[004] game\map">
       <UniqueIdentifier>{a2a3d889-dbc9-4013-9359-4c472439b7c8}</UniqueIdentifier>
     </Filter>
@@ -56,6 +53,9 @@
     </Filter>
     <Filter Include="Source\[004] game\util">
       <UniqueIdentifier>{c9491032-b217-4809-a67a-8188cd95860f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\debugger">
+      <UniqueIdentifier>{e27ee002-ce95-4003-b978-a492b5d81931}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -284,12 +284,6 @@
     <ClInclude Include="program\object\gmIsland.h">
       <Filter>Source\[004] game\object</Filter>
     </ClInclude>
-    <ClInclude Include="program\debug\gmKyleDebugger.h">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="program\debug\gmKyleGridViewer.h">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClInclude>
     <ClInclude Include="program\map\gmMapLoader.h">
       <Filter>Source\[004] game\map</Filter>
     </ClInclude>
@@ -323,9 +317,6 @@
     <ClInclude Include="program\scene\scenes\gmGameScene.h">
       <Filter>Source\[004] game\scene\scenes</Filter>
     </ClInclude>
-    <ClInclude Include="program\debug\gmKyleFreeCameraController.h">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClInclude>
     <ClInclude Include="program\gui\gmUIObjectBase.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
@@ -335,17 +326,26 @@
     <ClInclude Include="program\gui\gmUIManager.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
-    <ClInclude Include="program\debug\gmKyleAxisCompass.h">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="program\debug\gmKyleWorldRuler.h">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClInclude>
     <ClInclude Include="program\gui\gmOceanFlowVisualizer.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
     <ClInclude Include="program\util\gmRenderUtil.h">
       <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleAxisCompass.h">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleDebugger.h">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleFreeCameraController.h">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleGridViewer.h">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleWorldRuler.h">
+      <Filter>Source\[004] game\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -580,12 +580,6 @@
     <ClCompile Include="program\object\gmIsland.cpp">
       <Filter>Source\[004] game\object</Filter>
     </ClCompile>
-    <ClCompile Include="program\debug\gmKyleDebugger.cpp">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="program\debug\gmKyleGridViewer.cpp">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClCompile>
     <ClCompile Include="program\map\gmMapLoader.cpp">
       <Filter>Source\[004] game\map</Filter>
     </ClCompile>
@@ -607,9 +601,6 @@
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp">
       <Filter>Source\[004] game\scene\scenes</Filter>
     </ClCompile>
-    <ClCompile Include="program\debug\gmKyleFreeCameraController.cpp">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClCompile>
     <ClCompile Include="program\gui\gmUIObjectBase.cpp">
       <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
@@ -619,17 +610,26 @@
     <ClCompile Include="program\gui\gmUIManager.cpp">
       <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="program\debug\gmKyleAxisCompass.cpp">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="program\debug\gmKyleWorldRuler.cpp">
-      <Filter>Source\[004] game\debug</Filter>
-    </ClCompile>
     <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp">
       <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
     <ClCompile Include="program\util\gmRenderUtil.cpp">
       <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleAxisCompass.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleDebugger.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleFreeCameraController.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleGridViewer.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleWorldRuler.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

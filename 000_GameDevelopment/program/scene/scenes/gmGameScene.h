@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../gmSceneBase.h"
 #include "../../gmGameContext.h"
 
@@ -7,11 +7,11 @@
 #include "../../object/gmIsland.h"
 #include "../../mesh_ex/gmMeshEX.h"
 
-#include "../../debug/gmKyleDebugger.h"
+#include "../../debugger/gmKyleDebugger.h"
 
 namespace gm
 {
-    // ‘O•ûéŒ¾
+    // å‰æ–¹å®£è¨€
     class gmUIManager;
 
     class gmGameScene : public gmSceneBase
@@ -35,7 +35,7 @@ namespace gm
         Shared<dxe::Mesh> iceChunk_;
         std::unique_ptr<gmUIManager> uiManager_;
 
-        // ƒJƒƒ‰‘€ì—p
+        // ã‚«ãƒ¡ãƒ©æ“ä½œç”¨
         bool isDrag_ = false;
         float yaw_ = 0.0f;
         float pitch_ = 0.0f;
