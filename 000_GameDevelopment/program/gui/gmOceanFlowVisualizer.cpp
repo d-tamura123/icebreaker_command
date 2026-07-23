@@ -6,55 +6,12 @@
 #include <cmath>
 
 namespace gm {
-    
-    // ヘルパー関数
-    namespace {
-        // 3Dワールド座標からスクリーン座標(とZ深度)を安全に計算する
-        // 戻り値: x, y はスクリーンピクセル座標、z は 0.0〜1.0 の深度値
-        bool ProjectToScreen(
-            const tnl::Vector3& worldPos,
-            const tnl::Matrix& view,
-            const tnl::Matrix& proj,
-            float screenW,
-            float screenH,
-            tnl::Vector3& outScreenPos
-        ) {
-            // 1) ビュー・プロジェクション（合成）行列の作成
-            tnl::Matrix vp = view * proj;
-
-            // 2) 行列とベクトルの乗算（Row-Major 前提のパースペクティブ変換）
-            // ※w成分の計算を含め、各座標の射影計算を行います
-            float x = worldPos.x * vp._11 + worldPos.y * vp._21 + worldPos.z * vp._31 + vp._41;
-            float y = worldPos.x * vp._12 + worldPos.y * vp._22 + worldPos.z * vp._32 + vp._42;
-            float z = worldPos.x * vp._13 + worldPos.y * vp._23 + worldPos.z * vp._33 + vp._43;
-            float w = worldPos.x * vp._14 + worldPos.y * vp._24 + worldPos.z * vp._34 + vp._44;
-
-            // 3) カメラの後方にある（wが0以下）場合はクリップ（変換失敗）
-            if (w <= 0.0f) {
-                return false;
-            }
-
-            // 4) w で割ってデバイス正規化座標（NDC: -1.0 〜 1.0）へ変換
-            float ndcX = x / w;
-            float ndcY = y / w;
-            float ndcZ = z / w;
-
-            // 5) ビューポート変換（スクリーンピクセル座標へのマッピング）
-            float halfW = screenW * 0.5f;
-            float halfH = screenH * 0.5f;
-
-            outScreenPos.x = halfW + (halfW * ndcX);
-            outScreenPos.y = halfH - (halfH * ndcY); // 3Dの上方向はスクリーン上ではマイナスなので反転
-            outScreenPos.z = ndcZ;                   // 正しい深度(0.0〜1.0)を代入
-
-            return true;
-        }
-    }
 
     gmOceanFlowVisualizer::gmOceanFlowVisualizer(std::shared_ptr<gmMapManager> map)
         : map_(map)
     {
         loadResources();
+        initializeBuffers();
     }
 
     gmOceanFlowVisualizer::~gmOceanFlowVisualizer()
@@ -64,6 +21,8 @@ namespace gm {
 
     void gmOceanFlowVisualizer::loadResources()
     {
+        // DrawPolygonIndexed3D は生のグラフィックハンドル(int)を要求するため、
+        // dxe::Texture ではなく LoadGraph の生ハンドルを使用する
         if (arrowHandle_ == -1) {
             arrowHandle_ = LoadGraph(GRAPHICS_FILE_PATH__OCEAN_FLOW_ARROW);
         }
@@ -77,6 +36,16 @@ namespace gm {
         }
     }
 
+    //============================================================
+    // バッチ用バッファの事前確保
+    // （毎フレームのvector再アロケーションを避けるため、最初に1回だけ確保）
+    //============================================================
+    void gmOceanFlowVisualizer::initializeBuffers()
+    {
+        vtxBuf_.reserve(MAX_BATCH_VERTICES);
+        idxBuf_.reserve((MAX_BATCH_VERTICES / 4) * 6);
+    }
+
     void gmOceanFlowVisualizer::update()
     {
         if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_F1)) {
@@ -84,9 +53,26 @@ namespace gm {
         }
     }
 
+    //============================================================
+    // バッファに溜まった内容を1回のドローコールで出力する（＝改ページ/flush）
+    //============================================================
+    void gmOceanFlowVisualizer::flushBatch()
+    {
+        if (vtxBuf_.empty()) {
+            return;
+        }
+
+        DrawPolygonIndexed3D(
+            vtxBuf_.data(), static_cast<int>(vtxBuf_.size()),
+            idxBuf_.data(), static_cast<int>(idxBuf_.size() / 3),
+            arrowHandle_, TRUE);
+
+        vtxBuf_.clear();
+        idxBuf_.clear();
+    }
+
     void gmOceanFlowVisualizer::draw(const Shared<dxe::Camera>& camera)
     {
-        // 表示OFF / リソース未ロードチェック
         if (!visible_) return;
         if (arrowHandle_ == -1) return;
 
@@ -95,103 +81,132 @@ namespace gm {
         auto map = map_.lock();
         if (!map) return;
 
-        // カメラ情報
         tnl::Vector3 camPos = camera->getPosition();
         tnl::Vector3 camForward = camera->forward();
 
-        // 描画サイズ設定（ワールド座標系での一辺の大きさ。セルサイズ等に合わせて調整してください）
-        const float HALF_SIZE = CELL_SIZE * 0.4f; // セルから少し隙間を空けるサイズ
+        const float HALF_SIZE = CELL_SIZE * 0.4f;
+        const float renderDistSq = (RENDER_DISTANCE / 3) * (RENDER_DISTANCE / 3);
 
-        const float renderDistSq = RENDER_DISTANCE * RENDER_DISTANCE;
+        // ------------------------------------------------------------
+        // 描画ステートはループの外で1回だけ設定する
+        // （毎セルでSet〜を呼ぶと、DirectX側の内部ステート再構築コストが
+        //   セル数だけ発生してしまうため）
+        // ------------------------------------------------------------
+        SetUseLighting(FALSE);
+        SetWriteZBuffer3D(FALSE);
+        SetUseZBuffer3D(FALSE);
+        SetUseBackCulling(FALSE);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
-        // 3D描画用のインデックスデータ（4頂点で2つの三角形を作るための定義。固定値でOK）
-        static const WORD indices[6] = { 0, 1, 2, 1, 3, 2 };
+        vtxBuf_.clear();
+        idxBuf_.clear();
 
-        // マップセルループ
-        for (int y = 0; y < MAP_CHIP_HEIGHT; y += sampleStep_) {
-            for (int x = 0; x < MAP_CHIP_WIDTH; x += sampleStep_) {
+        //============================================================
+        // マップセルループ：ここでは「バッファに詰めるだけ」で即描画はしない
+        //============================================================
+        
+        // ループ範囲の解析
+        // カメラ位置をグリッド座標に変換し、RENDER_DISTANCE分だけの矩形範囲だけを回す
+        const float gridRange = RENDER_DISTANCE / CELL_SIZE;
 
-                // 島セルは描画スキップ
-                if (map->IsLand(x, y)) continue;
+        int centerGX = static_cast<int>(camPos.x / CELL_SIZE);
+        int centerGY = static_cast<int>(-camPos.z / CELL_SIZE); // worldZ = -y*CELL_SIZE の符号に注意
 
-                // セル中心のワールド座標
-                const float worldX = x * CELL_SIZE + (CELL_SIZE * 0.5f);
-                const float worldY = 0.05f; // 地面（0.0f）と完全に重ねるとチラつく（Zファイティング）ため、わずかに浮かせる
-                const float worldZ = -y * CELL_SIZE - (CELL_SIZE * 0.5f);
-                tnl::Vector3 worldPos{ worldX, worldY, worldZ };
+        int minGX = std::max(0, centerGX - static_cast<int>(gridRange));
+        int maxGX = std::min(MAP_CHIP_WIDTH - 1, centerGX + static_cast<int>(gridRange));
+        int minGY = std::max(0, centerGY - static_cast<int>(gridRange));
+        int maxGY = std::min(MAP_CHIP_HEIGHT - 1, centerGY + static_cast<int>(gridRange));
 
-                // 1) カメラ前方チェック
-                tnl::Vector3 camTo = worldPos - camPos;
-                float forwardDot = tnl::Vector3::Dot(camTo, camForward);
-                if (forwardDot <= 0.0f) continue;
+        for (int y = minGY; y <= maxGY; y += sampleStep_) {
+            for (int x = minGX; x <= maxGX; x += sampleStep_) {
 
-                // 2) 距離チェック
-                float dx = worldX - camPos.x;
-                float dz = worldZ - camPos.z;
-                if ((dx * dx + dz * dz) > renderDistSq) continue;
-
-                // 3) 海流データ取得
-                tnl::Vector2f fv = map->GetFlow(x, y);
-                float fx = fv.x;
-                float fz = fv.y;
-                float mag = std::sqrt(fx * fx + fz * fz);
-                if (mag < 1e-4f) continue;
-
-                // 4) 回転角（XZ平面上での回転。右方向が基準、または画像に合わせて調整）
-                // ※アングルが北基準（Zプラス）で、画像が上向きの場合の回転を計算
-                float angle = std::atan2f(fx, fz);
-                float sinA = std::sin(angle);
-                float cosA = std::cos(angle);
-
-                // 5) 回転させた4頂点のローカル座標（XZ平面上の板ポリゴン）
-                // 左上 (LT), 右上 (RT), 左下 (LB), 右下 (RB)
-                // 画像のテクスチャ座標（U, V）に合わせて定義します
-                VERTEX3D vertices[4];
-
-                // 共通の初期化（色は白、アルファ最大）
-                for (int i = 0; i < 4; ++i) {
-                    vertices[i].dif = GetColorU8(255, 255, 255, 255);
-                    vertices[i].spc = GetColorU8(0, 0, 0, 0);
-                    vertices[i].norm = VGet(0.0f, 1.0f, 0.0f); // 法線は真上向き
+                // 島セルは非表示
+                if (map->IsLand(x, y)) {
+                    continue;
                 }
 
-                // ローカル位置（回転前）
-                float l_left = -HALF_SIZE;
-                float l_right = HALF_SIZE;
-                float l_top = HALF_SIZE;  // Zプラス方向（上）
-                float l_bottom = -HALF_SIZE;  // Zマイナス方向（下）
+                // セル中心座標
+                const float worldX = x * CELL_SIZE + CELL_SIZE * 0.5f;
+                const float worldY = 0.05f; // 地面とのZファイティング回避のため僅かに浮かせる
+                const float worldZ = -y * CELL_SIZE - CELL_SIZE * 0.5f;
+                tnl::Vector3 worldPos{ worldX, worldY, worldZ };
 
-                // 回転行列を適用してワールド座標を決定するヘルパーラムダ
-                auto setVertex = [&](int idx, float localX, float localZ, float u, float v) {
-                    // XZ平面上での2D回転
-                    float rx = localX * cosA - localZ * sinA;
-                    float rz = localX * sinA + localZ * cosA;
+                // カメラ前方チェック
+                tnl::Vector3 camTo = worldPos - camPos;
+                if (tnl::Vector3::Dot(camTo, camForward) <= 0.0f) {
+                    continue;
+                }
 
-                    vertices[idx].pos = VGet(worldPos.x + rx, worldPos.y, worldPos.z + rz);
-                    vertices[idx].u = u;
-                    vertices[idx].v = v;
+                // 距離チェック
+                const float dx = worldX - camPos.x;
+                const float dz = worldZ - camPos.z;
+                if ((dx * dx + dz * dz) > renderDistSq) {
+                    continue;
+                }
+
+                // FlowField
+                tnl::Vector2f fv = map->GetFlow(x, y);
+                const float fx = fv.x;
+                const float fz = fv.y;
+                const float mag = std::sqrt(fx * fx + fz * fz);
+                if (mag < 1e-4f) {
+                    continue;
+                }
+
+                // 回転角
+                const float angle = std::atan2f(fx, fz);
+                const float sinA = std::sin(angle);
+                const float cosA = std::cos(angle);
+
+                // ------------------------------------------------------------
+                // バッファ溢れチェック（"改ページ" = 一旦flushしてから続ける）
+                // WORDインデックスの範囲(65535)を超えないよう、
+                // 4頂点追加する前に必ずチェックする
+                // ------------------------------------------------------------
+                if (vtxBuf_.size() + 4 > MAX_BATCH_VERTICES) {
+                    flushBatch();
+                }
+
+                const WORD base = static_cast<WORD>(vtxBuf_.size());
+
+                auto pushVertex = [&](float localX, float localZ, float u, float v) {
+                    const float rx = localX * cosA - localZ * sinA;
+                    const float rz = localX * sinA + localZ * cosA;
+
+                    VERTEX3D vtx{};
+                    vtx.pos = VGet(worldPos.x + rx, worldPos.y, worldPos.z + rz);
+                    vtx.dif = GetColorU8(255, 255, 255, 255);
+                    vtx.spc = GetColorU8(0, 0, 0, 0);
+                    vtx.norm = VGet(0.0f, 1.0f, 0.0f);
+                    vtx.u = u;
+                    vtx.v = v;
+                    vtxBuf_.push_back(vtx);
                     };
 
-                // 各頂点の設定 (UVの割り当て)
-                setVertex(0, l_left, l_top, 0.0f, 0.0f); // 左上
-                setVertex(1, l_right, l_top, 1.0f, 0.0f); // 右上
-                setVertex(2, l_left, l_bottom, 0.0f, 1.0f); // 左下
-                setVertex(3, l_right, l_bottom, 1.0f, 1.0f); // 右下
+                pushVertex(-HALF_SIZE, HALF_SIZE, 0.0f, 0.0f); // 左上
+                pushVertex(HALF_SIZE, HALF_SIZE, 1.0f, 0.0f); // 右上
+                pushVertex(-HALF_SIZE, -HALF_SIZE, 0.0f, 1.0f); // 左下
+                pushVertex(HALF_SIZE, -HALF_SIZE, 1.0f, 1.0f); // 右下
 
-                // 6) 3D空間上にポリゴンを描画
-                // 透過対応のため、DXLibのブレンドモードが適切に設定されている必要があります
-                SetUseLighting(FALSE);
-                SetWriteZBuffer3D(FALSE);
-                SetUseZBuffer3D(FALSE);
-                SetUseBackCulling(FALSE);
-                SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-                int rtn = DrawPolygonIndexed3D(vertices, 4, indices, 2, arrowHandle_, TRUE);
-                SetUseBackCulling(TRUE);
-                SetUseZBuffer3D(TRUE);
-                SetWriteZBuffer3D(TRUE);
-                SetUseLighting(TRUE);
+                idxBuf_.push_back(base + 0);
+                idxBuf_.push_back(base + 1);
+                idxBuf_.push_back(base + 2);
+                idxBuf_.push_back(base + 1);
+                idxBuf_.push_back(base + 3);
+                idxBuf_.push_back(base + 2);
             }
         }
+
+        // ループを抜けた時点で残っている分をまとめて出力（最終ページの印字）
+        flushBatch();
+
+        // ------------------------------------------------------------
+        // ステートを元に戻す
+        // ------------------------------------------------------------
+        SetUseBackCulling(TRUE);
+        SetUseZBuffer3D(TRUE);
+        SetWriteZBuffer3D(TRUE);
+        SetUseLighting(TRUE);
     }
 
 } // namespace gm

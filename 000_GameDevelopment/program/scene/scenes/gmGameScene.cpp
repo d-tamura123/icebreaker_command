@@ -41,7 +41,7 @@ namespace gm
         // プレイヤー船の向きの設定
         // ゲームルール状、南向きに初期配置
         playerShip_->setYaw(tnl::PI);
-       
+
         // 氷塊
         auto iceTex = dxe::Texture::CreateFromFile("resource/graphics/test/White-Ice4.jpg");
 
@@ -154,8 +154,6 @@ namespace gm
     // ------------------------------------------------------------
     void gmGameScene::draw()
     {
-        dxe::DirectXRenderBegin();
-
         playerShip_->render(context_->camera);
 
         if (iceChunk_) {
@@ -166,9 +164,13 @@ namespace gm
             isl->render(context_->camera);
         }
 
+        dxe::DirectXRenderBegin();
         water_->render(context_->camera);
-
         dxe::DirectXRenderEnd();
+        
+        if (uiManager_) {
+            uiManager_->renderTerrainIntegration(context_->camera);
+        }
 
         // リセット漏れ?
         SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ブレンドなし（または DX_BLENDMODE_ALPHA, 255）に戻す
