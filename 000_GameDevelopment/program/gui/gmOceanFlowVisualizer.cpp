@@ -183,7 +183,12 @@ namespace gm {
                 }
 
                 // 回転角
-                const float angle = std::atan2f(fx, fz);
+                // ------------------------------------------------------------
+                // DxLibは左手座標系。左手座標系では回転の向きが数学の標準(右手系)とは
+                // 逆になるため、atan2の第1引数(X成分)の符号を反転し、
+                // 左手系の回転方向に合わせている。
+                // ------------------------------------------------------------
+                const float angle = std::atan2f(-fx, fz);
                 const float sinA = std::sin(angle);
                 const float cosA = std::cos(angle);
 
