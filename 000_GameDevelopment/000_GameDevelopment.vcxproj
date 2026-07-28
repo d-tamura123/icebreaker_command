@@ -218,6 +218,7 @@
     <ClInclude Include="program\map\gmMapManager.h" />
     <ClInclude Include="program\map\gmOceanFlowLoader.h" />
     <ClInclude Include="program\mesh_ex\gmMeshEX.h" />
+    <ClInclude Include="program\object\gmIceberg.h" />
     <ClInclude Include="program\object\gmIsland.h" />
     <ClInclude Include="program\object\gmMeshBase.h" />
     <ClInclude Include="program\object\gmObjectBase.h" />
@@ -230,6 +231,8 @@
     <ClInclude Include="program\scene\gmSceneManager.h" />
     <ClInclude Include="program\scene\gmSceneTransitionEffectBase.h" />
     <ClInclude Include="program\scene\scenes\gmGameScene.h" />
+    <ClInclude Include="program\spawner\gmIcebergManager.h" />
+    <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -318,6 +321,7 @@
     <ClCompile Include="program\map\gmMapManager.cpp" />
     <ClCompile Include="program\map\gmOceanFlowLoader.cpp" />
     <ClCompile Include="program\mesh_ex\gmMeshEX.cpp" />
+    <ClCompile Include="program\object\gmIceberg.cpp" />
     <ClCompile Include="program\object\gmIsland.cpp" />
     <ClCompile Include="program\object\gmMeshBase.cpp" />
     <ClCompile Include="program\object\gmObjectBase.cpp" />
@@ -328,6 +332,7 @@
     <ClCompile Include="program\scene\gmFadeTransitionEffect.cpp" />
     <ClCompile Include="program\scene\gmSceneManager.cpp" />
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
+    <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
   </ItemGroup>
   <ItemGroup>

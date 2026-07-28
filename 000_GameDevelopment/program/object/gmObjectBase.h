@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <dxe.h>
 
 namespace gm {
@@ -8,28 +8,36 @@ namespace gm {
         gmObjectBase(const std::string& instanceID, const tnl::Vector3& position);
         virtual ~gmObjectBase() = default;
 
-        // À•W
+        // åº§æ¨™
         const tnl::Vector3& getPosition() const;
         void setPosition(const tnl::Vector3& position);
 
-        // ƒXƒP[ƒ‹
+        // ã‚¹ã‚±ãƒ¼ãƒ«
         const tnl::Vector3& getScale() const;
         void setScale(const tnl::Vector3& scale);
 
-        // ¯•ÊID
+        // è­˜åˆ¥ID
         const std::string& getId() const { return instanceID_; }
 
-        // XVE•`‰æ
+        // ç”Ÿå­˜ãƒ•ãƒ©ã‚°
+        bool isAlive() const { return alive_; }
+        void kill() { alive_ = false; }
+
+        // æ›´æ–°ãƒ»æç”»
         virtual void update(float deltaTime);
         virtual void draw();
         virtual void render(const Shared<dxe::Camera>& camera);
 
     protected:
-        // ƒCƒ“ƒXƒ^ƒ“ƒX¯•Ê—p
+        // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è­˜åˆ¥ç”¨
         std::string instanceID_;
 
+        // ä½ç½®ãƒ»ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
         tnl::Vector3 position_  = {0.0f, 0.0f, 0.0f };
         tnl::Vector3 scale_     = {1.0f, 1.0f, 1.0f };
         tnl::Vector3 rotation_  = { 0.0f, 0.0f, 0.0f };
+
+        // ç”Ÿå­˜ãƒ•ãƒ©ã‚°
+        bool alive_ = true;
     };
 }

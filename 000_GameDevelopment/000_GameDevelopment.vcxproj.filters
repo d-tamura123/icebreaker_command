@@ -57,6 +57,9 @@
     <Filter Include="Source\[004] game\debugger">
       <UniqueIdentifier>{e27ee002-ce95-4003-b978-a492b5d81931}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\spawner">
+      <UniqueIdentifier>{f96546b0-3cfd-435c-9740-08024b51a779}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -347,6 +350,15 @@
     <ClInclude Include="program\debugger\gmKyleWorldRuler.h">
       <Filter>Source\[004] game\debugger</Filter>
     </ClInclude>
+    <ClInclude Include="program\spawner\gmSpawnerManagerBase.h">
+      <Filter>Source\[004] game\spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="program\spawner\gmIcebergManager.h">
+      <Filter>Source\[004] game\spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmIceberg.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -630,6 +642,12 @@
     </ClCompile>
     <ClCompile Include="program\debugger\gmKyleWorldRuler.cpp">
       <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\spawner\gmIcebergManager.cpp">
+      <Filter>Source\[004] game\spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmIceberg.cpp">
+      <Filter>Source\[004] game\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,37 +1,37 @@
-#include "gmSceneManager.h"
+ï»¿#include "gmSceneManager.h"
 #include "dxe.h"
 
 namespace gm
 {
     gmSceneManager::gmSceneManager()
     {
-        // GameContext ‚ğ¶¬
+        // GameContext ã‚’ç”Ÿæˆ
         context_ = std::make_shared<gmGameContext>();
 
-        // “ü—Í
+        // å…¥åŠ›
         //context_->input = std::make_shared<gmInputManager>();
 
-        // ƒTƒEƒ“ƒh
+        // ã‚µã‚¦ãƒ³ãƒ‰
         //context_->sound = std::make_shared<gmSoundManager>();
 
-        // ƒ}ƒbƒv
+        // ãƒãƒƒãƒ—
         context_->map = std::make_shared<gmMapManager>();
         context_->map->LoadMap(gm::MAP_FILE_PATH);
-        context_->map->LoadOceanFlow(gm::FLOW_STO_E_PATH);
+        context_->map->LoadOceanFlow(gm::FLOW_STO_N_PATH);
 
-        // ƒJƒƒ‰
+        // ã‚«ãƒ¡ãƒ©
         context_->camera = std::make_shared<dxe::Camera>(
             DXE_WINDOW_WIDTH_F, DXE_WINDOW_HEIGHT_F
         );
 
-        // ƒtƒF[ƒh
+        // ãƒ•ã‚§ãƒ¼ãƒ‰
         context_->fade = std::make_shared<gmFadeTransitionEffect>();
         context_->fade->setScreenSize(DXE_WINDOW_WIDTH, DXE_WINDOW_HEIGHT);
-        context_->fade->setFadeColor(0, 0, 0); // •ƒtƒF[ƒh
+        context_->fade->setFadeColor(0, 0, 0); // é»’ãƒ•ã‚§ãƒ¼ãƒ‰
     }
 
     // ------------------------------------------------------------
-    // ‰ŠúƒV[ƒ“İ’è
+    // åˆæœŸã‚·ãƒ¼ãƒ³è¨­å®š
     // ------------------------------------------------------------
     void gmSceneManager::setInitialScene(std::shared_ptr<gmSceneBase> initialScene)
     {
@@ -41,7 +41,7 @@ namespace gm
     }
 
     // ------------------------------------------------------------
-    // ƒV[ƒ“Ø‚è‘Ö‚¦—v‹
+    // ã‚·ãƒ¼ãƒ³åˆ‡ã‚Šæ›¿ãˆè¦æ±‚
     // ------------------------------------------------------------
     void gmSceneManager::requestSceneChange(std::shared_ptr<gmSceneBase> nextScene)
     {
@@ -50,7 +50,7 @@ namespace gm
         nextScene_ = std::move(nextScene);
         isTransitioning_ = true;
 
-        // ƒtƒF[ƒhƒAƒEƒg ¨ Ø‘Ö ¨ ƒtƒF[ƒhƒCƒ“
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ â†’ åˆ‡æ›¿ â†’ ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
         context_->fade->fadeOutIn([&]() {
             if (currentScene_) currentScene_->onExit();
 
@@ -60,13 +60,13 @@ namespace gm
     }
 
     // ------------------------------------------------------------
-    // XV
+    // æ›´æ–°
     // ------------------------------------------------------------
     void gmSceneManager::update()
     {
         float dt = dxe::GetDeltaTime();
 
-        // ƒtƒF[ƒh’†
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ä¸­
         if (isTransitioning_) {
             context_->fade->update(dt);
 
@@ -76,14 +76,14 @@ namespace gm
             return;
         }
 
-        // ’ÊíXV
+        // é€šå¸¸æ›´æ–°
         if (currentScene_) {
             currentScene_->update();
         }
     }
 
     // ------------------------------------------------------------
-    // •`‰æ
+    // æç”»
     // ------------------------------------------------------------
     void gmSceneManager::draw()
     {
@@ -91,7 +91,7 @@ namespace gm
             currentScene_->draw();
         }
 
-        // ƒtƒF[ƒh•`‰æ
+        // ãƒ•ã‚§ãƒ¼ãƒ‰æç”»
         if (isTransitioning_) {
             context_->fade->draw();
         }

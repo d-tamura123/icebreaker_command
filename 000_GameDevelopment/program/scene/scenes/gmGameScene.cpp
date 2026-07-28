@@ -84,6 +84,15 @@ namespace gm
             islands_.push_back(islandObj);
         }
 
+        // 氷山マネージャー（南端スポナー + 海流連動の動的な氷山群）
+        // 上のcrystalPaths/iceTexをそのまま使い回す
+        icebergManager_ = std::make_unique<gmIcebergManager>(
+            context_->map,
+            water_,
+            crystalPaths,
+            "resource/graphics/test/White-Ice4.jpg"
+        );
+
         // プレイヤー船の位置
         tnl::Vector3 shipPos = playerShip_->getPosition();
         
@@ -142,6 +151,11 @@ namespace gm
             context_->camera->update();
         }
 
+        // 流氷(スポーン判定 + 海流に乗せた移動)
+        if (icebergManager_) {
+            icebergManager_->update(dt);
+        }
+
         // ★ UIマネージャーの更新処理を呼び出す
         if (uiManager_) {
             uiManager_->update(dt, context_->camera);
@@ -162,6 +176,10 @@ namespace gm
 
         for (auto& isl : islands_) {
             isl->render(context_->camera);
+        }
+
+        if (icebergManager_) {
+            icebergManager_->render(context_->camera);
         }
 
         dxe::DirectXRenderBegin();
