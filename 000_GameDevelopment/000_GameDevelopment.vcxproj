@@ -201,7 +201,12 @@
     <ClInclude Include="..\common\tnl\tnl_vector3.h" />
     <ClInclude Include="000_GameDevelopment.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="program\collision\gmCollider.h" />
+    <ClInclude Include="program\collision\gmCollisionCategory.h" />
+    <ClInclude Include="program\collision\gmCollisionSystem.h" />
+    <ClInclude Include="program\collision\gmIntersectEx.h" />
     <ClInclude Include="program\debugger\gmKyleAxisCompass.h" />
+    <ClInclude Include="program\debugger\gmKyleColliderGizmo.h" />
     <ClInclude Include="program\debugger\gmKyleDebugger.h" />
     <ClInclude Include="program\debugger\gmKyleFreeCameraController.h" />
     <ClInclude Include="program\debugger\gmKyleGridViewer.h" />
@@ -233,6 +238,7 @@
     <ClInclude Include="program\scene\scenes\gmGameScene.h" />
     <ClInclude Include="program\spawner\gmIcebergManager.h" />
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
+    <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -306,7 +312,11 @@
     <ClCompile Include="..\common\tnl\tnl_vector2i.cpp" />
     <ClCompile Include="..\common\tnl\tnl_vector3.cpp" />
     <ClCompile Include="000_GameDevelopment.cpp" />
+    <ClCompile Include="program\collision\gmCollider.cpp" />
+    <ClCompile Include="program\collision\gmCollisionSystem.cpp" />
+    <ClCompile Include="program\collision\gmIntersectEx.cpp" />
     <ClCompile Include="program\debugger\gmKyleAxisCompass.cpp" />
+    <ClCompile Include="program\debugger\gmKyleColliderGizmo.cpp" />
     <ClCompile Include="program\debugger\gmKyleDebugger.cpp" />
     <ClCompile Include="program\debugger\gmKyleFreeCameraController.cpp" />
     <ClCompile Include="program\debugger\gmKyleGridViewer.cpp" />
@@ -333,6 +343,7 @@
     <ClCompile Include="program\scene\gmSceneManager.cpp" />
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
+    <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
   </ItemGroup>
   <ItemGroup>

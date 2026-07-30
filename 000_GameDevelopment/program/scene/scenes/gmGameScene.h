@@ -6,6 +6,7 @@
 #include "../../object/gmWaterPlane.h"
 #include "../../object/gmIsland.h"
 #include "../../spawner/gmIcebergManager.h"
+#include "../../collision/gmCollisionSystem.h"
 #include "../../mesh_ex/gmMeshEX.h"
 
 #include "../../debugger/gmKyleDebugger.h"
@@ -35,6 +36,7 @@ namespace gm
         std::vector<std::shared_ptr<gmIsland>> islands_;
         Shared<dxe::Mesh> iceChunk_;
         std::shared_ptr<gmIcebergManager> icebergManager_;
+        std::shared_ptr<gmCollisionSystem> collisionSystem_;
         std::unique_ptr<gmUIManager> uiManager_;
 
         // カメラ操作用

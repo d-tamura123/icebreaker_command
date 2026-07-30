@@ -42,6 +42,15 @@ namespace gm
         // ゲームルール状、南向きに初期配置
         playerShip_->setYaw(tnl::PI);
 
+        // 衝突システム
+        collisionSystem_ = std::make_shared<gmCollisionSystem>();
+
+        // プレイヤー船のコライダーを自動生成して登録
+        // したかったが、メッシュ形状が複雑で自動化は骨が折れるので手動で調整した値を直接指定することとする。。
+        //playerShip_->setupDefaultCollider();
+        playerShip_->setupManualCollider(40.0f, 120.0f, 0.0f);
+        collisionSystem_->registerObject(playerShip_);
+
         // 氷塊
         auto iceTex = dxe::Texture::CreateFromFile("resource/graphics/test/White-Ice4.jpg");
 
@@ -82,6 +91,7 @@ namespace gm
             );
 
             islands_.push_back(islandObj);
+            collisionSystem_->registerObject(islandObj);
         }
 
         // 氷山マネージャー（南端スポナー + 海流連動の動的な氷山群）
@@ -90,7 +100,8 @@ namespace gm
             context_->map,
             water_,
             crystalPaths,
-            "resource/graphics/test/White-Ice4.jpg"
+            "resource/graphics/test/White-Ice4.jpg",
+            collisionSystem_
         );
 
         // プレイヤー船の位置
@@ -156,7 +167,13 @@ namespace gm
             icebergManager_->update(dt);
         }
 
-        // ★ UIマネージャーの更新処理を呼び出す
+        // 衝突判定
+        // 検出のみ。応答は各オブジェクトのonCollisionEnter()で行うこと。
+        if (collisionSystem_) {
+            collisionSystem_->update();
+        }
+
+        // UIマネージャーの更新処理
         if (uiManager_) {
             uiManager_->update(dt, context_->camera);
         }
@@ -200,7 +217,7 @@ namespace gm
             uiManager_->render(context_->camera);
         }
 
-        debugger_->render(context_->camera);
+        debugger_->render(context_->camera, collisionSystem_);
 
         dxe::DrawFpsIndicator({ 10, DXE_WINDOW_HEIGHT - 10 });
     }

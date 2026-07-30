@@ -2,6 +2,7 @@
 #include "../map/gmMapManager.h"
 #include "../object/gmWaterPlane.h"
 #include "../mesh_ex/gmMeshEX.h"
+#include "../collision/gmCollisionSystem.h"
 #include <dxe.h>
 
 namespace gm {
@@ -10,10 +11,12 @@ namespace gm {
         const std::shared_ptr<gmMapManager>& map,
         const std::shared_ptr<gmWaterPlane>& water,
         const std::vector<std::string>& crystalPaths,
-        const std::string& texturePath)
+        const std::string& texturePath,
+        const std::shared_ptr<gmCollisionSystem>& collisionSystem)
         : map_(map)
         , water_(water)
         , crystalPaths_(crystalPaths)
+        , collisionSystem_(collisionSystem)
     {
         texture_ = dxe::Texture::CreateFromFile(texturePath);
 
@@ -38,7 +41,7 @@ namespace gm {
             meshTemplates_.push_back(mesh);
         }
 
-        maxEntities_ = 20; // 同時存在数の上限
+        maxEntities_ = 64; // 同時存在数の上限
         spawnTimer_ = rollNextInterval(); // 開始直後にまとめて湧かないよう最初の間隔を設定
     }
 
@@ -86,6 +89,15 @@ namespace gm {
         iceberg->setWater(water_);
 
         entities_.push_back(iceberg);
+
+        // ------------------------------------------------------------------------
+        // 衝突システムへ登録
+        //  ※ weak_ptrとして保持されるので、氷山がkill()されて
+        //     entities_から取り除かれれば、衝突システム側も自動的に対象から外れる
+        // ------------------------------------------------------------------------
+        if (collisionSystem_) {
+            collisionSystem_->registerObject(iceberg);
+        }
     }
 
     float gmIcebergManager::rollNextInterval() const

@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include <dxe.h>
+#include <vector>
+#include "../collision/gmCollider.h"
+#include "../collision/gmCollisionCategory.h"
 
 namespace gm {
 
@@ -28,6 +31,32 @@ namespace gm {
         virtual void draw();
         virtual void render(const Shared<dxe::Camera>& camera);
 
+        // Euler角(rotation_)からクォータニオンへ変換して取得する
+        // Note:
+        //  gmMeshBase::render()内の変換と共通のロジック。
+        //  コライダー判定などで使用
+        tnl::Quaternion getRotationQuaternion() const;
+
+        // ---- コライダー ----
+        // 1つのオブジェクトに複数のコライダーを持たせられる(複合コライダー対応)
+        void addCollider(const gmCollider& collider) { colliders_.push_back(collider); }
+        const std::vector<gmCollider>& getColliders() const { return colliders_; }
+
+        // ---- 衝突カテゴリ ----
+        void setCollisionCategory(gmCollisionCategory category) { category_ = category; }
+        gmCollisionCategory getCollisionCategory() const { return category_; }
+
+        // 衝突が検出されたときに呼ばれる(デフォルトは何もしない。必要な派生クラスだけoverrideする)
+        virtual void onCollisionEnter(gmObjectBase* other) {}
+
+
+        // ---- 移動抑止用の位置スナップショット ----
+        // 「移動前の位置を退避しておき、衝突していたら丸ごと元に戻す」方式。
+        // 各update()の先頭でsnapshotPosition()を呼び、
+        // onCollisionEnter()内でrevertToLastSafePosition()を呼ぶことで移動抑止する。
+        void snapshotPosition() { lastSafePosition_ = position_; }
+        void revertToLastSafePosition() { position_ = lastSafePosition_; }
+
     protected:
         // インスタンス識別用
         std::string instanceID_;
@@ -39,5 +68,12 @@ namespace gm {
 
         // 生存フラグ
         bool alive_ = true;
+
+        // コライダー・衝突カテゴリ
+        std::vector<gmCollider> colliders_;
+        gmCollisionCategory category_ = gmCollisionCategory::None;
+
+        // 移動抑止用: snapshotPosition()で退避した「移動前の安全な位置」
+        tnl::Vector3 lastSafePosition_ = { 0.0f, 0.0f, 0.0f };
     };
 }

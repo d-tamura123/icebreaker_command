@@ -10,6 +10,7 @@ namespace gm {
 
     class gmMapManager;
     class gmWaterPlane;
+    class gmCollisionSystem;
 
     // ------------------------------------------------------------
     // 氷山のスポーンと一元管理
@@ -21,7 +22,8 @@ namespace gm {
             const std::shared_ptr<gmMapManager>& map,
             const std::shared_ptr<gmWaterPlane>& water,
             const std::vector<std::string>& crystalPaths,
-            const std::string& texturePath);
+            const std::string& texturePath,
+            const std::shared_ptr<gmCollisionSystem>& collisionSystem);
 
     protected:
         void trySpawn() override;
@@ -33,6 +35,9 @@ namespace gm {
         std::vector<std::string> crystalPaths_;
         Shared<dxe::Texture> texture_;
 
+        // 衝突システム
+        std::shared_ptr<gmCollisionSystem> collisionSystem_;
+
         // 氷山メッシュのテンプレート(起動時にまとめて生成し、以後使い回す)
         std::vector<Shared<dxe::Mesh>> meshTemplates_;
         static constexpr int MESH_TEMPLATE_COUNT = 5; // 見た目のバリエーション数
@@ -43,8 +48,8 @@ namespace gm {
         static constexpr int SPAWN_ROW_MAX = MAP_CHIP_HEIGHT - 2;  // 端ぎりぎりは避ける
         static constexpr int SPAWN_COL_MARGIN = 4;                 // 東西の端だけ避ける
 
-        static constexpr float SPAWN_INTERVAL_MIN = 15.0f;   // 秒
-        static constexpr float SPAWN_INTERVAL_MAX = 30.0f;
+        static constexpr float SPAWN_INTERVAL_MIN = 22.5f;   // 秒
+        static constexpr float SPAWN_INTERVAL_MAX = 45.0f;
 
         static constexpr int SPAWN_LAND_RETRY = 8; // 候補セルが陸地だった場合のリトライ回数
     };

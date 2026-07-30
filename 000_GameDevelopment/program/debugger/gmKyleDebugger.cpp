@@ -1,4 +1,4 @@
-#include "gmKyleDebugger.h"
+ï»¿#include "gmKyleDebugger.h"
 #include <DxLib.h>
 
 namespace gm {
@@ -18,18 +18,20 @@ namespace gm {
         
         worldRuler_ = std::make_shared<gmKyleWorldRuler>();
 
+        colliderGizmo_ = std::make_shared<gmKyleColliderGizmo>();
+
     }
 
     void gmKyleDebugger::update()
     {
-        // PauseƒL[‚Å ON/OFF Ø‚è‘Ö‚¦
-        // tnl::Input ‚Ì‰Ÿ‚µ‚½uŠÔŒŸ’m
+        // Pauseã‚­ãƒ¼ã§ ON/OFF åˆ‡ã‚Šæ›¿ãˆ
+        // tnl::Input ã®æŠ¼ã—ãŸç¬é–“æ¤œçŸ¥
         if (tnl::Input::IsKeyDownTrigger(eKeys::KB_PAUSE)) {
             debugModeOn_ = !debugModeOn_;
         }
     }
 
-    void gmKyleDebugger::render(const Shared<dxe::Camera>& camera)
+    void gmKyleDebugger::render(const Shared<dxe::Camera>& camera, const std::shared_ptr<gmCollisionSystem>& collisionSystem)
     {
 #ifdef _DEBUG
         if (axisCompass_) {
@@ -49,9 +51,12 @@ namespace gm {
             gridViewer_->render(camera);
         }
 
+        if (colliderGizmo_ && collisionSystem) {
+            colliderGizmo_->render(collisionSystem, camera);
+        }
 
 
-        // ¡Œã‚±‚±‚É‘¼‚ÌƒfƒoƒbƒO•`‰æ‚ğ’Ç‰Á
+        // ä»Šå¾Œã“ã“ã«ä»–ã®ãƒ‡ãƒãƒƒã‚°æç”»ã‚’è¿½åŠ 
     }
 
 }

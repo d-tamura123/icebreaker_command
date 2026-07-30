@@ -43,6 +43,20 @@ namespace gm {
 
         void setYaw(float yaw);
         float getYaw() const;
+
+        // コライダー自動生成
+        void setupDefaultCollider();
+
+        // コライダーを手動指定で設定する(自動計算が信頼できない場合の代替経路)
+        // arg1... カプセルの半径
+        // arg2... カプセルの胴体長(半球キャップ分を除いた長さ)
+        // arg3... 船の中心からの前後方向オフセット(ローカルZ、正で船首側)
+        void setupManualCollider(float radius, float length, float forwardOffset = 0.0f);
+
+        // 衝突検出イベント
+        // 移動前の位置に丸ごと戻す(移動抑止)
+        void onCollisionEnter(gmObjectBase* other) override;
+
     private:
         void updateEngine(float deltaTime);   // 速度段階・慣性
         void updateRudder(float deltaTime);   // 舵角
@@ -56,5 +70,11 @@ namespace gm {
         tnl::Vector3 wavePos_ {0, 0, 0};
 
         std::weak_ptr<gmWaterPlane> water_;
+
+        // ---- コライダー調整用パラメータ ----
+        // 実測で船首・船尾がカプセルに覆われていなかったため、
+        // バウンディングボックスの前後長にかける倍率で余裕を持たせる。
+        // 1.0で「半球キャップ分を差し引いた胴体長」、大きくするほど船首・船尾側に伸びる。
+        static constexpr float SHIP_COLLIDER_LENGTH_SCALE = 1.4f;
     };
 }

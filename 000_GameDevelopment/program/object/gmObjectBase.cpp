@@ -1,4 +1,4 @@
-#include "gmObjectBase.h"
+﻿#include "gmObjectBase.h"
 
 namespace gm {
 
@@ -6,7 +6,7 @@ namespace gm {
         : instanceID_(instanceID), position_(position) {
     }
 
-    // ���W
+    // 座標
     const tnl::Vector3& gmObjectBase::getPosition() const {
         return position_;
     }
@@ -15,7 +15,7 @@ namespace gm {
         position_ = position;
     }
 
-    // �X�P�[��
+    // スケール
     const tnl::Vector3& gmObjectBase::getScale() const {
         return scale_;
     }
@@ -24,15 +24,26 @@ namespace gm {
         scale_ = scale;
     }
 
+    // Euler角(rotation_)からクォータニオンへ変換して取得する
+    // Note:
+    //  gmMeshBase::render()内の変換と共通のロジック。
+    //  コライダー判定などで使用
+    tnl::Quaternion gmObjectBase::getRotationQuaternion() const {
+        return
+            tnl::Quaternion::RotationAxis({ 1, 0, 0 }, rotation_.x) *
+            tnl::Quaternion::RotationAxis({ 0, 1, 0 }, rotation_.y) *
+            tnl::Quaternion::RotationAxis({ 0, 0, 1 }, rotation_.z);
+    }
+
     void gmObjectBase::update(float deltaTime) {
-        // ���ł͉������Ȃ�
+        // 基底では何もしない
     }
 
     void gmObjectBase::draw() {
-        // ���ł͉������Ȃ�
+        // 基底では何もしない
     }
 
     void gmObjectBase::render(const Shared<dxe::Camera>& camera) {
-        // ���ł͉������Ȃ�
+        // 基底では何もしない
     }
 }

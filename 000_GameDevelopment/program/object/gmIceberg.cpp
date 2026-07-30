@@ -2,6 +2,10 @@
 #include "../map/gmMapManager.h"
 #include "gmWaterPlane.h"
 #include "../gmGameConfig.h"
+#include "../util/gmMeshBoundsUtil.h"
+#undef min              // std::max, std::minのマクロ競合解消
+#undef max
+#include <algorithm>
 #include <dxe.h>
 
 namespace gm {
@@ -23,6 +27,27 @@ namespace gm {
 
         // 個体ごとに自転の向き・速さをばらつかせる(演出用)
         spinSpeed_ = tnl::GetRandomDistribution<float>(-0.15f, 0.15f);
+
+        // 球コライダーを自動設定する
+        // Note: mesh_->getBoundingSphereRadius()はDxLibのメッシュインデックス0だけを
+        // 見て計算されるため、複数パーツで構成されたメッシュだと不正確になりうる。
+        //
+        // 全サブメッシュを合算するComputeMeshBounds()から求めるが、
+        // 対角線の半分だと最も保守的(大きめ)になりすぎるため、
+        // 最大軸の半分を採用したうえでICEBERG_COLLIDER_RADIUS_SCALEで微調整する。
+        if (mesh_) {
+            tnl::Vector3 boxCenter, boxSize;
+            if (ComputeMeshBounds(mesh_->getDxMvHdl(), boxCenter, boxSize)) {
+                const float maxExtent = std::max({ boxSize.x, boxSize.y, boxSize.z });
+
+                gmCollider collider;
+                collider.type = ColliderShapeType::Sphere;
+                collider.radius = (maxExtent * 0.5f) * ICEBERG_COLLIDER_RADIUS_SCALE;
+                collider.localOffset = boxCenter;
+                addCollider(collider);
+            }
+        }
+        setCollisionCategory(gmCollisionCategory::Iceberg);
     }
 
     void gmIceberg::setMap(const std::shared_ptr<gmMapManager>& map)
@@ -37,6 +62,7 @@ namespace gm {
 
     void gmIceberg::update(float deltaTime)
     {
+        snapshotPosition();     // 移動キャンセルにつかう、移動前の位置情報を退避
         updateDrift(deltaTime);
         updateWave(deltaTime);
         updateSpin(deltaTime);
@@ -141,6 +167,27 @@ namespace gm {
 
         if (outOfX || outOfZ) {
             kill();
+        }
+    }
+
+    // ------------------------------------------------------------
+    // 衝突イベント
+    // : 相手のカテゴリによって挙動を分岐する
+    // ------------------------------------------------------------
+    void gmIceberg::onCollisionEnter(gmObjectBase* other)
+    {
+        if (!other) return;
+
+        switch (other->getCollisionCategory()) {
+        case gmCollisionCategory::Projectile:
+            // TODO: 砲弾/火炎で溶かす攻撃の処理(未実装)。
+            // ダメージ・破壊・kill()呼び出し等をここに追加する。
+            break;
+
+        default:
+            // 船・島・他の氷山との衝突は、移動前の位置に丸ごと戻して移動抑止する
+            revertToLastSafePosition();
+            break;
         }
     }
 }

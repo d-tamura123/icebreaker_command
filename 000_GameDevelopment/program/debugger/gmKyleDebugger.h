@@ -1,35 +1,40 @@
-#pragma once
+ï»¿#pragma once
 
 #include "gmKyleGridViewer.h"
 #include "gmKyleFreeCameraController.h"
 #include "gmKyleAxisCompass.h"
 #include "gmKyleWorldRuler.h"
+#include "gmKyleColliderGizmo.h"
 
 #include <memory>
 
 namespace gm {
 
+    // å‰æ–¹å®£è¨€
+    class gmCollisionSystem;
+
     class gmKyleDebugger {
     public:
         gmKyleDebugger();
 
-        // –ˆƒtƒŒ[ƒ€‚ÌXViƒL[“ü—Í‚È‚Çj
+        // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ›´æ–°ï¼ˆã‚­ãƒ¼å…¥åŠ›ãªã©ï¼‰
         void update();
 
-        // •`‰æ
-        void render(const Shared<dxe::Camera>& camera);
+        // æç”»
+        void render(const Shared<dxe::Camera>& camera, const std::shared_ptr<gmCollisionSystem>& collisionSystem = nullptr);
 
-        // ƒfƒoƒbƒNƒ‚[ƒhQÆ
+        // ãƒ‡ãƒãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰å‚ç…§
         bool isDebugModeOn() const { return debugModeOn_; }
 
         std::shared_ptr<gmKyleFreeCameraController> getFreeCamera() const { return freeCam_; }
     private:
-        bool debugModeOn_ = false;   // ƒfƒoƒbƒNƒ‚[ƒh‚Ì ON/OFF
+        bool debugModeOn_ = false;   // ãƒ‡ãƒãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰ã® ON/OFF
 
         std::shared_ptr<gmKyleGridViewer> gridViewer_;
         std::shared_ptr<gmKyleFreeCameraController> freeCam_;
         std::shared_ptr<gmKyleAxisCompass> axisCompass_;
         std::shared_ptr<gmKyleWorldRuler> worldRuler_;
+        std::shared_ptr<gmKyleColliderGizmo> colliderGizmo_;
 
     };
 

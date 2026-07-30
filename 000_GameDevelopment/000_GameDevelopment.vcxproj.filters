@@ -60,6 +60,9 @@
     <Filter Include="Source\[004] game\spawner">
       <UniqueIdentifier>{f96546b0-3cfd-435c-9740-08024b51a779}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\collision">
+      <UniqueIdentifier>{fba4b71e-e209-4aec-a0e1-d2367eb5bb9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -359,6 +362,24 @@
     <ClInclude Include="program\object\gmIceberg.h">
       <Filter>Source\[004] game\object</Filter>
     </ClInclude>
+    <ClInclude Include="program\collision\gmCollider.h">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="program\collision\gmCollisionCategory.h">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="program\collision\gmCollisionSystem.h">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="program\collision\gmIntersectEx.h">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="program\debugger\gmKyleColliderGizmo.h">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="program\util\gmMeshBoundsUtil.h">
+      <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -648,6 +669,21 @@
     </ClCompile>
     <ClCompile Include="program\object\gmIceberg.cpp">
       <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\collision\gmCollider.cpp">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="program\collision\gmCollisionSystem.cpp">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="program\collision\gmIntersectEx.cpp">
+      <Filter>Source\[004] game\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="program\debugger\gmKyleColliderGizmo.cpp">
+      <Filter>Source\[004] game\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="program\util\gmMeshBoundsUtil.cpp">
+      <Filter>Source\[004] game\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
