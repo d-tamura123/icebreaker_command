@@ -18,6 +18,7 @@ namespace gm {
         gmIceberg(const std::string& id, const tnl::Vector3& pos, const Shared<dxe::Mesh>& mesh);
 
         void update(float deltaTime) override;
+        void render(const Shared<dxe::Camera>& camera) override;
 
         void setMap(const std::shared_ptr<gmMapManager>& map);
         void setWater(const std::shared_ptr<gmWaterPlane>& water);

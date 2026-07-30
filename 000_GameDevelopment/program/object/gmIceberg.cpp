@@ -43,6 +43,21 @@ namespace gm {
         checkOutOfBounds();
     }
 
+    void gmIceberg::render(const Shared<dxe::Camera>& camera)
+    {
+        // カメラからRENDER_DISTANCEを超えて離れている場合は描画を省く
+        tnl::Vector3 camPos = camera->getPosition();
+
+        const float dx = position_.x - camPos.x;
+        const float dz = position_.z - camPos.z;
+
+        if ((dx * dx + dz * dz) > RENDER_DISTANCE_SQ) {
+            return;
+        }
+
+        gmMeshBase::render(camera);
+    }
+
     // ------------------------------------------------------------
     // 海流+慣性による移動
     // ------------------------------------------------------------
