@@ -1,6 +1,7 @@
 ﻿#include "gmMiniMap.h"
 #include "../map/gmMapManager.h"
 #include "../object/gmPlayerShip.h"
+#include "../spawner/gmIcebergManager.h"
 #include <DxLib.h>
 
 namespace gm {
@@ -11,10 +12,12 @@ namespace gm {
     gmMiniMap::gmMiniMap(
         const tnl::Vector2f& pos,
         std::shared_ptr<gmMapManager> map,
-        std::shared_ptr<gmPlayerShip> player)
+        std::shared_ptr<gmPlayerShip> player,
+        std::shared_ptr<gmIcebergManager> icebergManager)
         : gmUIObjectBase(pos)
         , map_(std::move(map))
         , player_(std::move(player))
+        , icebergManager_(std::move(icebergManager))
     {
         // DXLib の LoadGraph で読み込み
         hBackground_ = LoadGraph("resource/graphics/test/minimap/mini_bkground.png");
@@ -31,6 +34,7 @@ namespace gm {
     {
         drawBackground();
         drawIslands();
+        drawIcebergs();
         drawPlayer();
     }
 
@@ -69,6 +73,31 @@ namespace gm {
                 hIsland_,
                 TRUE
             );
+        }
+    }
+
+    void gmMiniMap::drawIcebergs()
+    {
+        if (!icebergManager_) return;
+
+        // プレイヤーマーカーと同じ変換規則
+        // (ワールドX→そのまま、ワールドZ→符号反転して北を上に)
+        const float worldToMiniScale = 1.0f / CELL_SIZE;
+
+        const int coreRadius = 2;
+
+        for (const auto& iceberg : icebergManager_->getEntities())
+        {
+            if (!iceberg) continue;
+
+            tnl::Vector3 pos3D = iceberg->getPosition();
+
+            int px = static_cast<int>(position_.x + pos3D.x * worldToMiniScale);
+            int py = static_cast<int>(position_.y - pos3D.z * worldToMiniScale);
+
+            // 氷らしい見た目にするため、白の縁取り + 薄い水色の本体を重ねて描画
+            DrawCircle(px, py, coreRadius + 1, GetColor(255, 255, 255), TRUE);
+            DrawCircle(px, py, coreRadius, GetColor(200, 235, 255), TRUE);
         }
     }
 

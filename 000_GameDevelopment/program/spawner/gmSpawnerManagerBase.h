@@ -53,6 +53,10 @@ namespace gm {
         }
 
         size_t getEntityCount() const { return entities_.size(); }
+        
+        // 外部(ミニマップ等)から座標の参照
+        const std::vector<std::shared_ptr<TEntity>>& getEntities() const { return entities_; }
+
 
     protected:
         // 生成条件(位置・パラメータの決定と生成そのもの)は派生クラスの責務

@@ -34,7 +34,7 @@ namespace gm
         std::shared_ptr<gmWaterPlane> water_;
         std::vector<std::shared_ptr<gmIsland>> islands_;
         Shared<dxe::Mesh> iceChunk_;
-        std::unique_ptr<gmIcebergManager> icebergManager_;
+        std::shared_ptr<gmIcebergManager> icebergManager_;
         std::unique_ptr<gmUIManager> uiManager_;
 
         // カメラ操作用

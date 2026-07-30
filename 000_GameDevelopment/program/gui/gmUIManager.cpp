@@ -7,10 +7,11 @@ namespace gm {
     gmUIManager::gmUIManager(
         const tnl::Vector2f& miniMapPos,
         std::shared_ptr<gmMapManager> map,
-        std::shared_ptr<gmPlayerShip> player)
+        std::shared_ptr<gmPlayerShip> player,
+        std::shared_ptr<gmIcebergManager> icebergManager)
     {
         // gmMiniMap のインスタンスを生成して保持
-        miniMap_ = std::make_unique<gmMiniMap>(miniMapPos, map, player);
+        miniMap_ = std::make_unique<gmMiniMap>(miniMapPos, map, player, icebergManager);
 
         // gmOceanFlowVisualizer のインスタンスを生成して保持
         flowVisualizer_ = std::make_unique<gmOceanFlowVisualizer>(map);

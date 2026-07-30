@@ -9,13 +9,15 @@ namespace gm {
     class gmOceanFlowVisualizer;
     class gmMapManager;
     class gmPlayerShip;
+    class gmIcebergManager;
 
     class gmUIManager {
     public:
         gmUIManager(
             const tnl::Vector2f& miniMapPos,
             std::shared_ptr<gmMapManager> map,
-            std::shared_ptr<gmPlayerShip> player);
+            std::shared_ptr<gmPlayerShip> player,
+            std::shared_ptr<gmIcebergManager> icebergManager);
         ~gmUIManager();
 
         // UI全体の更新

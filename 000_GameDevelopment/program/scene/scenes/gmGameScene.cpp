@@ -86,7 +86,7 @@ namespace gm
 
         // 氷山マネージャー（南端スポナー + 海流連動の動的な氷山群）
         // 上のcrystalPaths/iceTexをそのまま使い回す
-        icebergManager_ = std::make_unique<gmIcebergManager>(
+        icebergManager_ = std::make_shared<gmIcebergManager>(
             context_->map,
             water_,
             crystalPaths,
@@ -118,7 +118,7 @@ namespace gm
 
         // UIマネージャーの初期化
         tnl::Vector2f miniMapPos(1000.0f, 20.0f);
-        uiManager_ = std::make_unique<gmUIManager>(miniMapPos, context_->map, playerShip_);
+        uiManager_ = std::make_unique<gmUIManager>(miniMapPos, context_->map, playerShip_, icebergManager_);
 
     }
 
