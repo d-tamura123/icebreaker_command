@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿// gmKyleDebugger.h
+#pragma once
 
 #include "gmKyleGridViewer.h"
 #include "gmKyleFreeCameraController.h"
@@ -13,6 +14,11 @@ namespace gm {
     // 前方宣言
     class gmCollisionSystem;
 
+    // ------------------------------------------------------------
+    // 開発中デバッグ機能をまとめて管理するクラス。
+    // グリッド表示・フリーカメラ・方位コンパス・定規・コライダーの可視化などを
+    // 一括でON/OFFできるようにする。リリースビルドでは基本的に使わない想定。
+    // ------------------------------------------------------------
     class gmKyleDebugger {
     public:
         gmKyleDebugger();
@@ -23,19 +29,23 @@ namespace gm {
         // 描画
         void render(const Shared<dxe::Camera>& camera, const std::shared_ptr<gmCollisionSystem>& collisionSystem = nullptr);
 
-        // デバックモード参照
+        // デバッグモード参照
         bool isDebugModeOn() const { return debugModeOn_; }
 
+        // フリーカメラの有効/無効
+        bool isFreeCameraEnabled() const { return freeCamEnabled_; }
+
         std::shared_ptr<gmKyleFreeCameraController> getFreeCamera() const { return freeCam_; }
+
     private:
-        bool debugModeOn_ = false;   // デバックモードの ON/OFF
+        bool debugModeOn_ = false;      // デバッグモードのON/OFF
+        bool freeCamEnabled_ = false;   // フリーカメラのON/OFF
 
-        std::shared_ptr<gmKyleGridViewer> gridViewer_;
-        std::shared_ptr<gmKyleFreeCameraController> freeCam_;
-        std::shared_ptr<gmKyleAxisCompass> axisCompass_;
-        std::shared_ptr<gmKyleWorldRuler> worldRuler_;
-        std::shared_ptr<gmKyleColliderGizmo> colliderGizmo_;
-
+        std::shared_ptr<gmKyleGridViewer>            gridViewer_;    // 地面グリッド表示
+        std::shared_ptr<gmKyleFreeCameraController>  freeCam_;       // フリーカメラ操作
+        std::shared_ptr<gmKyleAxisCompass>           axisCompass_;   // 方位コンパス表示
+        std::shared_ptr<gmKyleWorldRuler>            worldRuler_;    // ワールド座標の目盛り表示
+        std::shared_ptr<gmKyleColliderGizmo>         colliderGizmo_; // コライダー形状の可視化
     };
 
 }

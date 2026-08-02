@@ -211,6 +211,10 @@
     <ClInclude Include="program\debugger\gmKyleFreeCameraController.h" />
     <ClInclude Include="program\debugger\gmKyleGridViewer.h" />
     <ClInclude Include="program\debugger\gmKyleWorldRuler.h" />
+    <ClInclude Include="program\effect\gmSpriteAnimClip.h" />
+    <ClInclude Include="program\effect\gmSpriteAnimInstance.h" />
+    <ClInclude Include="program\effect\gmSpriteAnimRegistry.h" />
+    <ClInclude Include="program\effect\gmVFXManager.h" />
     <ClInclude Include="program\gmGameConfig.h" />
     <ClInclude Include="program\gmGameContext.h" />
     <ClInclude Include="program\gm_main.h" />
@@ -228,7 +232,10 @@
     <ClInclude Include="program\object\gmMeshBase.h" />
     <ClInclude Include="program\object\gmObjectBase.h" />
     <ClInclude Include="program\object\gmPlayerShip.h" />
+    <ClInclude Include="program\object\gmProjectile.h" />
+    <ClInclude Include="program\object\gmProjectileBase.h" />
     <ClInclude Include="program\object\gmShip.h" />
+    <ClInclude Include="program\object\gmSplitProjectile.h" />
     <ClInclude Include="program\object\gmVirtualWave.h" />
     <ClInclude Include="program\object\gmWaterPlane.h" />
     <ClInclude Include="program\scene\gmFadeTransitionEffect.h" />
@@ -240,6 +247,7 @@
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
+    <ClInclude Include="program\weapon\gmProjectileManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -321,6 +329,9 @@
     <ClCompile Include="program\debugger\gmKyleFreeCameraController.cpp" />
     <ClCompile Include="program\debugger\gmKyleGridViewer.cpp" />
     <ClCompile Include="program\debugger\gmKyleWorldRuler.cpp" />
+    <ClCompile Include="program\effect\gmSpriteAnimInstance.cpp" />
+    <ClCompile Include="program\effect\gmSpriteAnimRegistry.cpp" />
+    <ClCompile Include="program\effect\gmVFXManager.cpp" />
     <ClCompile Include="program\gm_main.cpp" />
     <ClCompile Include="program\gui\gmMiniMap.cpp" />
     <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp" />
@@ -336,7 +347,10 @@
     <ClCompile Include="program\object\gmMeshBase.cpp" />
     <ClCompile Include="program\object\gmObjectBase.cpp" />
     <ClCompile Include="program\object\gmPlayerShip.cpp" />
+    <ClCompile Include="program\object\gmProjectile.cpp" />
+    <ClCompile Include="program\object\gmProjectileBase.cpp" />
     <ClCompile Include="program\object\gmShip.cpp" />
+    <ClCompile Include="program\object\gmSplitProjectile.cpp" />
     <ClCompile Include="program\object\gmVirtualWave.cpp" />
     <ClCompile Include="program\object\gmWaterPlane.cpp" />
     <ClCompile Include="program\scene\gmFadeTransitionEffect.cpp" />
@@ -345,6 +359,7 @@
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
+    <ClCompile Include="program\weapon\gmProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="000_GameDevelopment.rc" />

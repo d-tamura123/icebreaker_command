@@ -1,7 +1,9 @@
-﻿#include "gmGameScene.h"
+﻿// gmGameScene.cpp
+#include "gmGameScene.h"
 #include "../gmSceneManager.h"
 #include "../../gui/gmUIManager.h"
 #include "dxe.h"
+#include <cmath>
 
 namespace gm
 {
@@ -13,6 +15,11 @@ namespace gm
     {
     }
 
+    // ------------------------------------------------------------
+    // シーン開始時の初期化。
+    // 船・水面・氷塊・島・氷山マネージャー・各種マネージャー(衝突/VFX/弾/UI)・
+    // カメラの初期位置を、順番に構築していく。
+    // ------------------------------------------------------------
     void gmGameScene::onEnter(std::shared_ptr<gmSceneManager> manager)
     {
         sceneManager_ = manager;
@@ -25,7 +32,7 @@ namespace gm
         water_ = std::make_shared<gmWaterPlane>(
             "resource/dxe_parameters/water_plane/water_plane.bin"
         );
-        
+
         // プレイヤー初期位置（map.bin の bit1）
         tnl::Vector2f startPos2D = context_->map->GetPlayerStartWorld();
         tnl::Vector3 startPos3D(startPos2D.x, 0.0f, startPos2D.y);
@@ -104,9 +111,19 @@ namespace gm
             collisionSystem_
         );
 
+        // スプライトアニメーション(VFX)のメタデータを起動時に1回だけ読み込む
+        spriteAnimRegistry_ = std::make_shared<gmSpriteAnimRegistry>();
+        spriteAnimRegistry_->loadFromCSV(gm::VFX_SPRITE_METADATA_CSV_PATH);
+
+        // 単発の演出用(着弾エフェクト等)。現時点では未使用だが、先に配線しておく
+        vfxManager_ = std::make_shared<gmVFXManager>(spriteAnimRegistry_);
+
+        // 通常弾の発射・管理
+        projectileManager_ = std::make_shared<gmProjectileManager>(collisionSystem_, spriteAnimRegistry_);
+
         // プレイヤー船の位置
         tnl::Vector3 shipPos = playerShip_->getPosition();
-        
+
         // カメラターゲットを船に合わせる（重要）
         camTarget_ = shipPos;
 
@@ -134,7 +151,8 @@ namespace gm
     }
 
     // ------------------------------------------------------------
-    // 更新
+    // 毎フレームの更新。各オブジェクト・マネージャーのupdate()を、
+    // 依存関係のある順番(船→カメラ→流氷→発射入力→弾→VFX→衝突判定→UI)に呼んでいく。
     // ------------------------------------------------------------
     void gmGameScene::update()
     {
@@ -145,7 +163,7 @@ namespace gm
         water_->update(context_->camera);
 
         // カメラ制御
-        if (debugger_->isDebugModeOn()) {
+        if (debugger_->isDebugModeOn() && debugger_->isFreeCameraEnabled()) {
             // フリーカメラモード
             debugger_->getFreeCamera()->update(context_->camera);
         }
@@ -167,6 +185,21 @@ namespace gm
             icebergManager_->update(dt);
         }
 
+        // プレイヤーのクリック発射(デバッグモード中はフリーカメラ操作を優先し、発射は行わない)
+        if (!debugger_->isDebugModeOn() || !debugger_->isFreeCameraEnabled()) {
+            tryFireProjectileOnClick();
+        }
+
+        // 発射済みの弾の更新
+        if (projectileManager_) {
+            projectileManager_->update(dt);
+        }
+
+        // VFX(単発演出)の更新
+        if (vfxManager_) {
+            vfxManager_->update(dt);
+        }
+
         // 衝突判定
         // 検出のみ。応答は各オブジェクトのonCollisionEnter()で行うこと。
         if (collisionSystem_) {
@@ -181,7 +214,9 @@ namespace gm
     }
 
     // ------------------------------------------------------------
-    // 描画
+    // 描画。奥にあるもの(船・氷塊・島・流氷)→半透明の水面→
+    // 弾・VFX→UIの順に描画する(半透明合成が絡むオブジェクトの
+    // 見た目の前後関係が崩れないよう、描画順序を意図的に揃えている)。
     // ------------------------------------------------------------
     void gmGameScene::draw()
     {
@@ -202,16 +237,25 @@ namespace gm
         dxe::DirectXRenderBegin();
         water_->render(context_->camera);
         dxe::DirectXRenderEnd();
-        
+
+        if (projectileManager_) {
+            projectileManager_->render(context_->camera);
+        }
+
+        if (vfxManager_) {
+            vfxManager_->render(context_->camera);
+        }
+
+
         if (uiManager_) {
             uiManager_->renderTerrainIntegration(context_->camera);
         }
 
         // リセット漏れ?
-        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ブレンドなし（または DX_BLENDMODE_ALPHA, 255）に戻す
-        SetUseZBuffer3D(TRUE);       // Zバッファを使用する
-        SetWriteZBuffer3D(TRUE);      // Zバッファへの書き込みを行う
-        SetUseBackCulling(TRUE); // バックカリングを行う（デフォルトに戻す）
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);  // ブレンドなし（または DX_BLENDMODE_ALPHA, 255）に戻す
+        SetUseZBuffer3D(TRUE);                      // Zバッファを使用する
+        SetWriteZBuffer3D(TRUE);                    // Zバッファへの書き込みを行う
+        SetUseBackCulling(TRUE);                    // バックカリングを行う（デフォルトに戻す）
 
         if (uiManager_) {
             uiManager_->render(context_->camera);
@@ -225,5 +269,61 @@ namespace gm
     void gmGameScene::onExit()
     {
         // 特に破棄処理は不要
+    }
+
+
+    // ------------------------------------------------------------
+    // クリック位置を海面(y=0の平面)へレイキャストし、命中すれば割り砲弾を発射する。
+    //
+    //   手順1: マウス座標から、カメラ位置を始点とするレイ(半直線)の方向を求める
+    //   手順2: そのレイが海面(y=0の平面)と交わる点を計算する
+    //   手順3: 交点(=クリックした地点)を目標に、弾を発射する
+    //
+    // レイの方向は、このプロジェクトに既にある tnl::Vector3::CreateScreenRay() を使う
+    // (ビュー行列の平行移動成分を除いた上で逆行列変換し、スクリーン座標に対応する
+    //  ワールド空間の方向ベクトルを求める、自前実装ではなくテスト済みの共通関数)。
+    // レイの始点はカメラのワールド座標そのものを使う。
+    // ------------------------------------------------------------
+    void gmGameScene::tryFireProjectileOnClick()
+    {
+        if (!tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
+            return;
+        }
+        if (!projectileManager_ || !playerShip_) {
+            return;
+        }
+
+        // ---- 手順1: レイ(半直線)の始点と方向を求める ----
+        const tnl::Vector3 mousePos = tnl::Input::GetMousePosition();
+        const float screenW = context_->camera->getScreenWidth();
+        const float screenH = context_->camera->getScreenHeight();
+
+        const tnl::Vector3 rayOrigin = context_->camera->getPosition();
+        const tnl::Vector3 rayDir = tnl::Vector3::CreateScreenRay(
+            mousePos.x, mousePos.y, screenW, screenH,
+            context_->camera->getViewMatrix(), context_->camera->getProjectionMatrix());
+
+        // ---- 手順2: レイと海面(y=0の平面)との交点を求める ----
+        // (実際の波の高さは無視する。狙い先の判定用途であれば十分な精度のため)
+        //
+        // レイ上の点は、始点rayOriginから方向rayDirへtだけ進んだ点として
+        //   点 = rayOrigin + rayDir × t
+        // と表せる(tは「どれだけ進んだか」を表す媒介変数)。
+        // この点のY座標がちょうど0になるtを求めれば、それが海面との交点になる。
+        //   rayOrigin.y + rayDir.y × t = 0
+        //   ⇔ t = -rayOrigin.y / rayDir.y
+        if (std::abs(rayDir.y) < 1e-5f) {
+            return; // レイがほぼ水平で、海面と交わらない(rayDir.yが0に近いと上の式で0除算になるため)
+        }
+
+        const float t = (0.0f - rayOrigin.y) / rayDir.y;
+        if (t <= 0.0f) {
+            return; // 海面がカメラの後ろ側にある(通常は起こらないはずだが念のため)
+        }
+
+        // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
+        const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
+
+        projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
     }
 }

@@ -1,8 +1,12 @@
-﻿#include "gmKyleDebugger.h"
+﻿// gmKyleDebugger.cpp
+#include "gmKyleDebugger.h"
 #include <DxLib.h>
 
 namespace gm {
 
+    // ------------------------------------------------------------
+    // 各デバッグ機能のインスタンスを生成しておく。
+    // ------------------------------------------------------------
     gmKyleDebugger::gmKyleDebugger()
     {
         debugModeOn_ = false;
@@ -13,15 +17,17 @@ namespace gm {
         );
 
         freeCam_ = std::make_shared<gmKyleFreeCameraController>();
-        
+
         axisCompass_ = std::make_shared<gmKyleAxisCompass>();
-        
+
         worldRuler_ = std::make_shared<gmKyleWorldRuler>();
 
         colliderGizmo_ = std::make_shared<gmKyleColliderGizmo>();
-
     }
 
+    // ------------------------------------------------------------
+    // キー入力を見て、デバッグモード・フリーカメラのON/OFFを切り替える。
+    // ------------------------------------------------------------
     void gmKyleDebugger::update()
     {
         // Pauseキーで ON/OFF 切り替え
@@ -29,8 +35,18 @@ namespace gm {
         if (tnl::Input::IsKeyDownTrigger(eKeys::KB_PAUSE)) {
             debugModeOn_ = !debugModeOn_;
         }
+
+        // F9キーでフリーカメラをON/OFF
+        if (tnl::Input::IsKeyDownTrigger(eKeys::KB_F9)) {
+            freeCamEnabled_ = !freeCamEnabled_;
+        }
     }
 
+    // ------------------------------------------------------------
+    // デバッグ用の各種表示を描画する。
+    // 方位コンパス・定規は_DEBUGビルドなら常時表示、それ以外
+    // (グリッド・コライダー可視化)はデバッグモードON時のみ表示する。
+    // ------------------------------------------------------------
     void gmKyleDebugger::render(const Shared<dxe::Camera>& camera, const std::shared_ptr<gmCollisionSystem>& collisionSystem)
     {
 #ifdef _DEBUG
@@ -54,7 +70,6 @@ namespace gm {
         if (colliderGizmo_ && collisionSystem) {
             colliderGizmo_->render(collisionSystem, camera);
         }
-
 
         // 今後ここに他のデバッグ描画を追加
     }

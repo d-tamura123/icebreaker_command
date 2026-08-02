@@ -63,6 +63,12 @@
     <Filter Include="Source\[004] game\collision">
       <UniqueIdentifier>{fba4b71e-e209-4aec-a0e1-d2367eb5bb9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\effect">
+      <UniqueIdentifier>{6fad5d51-b629-4918-b353-fa164ad0ebb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\[004] game\weapon">
+      <UniqueIdentifier>{585c2eae-d760-4c04-94de-b8fc3a1a45ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -380,6 +386,30 @@
     <ClInclude Include="program\util\gmMeshBoundsUtil.h">
       <Filter>Source\[004] game\util</Filter>
     </ClInclude>
+    <ClInclude Include="program\effect\gmSpriteAnimClip.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="program\effect\gmSpriteAnimRegistry.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="program\effect\gmSpriteAnimInstance.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="program\effect\gmVFXManager.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmProjectile.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\weapon\gmProjectileManager.h">
+      <Filter>Source\[004] game\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmProjectileBase.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmSplitProjectile.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -684,6 +714,27 @@
     </ClCompile>
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp">
       <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmSpriteAnimRegistry.cpp">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmSpriteAnimInstance.cpp">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmVFXManager.cpp">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmProjectile.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\weapon\gmProjectileManager.cpp">
+      <Filter>Source\[004] game\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmProjectileBase.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmSplitProjectile.cpp">
+      <Filter>Source\[004] game\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
