@@ -227,6 +227,7 @@
     <ClInclude Include="program\map\gmMapManager.h" />
     <ClInclude Include="program\map\gmOceanFlowLoader.h" />
     <ClInclude Include="program\mesh_ex\gmMeshEX.h" />
+    <ClInclude Include="program\object\gmFlameThrowerAttack.h" />
     <ClInclude Include="program\object\gmIceberg.h" />
     <ClInclude Include="program\object\gmIsland.h" />
     <ClInclude Include="program\object\gmMeshBase.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
+    <ClInclude Include="program\weapon\gmFlameThrowerManager.h" />
     <ClInclude Include="program\weapon\gmProjectileManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -342,6 +344,7 @@
     <ClCompile Include="program\map\gmMapManager.cpp" />
     <ClCompile Include="program\map\gmOceanFlowLoader.cpp" />
     <ClCompile Include="program\mesh_ex\gmMeshEX.cpp" />
+    <ClCompile Include="program\object\gmFlameThrowerAttack.cpp" />
     <ClCompile Include="program\object\gmIceberg.cpp" />
     <ClCompile Include="program\object\gmIsland.cpp" />
     <ClCompile Include="program\object\gmMeshBase.cpp" />
@@ -359,6 +362,7 @@
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
+    <ClCompile Include="program\weapon\gmFlameThrowerManager.cpp" />
     <ClCompile Include="program\weapon\gmProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>

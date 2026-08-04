@@ -11,6 +11,7 @@
 #include "../../effect/gmSpriteAnimRegistry.h"
 #include "../../effect/gmVFXManager.h"
 #include "../../weapon/gmProjectileManager.h"
+#include "../../weapon/gmFlameThrowerManager.h"
 #include "../../mesh_ex/gmMeshEX.h"
 
 #include "../../debugger/gmKyleDebugger.h"
@@ -52,6 +53,7 @@ namespace gm
         std::shared_ptr<gmSpriteAnimRegistry>    spriteAnimRegistry_;
         std::shared_ptr<gmVFXManager>            vfxManager_;
         std::shared_ptr<gmProjectileManager>     projectileManager_;
+        std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
         std::unique_ptr<gmUIManager>             uiManager_;
 
         // ---- カメラ操作用 ----

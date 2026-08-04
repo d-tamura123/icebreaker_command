@@ -160,17 +160,20 @@ namespace gm {
 
     // ------------------------------------------------------------
     // 板ポリ1枚分の描画。position_を基準(anchor_の設定に応じて下端中央 or 中心)として、
-    // rightDir方向に半分ずつ、upDir方向にsize_分だけ広がる正方形を描く。
+    // rightDir方向にrightExtent分、upDir方向にupExtent分だけ広がる矩形を描く
+    // (rightExtent == upExtentなら従来通りの正方形。setForwardLength()で
+    //  進行方向側だけ値を変えると細長い板ポリになる)。
     // ------------------------------------------------------------
-    void gmSpriteAnimInstance::drawQuad(const tnl::Vector3& rightDir, const tnl::Vector3& upDir, float u0, float v0, float u1, float v1, float alphaScale) const
+    void gmSpriteAnimInstance::drawQuad(const tnl::Vector3& rightDir, const tnl::Vector3& upDir, float rightExtent, float upExtent, float u0, float v0, float u1, float v1, float alphaScale) const
     {
-        const float halfSize = size_ * 0.5f;
+        const float halfSize = rightExtent * 0.5f;
 
         // anchor_ に応じて、position_からの上端・下端オフセットを切り替える
-        //   Bottom: 下端(0)〜上端(size_)         … position_は板ポリの下端
-        //   Center: 下端(-halfSize)〜上端(halfSize) … position_は板ポリの中心
-        const float topOffset = (anchor_ == gmSpriteAnchor::Center) ? halfSize : size_;
-        const float bottomOffset = (anchor_ == gmSpriteAnchor::Center) ? -halfSize : 0.0f;
+        //   Bottom: 下端(0)〜上端(upExtent)         … position_は板ポリの下端
+        //   Center: 下端(-upExtent/2)〜上端(upExtent/2) … position_は板ポリの中心
+        const float halfUp = upExtent * 0.5f;
+        const float topOffset = (anchor_ == gmSpriteAnchor::Center) ? halfUp : upExtent;
+        const float bottomOffset = (anchor_ == gmSpriteAnchor::Center) ? -halfUp : 0.0f;
 
         // 頂点色(tintColor_)に、追加のアルファ倍率(エッジフェード用)を掛け合わせる
         COLOR_U8 vertexColor = tintColor_;
@@ -227,8 +230,8 @@ namespace gm {
 
         // gmBillboardMode::CrossCard の場合
         if (mode_ == gmBillboardMode::CrossCard) {
-            drawQuad(tnl::Vector3(1.0f, 0.0f, 0.0f), tnl::Vector3(0.0f, 1.0f, 0.0f), u0, v0, u1, v1); // ワールドX方向を向いた面
-            drawQuad(tnl::Vector3(0.0f, 0.0f, 1.0f), tnl::Vector3(0.0f, 1.0f, 0.0f), u0, v0, u1, v1); // ワールドZ方向を向いた面
+            drawQuad(tnl::Vector3(1.0f, 0.0f, 0.0f), tnl::Vector3(0.0f, 1.0f, 0.0f), size_, size_, u0, v0, u1, v1); // ワールドX方向を向いた面
+            drawQuad(tnl::Vector3(0.0f, 0.0f, 1.0f), tnl::Vector3(0.0f, 1.0f, 0.0f), size_, size_, u0, v0, u1, v1); // ワールドZ方向を向いた面
         }
         // gmBillboardMode::FaceCamera / DirectionalMultiCross の場合
         else {
@@ -332,13 +335,38 @@ namespace gm {
                 }
 
                 tnl::Vector3 quadRight, quadUp;
+                float rightExtent, upExtent;
+
+                // forwardLength_が設定されていれば、進行方向軸(dirAxis)側だけその長さを使う
+                // (もう片方=太さ側は常にsize_のまま)。未設定(-1)ならこれまで通り正方形。
+                const float forwardExtent = (forwardLength_ > 0.0f) ? forwardLength_ : size_;
+                const float crossExtent = size_;
+
+                // 進行方向軸に対応するUV(u軸 or v軸)を、setUInset()の指定ぶんだけ内側に詰める
+                // (素材の透明な余白を除いて、不透明な部分だけを引き伸ばすため)
+                float du0 = u0, du1 = u1, dv0 = v0, dv1 = v1;
+                const float insetStart = std::clamp(uInsetStart_, 0.0f, 0.49f);
+                const float insetEnd = std::clamp(uInsetEnd_, 0.0f, 0.49f);
+
                 if (pointingAxis_ == gmSpriteAxis::Vertical) {
                     quadUp = dirAxis;
                     quadRight = otherAxis;
+                    upExtent = forwardExtent;
+                    rightExtent = crossExtent;
+
+                    const float vRange = v1 - v0;
+                    dv0 = v0 + vRange * insetStart;
+                    dv1 = v1 - vRange * insetEnd;
                 }
                 else {
                     quadRight = dirAxis;
                     quadUp = otherAxis;
+                    rightExtent = forwardExtent;
+                    upExtent = crossExtent;
+
+                    const float uRange = u1 - u0;
+                    du0 = u0 + uRange * insetStart;
+                    du1 = u1 - uRange * insetEnd;
                 }
 
                 // 板がカメラに対して真横に近いほどアルファを下げる。
@@ -351,7 +379,7 @@ namespace gm {
                     ? std::fabs(tnl::Vector3::Dot(tnl::Vector3::Cross(quadRight, quadUp), toCamera))
                     : 1.0f;
 
-                drawQuad(quadRight, quadUp, u0, v0, u1, v1, faceToCameraFactor);
+                drawQuad(quadRight, quadUp, rightExtent, upExtent, du0, dv0, du1, dv1, faceToCameraFactor);
             }
         }
 

@@ -1,0 +1,54 @@
+﻿// gmFlameThrowerManager.h
+#pragma once
+#include <dxe.h>
+#include <vector>
+#include <memory>
+#include "../object/gmFlameThrowerAttack.h"
+
+namespace gm {
+
+    class gmCollisionSystem;
+    class gmSpriteAnimRegistry;
+
+    // ------------------------------------------------------------
+    // 火炎放射攻撃(gmFlameThrowerAttack)の発動・毎フレーム更新・描画・
+    // 後片付けを一元管理する。gmProjectileManagerと同じパターン
+    // (登録して、毎フレームupdate/renderを呼ぶだけ)。
+    //
+    // 「発射位置・扇の中心方向」をどう決めるか(船のどちら側面から出すか等)は、
+    // 弾道兵器(gmProjectileManager::fire)が着弾目標をそのまま受け取るのとは違い、
+    // 船の状態(位置・向き)とクリック位置から、このクラス側で計算する。
+    // ------------------------------------------------------------
+    class gmFlameThrowerManager {
+    public:
+        gmFlameThrowerManager(
+            const std::shared_ptr<gmCollisionSystem>& collisionSystem,
+            const std::shared_ptr<gmSpriteAnimRegistry>& spriteRegistry);
+
+        // 火炎放射を1回発動する。
+        // arg1... 発動時点の船の位置(ワールド座標)
+        // arg2... 発動時点の船の向き(ラジアン。gmShip::getYaw()と同じ規約)
+        // arg3... クリックした狙い位置(海面上の座標)。船から見てどちら側面か、
+        //         扇の中心方向をどちらへ向けるかの両方をこの位置から決める。
+        //
+        // 既に発動中の火炎放射がある場合は何もしない(同時多重発動はしない、簡易ロック)。
+        // TODO: 武器選択UI実装後、クールタイム等のちゃんとした発射制御に置き換える想定。
+        void fire(const tnl::Vector3& shipPos, float shipYaw, const tnl::Vector3& aimTargetPos);
+
+        void update(float deltaTime);
+        void render(const Shared<dxe::Camera>& camera);
+
+        // 現在発動中(生存中)の火炎放射があるかどうか
+        bool isActive() const;
+
+    private:
+        std::shared_ptr<gmCollisionSystem>    collisionSystem_;
+        std::shared_ptr<gmSpriteAnimRegistry> spriteRegistry_;
+        std::vector<std::shared_ptr<gmFlameThrowerAttack>> attacks_; // 発動中の火炎放射(基本的に同時に0〜1個)
+
+        int nextId_ = 0;
+
+        // ---- 発射位置(ハードポイント)の調整用パラメータ ----
+        static constexpr float SIDE_OFFSET = 30.0f; // 船の中心から左右どちらかの側面へ、発射位置をずらす量(world単位)
+    };
+}

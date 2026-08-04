@@ -121,6 +121,9 @@ namespace gm
         // 通常弾の発射・管理
         projectileManager_ = std::make_shared<gmProjectileManager>(collisionSystem_, spriteAnimRegistry_);
 
+        // 火炎放射攻撃の発動・管理
+        flameThrowerManager_ = std::make_shared<gmFlameThrowerManager>(collisionSystem_, spriteAnimRegistry_);
+
         // プレイヤー船の位置
         tnl::Vector3 shipPos = playerShip_->getPosition();
 
@@ -195,6 +198,11 @@ namespace gm
             projectileManager_->update(dt);
         }
 
+        // 発動中の火炎放射攻撃の更新
+        if (flameThrowerManager_) {
+            flameThrowerManager_->update(dt);
+        }
+
         // VFX(単発演出)の更新
         if (vfxManager_) {
             vfxManager_->update(dt);
@@ -240,6 +248,10 @@ namespace gm
 
         if (projectileManager_) {
             projectileManager_->render(context_->camera);
+        }
+
+        if (flameThrowerManager_) {
+            flameThrowerManager_->render(context_->camera);
         }
 
         if (vfxManager_) {
@@ -289,9 +301,13 @@ namespace gm
         if (!tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
             return;
         }
-        if (!projectileManager_ || !playerShip_) {
+        //if (!projectileManager_ || !playerShip_) {
+        //    return;
+        //}
+        if (!flameThrowerManager_ || !playerShip_) {
             return;
         }
+
 
         // ---- 手順1: レイ(半直線)の始点と方向を求める ----
         const tnl::Vector3 mousePos = tnl::Input::GetMousePosition();
@@ -324,6 +340,7 @@ namespace gm
         // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
         const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
-        projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+        //projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+        flameThrowerManager_->fire(playerShip_->getPosition(), playerShip_->getYaw(), targetPos);
     }
 }

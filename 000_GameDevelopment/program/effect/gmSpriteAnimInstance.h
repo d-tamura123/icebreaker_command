@@ -88,6 +88,22 @@ namespace gm {
         // 例: 緑系の素材を青白くしたい場合、setTintColor(200, 220, 255)のように指定する。
         void setTintColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) { tintColor_ = GetColorU8(r, g, b, a); }
 
+        // 進行方向軸(forwardDir_が向く辺)の長さを、size_(正方形の一辺)とは別に指定する。
+        // 未設定(既定値)ならこれまで通りsize_を使った正方形になる。
+        // 指定すると、進行方向軸だけがこの長さになり、もう片方の軸(太さ)はsize_のまま。
+        // 例: 火炎放射のように、細長い一本の板ポリで表現したい場合に使う。
+        void setForwardLength(float length) { forwardLength_ = length; }
+
+        // 進行方向軸(u軸またはv軸。pointingAxis_依存)のUV範囲を、頭側/尾側それぞれ
+        // 何割削るかを指定する(0.0〜0.49、既定は両方0=削らない)。
+        // 素材の余白(透明部分)が大きく、setForwardLength()で引き伸ばした際に
+        // 「見た目の炎が短く、起点からズレて見える」場合に使う
+        // (=見た目上、素材の不透明な部分だけを引き伸ばす形になる)。
+        void setUInset(float insetStart, float insetEnd) {
+            uInsetStart_ = insetStart;
+            uInsetEnd_ = insetEnd;
+        }
+
     private:
         enum class Phase { Intro, Loop, Outro, Done };
 
@@ -97,8 +113,10 @@ namespace gm {
         // 1枚分の板ポリを描画する共通処理(FaceCamera/CrossCard/DirectionalMultiCrossどれからも呼ぶ)
         // arg1... 板の「右」方向ベクトル(既に正規化済みのものを渡す)
         // arg2... 板の「上」方向ベクトル(既に正規化済みのものを渡す)
+        // arg3... 右方向の全長(rightDir方向の辺の長さ)
+        // arg4... 上方向の全長(upDir方向の辺の長さ。anchor_に応じてposition_からの配分が変わる)
         // arg5... 追加のアルファ倍率(0.0〜1.0)。エッジフェード用途で使う(既定1.0=倍率なし)
-        void drawQuad(const tnl::Vector3& rightDir, const tnl::Vector3& upDir, float u0, float v0, float u1, float v1, float alphaScale = 1.0f) const;
+        void drawQuad(const tnl::Vector3& rightDir, const tnl::Vector3& upDir, float rightExtent, float upExtent, float u0, float v0, float u1, float v1, float alphaScale = 1.0f) const;
 
         // 進行方向軸とカメラ方向のなす角のsin値がこの値を下回る範囲で、
         // もう片方の軸をなめらかにフォールバック軸へブレンドする(render()内で使用)
@@ -109,6 +127,9 @@ namespace gm {
         Shared<dxe::Texture> texture_;
         tnl::Vector3         position_{ 0.0f, 0.0f, 0.0f };
         float                size_ = 100.0f;
+        float                forwardLength_ = -1.0f;                // 進行方向軸だけの長さ(未設定=-1ならsize_を使う正方形のまま)
+        float                uInsetStart_ = 0.0f;                   // 進行方向軸の「頭」側UVを削る割合(0.0〜0.49)
+        float                uInsetEnd_ = 0.0f;                     // 進行方向軸の「尾」側UVを削る割合(0.0〜0.49)
 
         // ---- 板ポリの配置・向きに関する設定 ----
         gmBillboardMode mode_ = gmBillboardMode::FaceCamera;

@@ -410,6 +410,12 @@
     <ClInclude Include="program\object\gmSplitProjectile.h">
       <Filter>Source\[004] game\object</Filter>
     </ClInclude>
+    <ClInclude Include="program\object\gmFlameThrowerAttack.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\weapon\gmFlameThrowerManager.h">
+      <Filter>Source\[004] game\weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -735,6 +741,12 @@
     </ClCompile>
     <ClCompile Include="program\object\gmSplitProjectile.cpp">
       <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmFlameThrowerAttack.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\weapon\gmFlameThrowerManager.cpp">
+      <Filter>Source\[004] game\weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
