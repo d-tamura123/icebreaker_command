@@ -301,9 +301,9 @@ namespace gm
         if (!tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
             return;
         }
-        //if (!projectileManager_ || !playerShip_) {
-        //    return;
-        //}
+        if (!projectileManager_ || !playerShip_) {
+            return;
+        }
         if (!flameThrowerManager_ || !playerShip_) {
             return;
         }
@@ -340,7 +340,8 @@ namespace gm
         // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
         const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
-        //projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
-        flameThrowerManager_->fire(playerShip_->getPosition(), playerShip_->getYaw(), targetPos);
+         projectileManager_->fire(playerShip_->getPosition(), targetPos);
+        // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+        // flameThrowerManager_->fire(playerShip_, targetPos);
     }
 }

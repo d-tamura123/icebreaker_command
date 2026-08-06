@@ -54,12 +54,17 @@ namespace gm {
         // (アウトロ再生後、全ラインの再生が終わり次第kill()される)
         void requestStop();
 
+        // 発射起点(船の側面ハードポイント)を更新する。
+        // 船の位置をもとに、新しい原点基準で再配置する。
+        void updateOrigin(const tnl::Vector3& newOrigin);
     private:
-        std::vector<gmSpriteAnimInstance> lineVisuals_; // ライン1本につき1枚(細長い板ポリ)
+        std::vector<gmSpriteAnimInstance> lineVisuals_;     // ライン1本につき1枚(細長い板ポリ)
+        std::vector<tnl::Vector3> lineDirs_;                // ライン1本ごとの向き(世界座標、固定。updateOrigin()で再利用する)
+        float range_ = DEFAULT_RANGE;                       // 射程(updateOrigin()で再利用する)
 
-        float elapsedTime_   = 0.0f;                // 発動からの経過時間(秒)
+        float elapsedTime_   = 0.0f;                        // 発動からの経過時間(秒)
         float duration_      = DEFAULT_DURATION;
-        bool  stopRequested_ = false;               // 全ラインへrequestStop()を送信済みかどうか
+        bool  stopRequested_ = false;                       // 全ラインへrequestStop()を送信済みかどうか
 
         // ---- 調整用パラメータ ----
         // TODO:

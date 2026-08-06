@@ -1,6 +1,7 @@
 ﻿// gmFlameThrowerManager.cpp
 #include "gmFlameThrowerManager.h"
 #include "../collision/gmCollisionSystem.h"
+#include "../object/gmShip.h"
 #undef min              // std::max, std::minのマクロ競合解消
 #undef max
 #include <algorithm>
@@ -23,12 +24,15 @@ namespace gm {
     //   手順3: 発射位置(側面ハードポイント)・扇の中心方向を確定し、
     //          gmFlameThrowerAttackを生成する
     // ------------------------------------------------------------
-    void gmFlameThrowerManager::fire(const tnl::Vector3& shipPos, float shipYaw, const tnl::Vector3& aimTargetPos)
+    void gmFlameThrowerManager::fire(const std::shared_ptr<gmShip>& ship, const tnl::Vector3& aimTargetPos)
     {
-        if (isActive()) {
+        if (isActive() || !ship) {
             // 簡易ロック: 発動中の火炎放射が終わるまで、次の発動は受け付けない
             return;
         }
+
+        const tnl::Vector3 shipPos = ship->getPosition();
+        const float shipYaw = ship->getYaw();
 
         // ---- 手順1: 船の「前方」「右」ベクトル ----
         // gmShip::getForward()と同じ規約(角度0のとき+Z方向、角度が増えると+X方向へ回る)。
@@ -51,6 +55,8 @@ namespace gm {
         auto attack = std::make_shared<gmFlameThrowerAttack>(id, originPos, aimDir, spriteRegistry_);
 
         attacks_.push_back(attack);
+        activeShip_ = ship;
+        activeSideSign_ = sideSign;
 
         if (collisionSystem_) {
             collisionSystem_->registerObject(attack);
@@ -62,6 +68,18 @@ namespace gm {
     // ------------------------------------------------------------
     void gmFlameThrowerManager::update(float deltaTime)
     {
+        if (auto ship = activeShip_.lock()) {
+            const float shipYaw = ship->getYaw();
+            const tnl::Vector3 right(cosf(shipYaw), 0.0f, -sinf(shipYaw));
+            const tnl::Vector3 originPos = ship->getPosition() + right * (activeSideSign_ * SIDE_OFFSET);
+
+            for (auto& attack : attacks_) {
+                if (attack->isAlive()) {
+                    attack->updateOrigin(originPos);
+                }
+            }
+        }
+
         for (auto& attack : attacks_) {
             if (attack->isAlive()) {
                 attack->update(deltaTime);

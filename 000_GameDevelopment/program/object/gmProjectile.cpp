@@ -87,14 +87,16 @@ namespace gm {
     }
 
     // ------------------------------------------------------------
-    // 衝突時の処理。流氷に当たったら消滅する(ダメージ処理は未実装)。
+    // 衝突時の処理。流氷に当たったら消滅する。
+    // 
+    // 溶解(耐久値を減らす)処理はgmIceberg::onCollisionEnter側に実装されているため、
+    // ここでは自分を消すだけでよい。
     // ------------------------------------------------------------
     void gmProjectile::onCollisionEnter(gmObjectBase* other)
     {
         if (!other) return;
 
         if (other->getCollisionCategory() == gmCollisionCategory::Iceberg) {
-            // TODO: 流氷へのダメージ処理(次のステップで実装)
             kill();
         }
     }

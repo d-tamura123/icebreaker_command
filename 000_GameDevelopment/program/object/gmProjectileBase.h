@@ -21,6 +21,10 @@ namespace gm {
         void update(float deltaTime) override final;
         void render(const Shared<dxe::Camera>& camera) override final;
 
+        // 現在の速度ベクトル(初速のまま、以後不変)。
+        // 用途: 命中した相手側が「どちらから撃たれたか」を知りたい場合(氷山の分裂方向など)
+        const tnl::Vector3& getVelocity() const { return velocity_; }
+
     protected:
         // arg1... 識別ID
         // arg2... 発射位置(ワールド座標)

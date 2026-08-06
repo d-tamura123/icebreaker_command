@@ -43,6 +43,11 @@ namespace gm {
                     ++it;
                 }
             }
+
+            // 派生クラス向けフック(全エンティティの更新が終わった後に呼ばれる)。
+            // 用途: 氷山の分裂のように「エンティティ側は意思表示だけして、
+            // 実際の追加生成はマネージャー側が毎フレームまとめて拾う」ような処理。
+            onPostUpdate(deltaTime);
         }
 
         void render(const Shared<dxe::Camera>& camera)
@@ -57,6 +62,14 @@ namespace gm {
         // 外部(ミニマップ等)から座標の参照
         const std::vector<std::shared_ptr<TEntity>>& getEntities() const { return entities_; }
 
+        // 外部から生成済みのエンティティを追加登録する(氷山の分裂など、
+        // trySpawn()の定期生成とは別で増える場合に使う)
+        void addEntity(const std::shared_ptr<TEntity>& entity)
+        {
+            if (entity) {
+                entities_.push_back(entity);
+            }
+        }
 
     protected:
         // 生成条件(位置・パラメータの決定と生成そのもの)は派生クラスの責務
@@ -64,6 +77,9 @@ namespace gm {
 
         // 次のスポーンまでの間隔(秒)。ランダム幅などは派生クラスが決める
         virtual float rollNextInterval() const = 0;
+
+        // update()の最後に毎フレーム呼ばれる(既定は何もしない)
+        virtual void onPostUpdate(float deltaTime) {}
 
         std::vector<std::shared_ptr<TEntity>> entities_;
         float spawnTimer_ = 0.0f;

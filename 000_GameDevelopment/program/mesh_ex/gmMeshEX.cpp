@@ -1,25 +1,25 @@
-#include "gmMeshEX.h"
+ï»¿#include "gmMeshEX.h"
 #include <dxe.h>
 
 using namespace gm;
 
 //===============================================================
-// •X‰òƒƒbƒVƒ…‚ğ¶¬‚·‚é
+// æ°·å¡Šãƒ¡ãƒƒã‚·ãƒ¥ã‚’ç”Ÿæˆã™ã‚‹
 //===============================================================
 Shared<dxe::Mesh> MeshEX::CreateIceChunk(Shared<dxe::Texture> texture, float baseSize, int pieceCount,int seed)
 {
     if (seed < 0) seed = (int)time(nullptr);
     tnl::SetSeedMersenneTwister32(seed);
 
-    // •X•Ğ‚ğ•¡”¶¬‚·‚é
+    // æ°·ç‰‡ã‚’è¤‡æ•°ç”Ÿæˆã™ã‚‹
     std::vector<tnl::Matrix> matrices;
     matrices.reserve(pieceCount);
 
-    // •X•Ğ‚ÌŒ³ƒƒbƒVƒ…iCube ‚Å‚à Sphere ‚Å‚à OKj
-    // ¦ StaticMeshGroupMV ‚ÍuŒ³ƒƒbƒVƒ…‚ğ•¡””z’u‚·‚évd‘g‚İ
+    // æ°·ç‰‡ã®å…ƒãƒ¡ãƒƒã‚·ãƒ¥ï¼ˆCube ã§ã‚‚ Sphere ã§ã‚‚ OKï¼‰
+    // â€» StaticMeshGroupMV ã¯ã€Œå…ƒãƒ¡ãƒƒã‚·ãƒ¥ã‚’è¤‡æ•°é…ç½®ã™ã‚‹ã€ä»•çµ„ã¿
     Shared<dxe::Mesh> baseMesh = dxe::Mesh::CreateCubeMV(baseSize);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚·‚é
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã™ã‚‹
     if (texture) {
         baseMesh->setTexture(texture);
     }
@@ -28,8 +28,8 @@ Shared<dxe::Mesh> MeshEX::CreateIceChunk(Shared<dxe::Texture> texture, float bas
         matrices.push_back(createRandomTransform(baseSize));
     }
 
-    // •¡”‚Ì•X•Ğ‚ğ 1 ‚Â‚ÌƒƒbƒVƒ…‚É‚Ü‚Æ‚ß‚é
-    // ¦ Mesh ‚Ì“à•”\‘¢‚É‚ÍG‚ê‚¸Adxe ‚Ì‹@”\‚¾‚¯‚ÅŠ®Œ‹‚·‚é
+    // è¤‡æ•°ã®æ°·ç‰‡ã‚’ 1 ã¤ã®ãƒ¡ãƒƒã‚·ãƒ¥ã«ã¾ã¨ã‚ã‚‹
+    // â€» Mesh ã®å†…éƒ¨æ§‹é€ ã«ã¯è§¦ã‚Œãšã€dxe ã®æ©Ÿèƒ½ã ã‘ã§å®Œçµã™ã‚‹
     Shared<dxe::Mesh> iceChunk =
         dxe::Mesh::CreateStaticMeshGroupMV(baseMesh, matrices);
 
@@ -38,10 +38,19 @@ Shared<dxe::Mesh> MeshEX::CreateIceChunk(Shared<dxe::Texture> texture, float bas
 
 Shared<dxe::Mesh> MeshEX::CreateIceChunk(const std::vector<std::string>& crystalPaths, Shared<dxe::Texture> texture, float baseSize, int pieceCount, int seed)
 {
+    IceChunkPieces pieces = CreateIceChunkPieces(crystalPaths, texture, baseSize, pieceCount, seed);
+    return dxe::Mesh::CreateStaticMeshGroupMV(pieces.baseMesh, pieces.pieceMatrices);
+}
+
+//===============================================================
+// æ°·å¡Šã‚’æ§‹æˆã™ã‚‹ã€Œãƒ™ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥+ãƒ”ãƒ¼ã‚¹ã”ã¨ã®å¤‰æ›è¡Œåˆ—ã€ã‚’ã€ç„¼ãè¾¼ã¾ãšã«è¿”ã™
+//===============================================================
+MeshEX::IceChunkPieces MeshEX::CreateIceChunkPieces(const std::vector<std::string>& crystalPaths, Shared<dxe::Texture> texture, float baseSize, int pieceCount, int seed)
+{
     if (seed < 0) seed = (int)time(nullptr);
     tnl::SetSeedMersenneTwister32(seed);
 
-    // ƒ‰ƒ“ƒ_ƒ€‚ÉƒNƒŠƒXƒ^ƒ‹‚ğ‘I‚Ôi’†S—pj
+    // ãƒ©ãƒ³ãƒ€ãƒ ã«ã‚¯ãƒªã‚¹ã‚¿ãƒ«ã‚’é¸ã¶ï¼ˆä¸­å¿ƒç”¨ï¼‰
     auto baseMesh = dxe::Mesh::CreateFromFileMV(
         crystalPaths[tnl::GetRandomDistribution<int>(0, (int)crystalPaths.size() - 1)],
         baseSize
@@ -54,45 +63,46 @@ Shared<dxe::Mesh> MeshEX::CreateIceChunk(const std::vector<std::string>& crystal
     matrices.reserve(pieceCount);
 
     for (int i = 0; i < pieceCount; i++) {
-        matrices.push_back(createRandomTransformCrystal(i == 0)); // š’†S‚Í‘å‚«‚ß
+        matrices.push_back(createRandomTransformCrystal(i == 0)); // â˜…ä¸­å¿ƒã¯å¤§ãã‚
     }
 
-    return dxe::Mesh::CreateStaticMeshGroupMV(baseMesh, matrices);
+    return IceChunkPieces{ baseMesh, matrices };
 }
+
 //===============================================================
-// •X•ĞiCube or Spherej‚ğƒ‰ƒ“ƒ_ƒ€¶¬‚·‚é
-// ¦ ¡‰ñ‚Í Cube ‚ğg‚¤‚ªASphere ‚É•Ï‚¦‚Ä‚à OK
+// æ°·ç‰‡ï¼ˆCube or Sphereï¼‰ã‚’ãƒ©ãƒ³ãƒ€ãƒ ç”Ÿæˆã™ã‚‹
+// â€» ä»Šå›ã¯ Cube ã‚’ä½¿ã†ãŒã€Sphere ã«å¤‰ãˆã¦ã‚‚ OK
 //===============================================================
 Shared<dxe::Mesh> MeshEX::createRandomPiece(float baseSize)
 {
-    // ‚±‚±‚Å‚Í Cube ‚ğg‚¤iSphere ‚É‚µ‚Ä‚à—Ç‚¢j
+    // ã“ã“ã§ã¯ Cube ã‚’ä½¿ã†ï¼ˆSphere ã«ã—ã¦ã‚‚è‰¯ã„ï¼‰
     return dxe::Mesh::CreateCubeMV(baseSize);
 }
 
 
 //===============================================================
-// •X•Ğ‚Ìƒ‰ƒ“ƒ_ƒ€•ÏŠ·s—ñ‚ğì‚é
+// æ°·ç‰‡ã®ãƒ©ãƒ³ãƒ€ãƒ å¤‰æ›è¡Œåˆ—ã‚’ä½œã‚‹
 //===============================================================
 tnl::Matrix MeshEX::createRandomTransform(float baseSize)
 {
-    // ƒ‰ƒ“ƒ_ƒ€ˆÊ’u
+    // ãƒ©ãƒ³ãƒ€ãƒ ä½ç½®
     float px = tnl::GetRandomDistribution<float>(-baseSize * 0.5f, baseSize * 0.5f);
     float py = tnl::GetRandomDistribution<float>(-baseSize * 0.3f, baseSize * 0.3f);
     float pz = tnl::GetRandomDistribution<float>(-baseSize * 0.5f, baseSize * 0.5f);
 
-    // ƒ‰ƒ“ƒ_ƒ€‰ñ“]
+    // ãƒ©ãƒ³ãƒ€ãƒ å›è»¢
     float pitch = tnl::GetRandomDistribution<float>(0.0f, tnl::PI);
     float yaw   = tnl::GetRandomDistribution<float>(0.0f, tnl::PI);
     float roll  = tnl::GetRandomDistribution<float>(0.0f, tnl::PI);
 
-    // ƒ‰ƒ“ƒ_ƒ€ƒXƒP[ƒ‹
+    // ãƒ©ãƒ³ãƒ€ãƒ ã‚¹ã‚±ãƒ¼ãƒ«
     float sx = tnl::GetRandomDistribution<float>(0.7f, 1.3f);
     float sy = tnl::GetRandomDistribution<float>(0.7f, 1.3f);
     float sz = tnl::GetRandomDistribution<float>(0.7f, 1.3f);
 
-    // s—ñ‚ğ‡¬‚·‚é
-    // ¦ tnl::Matrix ‚Í DirectXMath ‚Ì XMMATRIX ‚ğƒ‰ƒbƒv‚µ‚Ä‚¢‚é‚Ì‚Å
-    //   Scaling ¨ Rotation ¨ Translation ‚Ì‡‚ÅŠ|‚¯‡‚í‚¹‚é
+    // è¡Œåˆ—ã‚’åˆæˆã™ã‚‹
+    // â€» tnl::Matrix ã¯ DirectXMath ã® XMMATRIX ã‚’ãƒ©ãƒƒãƒ—ã—ã¦ã„ã‚‹ã®ã§
+    //   Scaling â†’ Rotation â†’ Translation ã®é †ã§æ›ã‘åˆã‚ã›ã‚‹
     tnl::Matrix mat = tnl::Matrix::Scaling(sx, sy, sz)
         * tnl::Matrix::RotationPitchYawRoll(pitch, yaw, roll)
         * tnl::Matrix::Translation(px, py, pz);
@@ -100,40 +110,22 @@ tnl::Matrix MeshEX::createRandomTransform(float baseSize)
     return mat;
 }
 
-/*
-tnl::Matrix MeshEX::createRandomTransformCrystal()
-{
-    float px = tnl::GetRandomDistribution<float>(-20.0f, 20.0f);
-    float py = tnl::GetRandomDistribution<float>(-10.0f, 10.0f);
-    float pz = tnl::GetRandomDistribution<float>(-20.0f, 20.0f);
-
-    float pitch = tnl::GetRandomDistribution<float>(0.0f, tnl::PI * 2.0f);
-    float yaw = tnl::GetRandomDistribution<float>(0.0f, tnl::PI * 2.0f);
-    float roll = tnl::GetRandomDistribution<float>(0.0f, tnl::PI * 2.0f);
-
-    float s = tnl::GetRandomDistribution<float>(0.7f, 1.4f);
-
-    return tnl::Matrix::Scaling(s, s, s)
-        * tnl::Matrix::RotationPitchYawRoll(pitch, yaw, roll)
-        * tnl::Matrix::Translation(px, py, pz);
-}
-*/
 tnl::Matrix MeshEX::createRandomTransformCrystal(bool isCenter)
 {
-    // ”z’u”ÍˆÍi‹·‚ß‚éj
+    // é…ç½®ç¯„å›²ï¼ˆç‹­ã‚ã‚‹ï¼‰
     float px = tnl::GetRandomDistribution<float>(-15.0f, 15.0f);
     float py = tnl::GetRandomDistribution<float>(-8.0f, 8.0f);
     float pz = tnl::GetRandomDistribution<float>(-15.0f, 15.0f);
 
-    // ‰ñ“]i•ûŒü«‚ğ‘µ‚¦‚éj
-    float pitch = tnl::GetRandomDistribution<float>(-0.3f, 0.3f);     // X‰ñ“]‚Í¬‚³‚­
-    float yaw = tnl::GetRandomDistribution<float>(0.0f, tnl::PI * 2.0f); // Y‚Í©—R
-    float roll = tnl::GetRandomDistribution<float>(-0.3f, 0.3f);     // Z‰ñ“]‚Í¬‚³‚­
+    // å›è»¢ï¼ˆæ–¹å‘æ€§ã‚’æƒãˆã‚‹ï¼‰
+    float pitch = tnl::GetRandomDistribution<float>(-0.3f, 0.3f);     // Xå›è»¢ã¯å°ã•ã
+    float yaw = tnl::GetRandomDistribution<float>(0.0f, tnl::PI * 2.0f); // Yã¯è‡ªç”±
+    float roll = tnl::GetRandomDistribution<float>(-0.3f, 0.3f);     // Zå›è»¢ã¯å°ã•ã
 
-    // ƒXƒP[ƒ‹i’†S‚Í‘å‚«‚ßj
+    // ã‚¹ã‚±ãƒ¼ãƒ«ï¼ˆä¸­å¿ƒã¯å¤§ãã‚ï¼‰
     float s;
     if (isCenter) {
-        s = tnl::GetRandomDistribution<float>(1.3f, 1.9f); // šŠj‚Æ‚È‚é•X•Ğ
+        s = tnl::GetRandomDistribution<float>(1.3f, 1.9f); // â˜…æ ¸ã¨ãªã‚‹æ°·ç‰‡
     }
     else {
         s = tnl::GetRandomDistribution<float>(0.8f, 1.3f);

@@ -33,6 +33,8 @@ namespace gm {
 
         lineCount = std::max(1, lineCount);
         lineVisuals_.resize(static_cast<size_t>(lineCount));
+        lineDirs_.resize(static_cast<size_t>(lineCount));
+        range_ = range;
 
         // 中心方向をXZ平面へ正規化(Y成分は無視する。攻撃は常に水平方向へ広がる想定)
         tnl::Vector3 flatCenterDir(centerDir.x, 0.0f, centerDir.z);
@@ -60,6 +62,7 @@ namespace gm {
             const float t = (lineCount == 1) ? 0.5f : static_cast<float>(i) / static_cast<float>(lineCount - 1);
             const float lineAngle = centerAngle - halfFan + t * fanAngleRad;
             const tnl::Vector3 lineDir(sinf(lineAngle), 0.0f, cosf(lineAngle));
+            lineDirs_[static_cast<size_t>(i)] = lineDir;
 
             // ---- 当たり判定: ライン1本 = カプセル1本 ----
             // カプセルの軸は仕様上ローカルY軸固定のため、localRotationで
@@ -105,6 +108,25 @@ namespace gm {
             }
         }
     }
+
+    // ------------------------------------------------------------
+    // 発射起点を更新する。
+    //   ・コライダーはowner位置(position_)+localOffsetで毎フレーム計算されるため、
+    //     position_を書き換えるだけで自動的に追従する(localOffset自体は不変)
+    //   ・見た目(各ラインのビルボード)は自前でposition_を持っているため、
+    //     ここで明示的に置き直す必要がある
+    // 向き(lineDirs_)は一切変更しない=狙い方向は発動時のまま固定
+    // ------------------------------------------------------------
+    void gmFlameThrowerAttack::updateOrigin(const tnl::Vector3& newOrigin)
+    {
+        position_ = newOrigin;
+
+        for (size_t i = 0; i < lineVisuals_.size(); ++i) {
+            const tnl::Vector3 linePos = newOrigin + lineDirs_[i] * (range_ * 0.5f);
+            lineVisuals_[i].setPosition(linePos);
+        }
+    }
+
 
     // ------------------------------------------------------------
     // 毎フレーム更新。
@@ -162,18 +184,18 @@ namespace gm {
 
     // ------------------------------------------------------------
     // 衝突時の処理。
+    // 
     // 弾(gmProjectile等)と違い、自分自身は命中しても消えない
     // (durationが尽きるまで扇全体が持続する持続系攻撃のため)。
+    // 
+    // 溶解処理はgmIceberg::onCollisionEnter側に実装されている
+    // (火炎放射は複数フレーム連続で命中し続けるため、そちら側で
+    //  「今フレーム炎に当たっているか」のフラグだけ立て、実際の減衰量は
+    //  氷山自身のdeltaTimeを使って計算している)。
     // ------------------------------------------------------------
-    void gmFlameThrowerAttack::onCollisionEnter(gmObjectBase* other)
+    void gmFlameThrowerAttack::onCollisionEnter(gmObjectBase*)
     {
-        if (!other) return;
-
-        if (other->getCollisionCategory() == gmCollisionCategory::Iceberg) {
-            // TODO: 流氷へのダメージ処理(他の攻撃と同様、次のステップで実装)。
-            // 持続攻撃のため、同じ氷山に対して複数フレームぶん連続でここへ
-            // 入ってくる点に注意(1回だけ効かせたいなら、氷山側で
-            // 直前ヒットからの経過時間などのクールダウンを持たせる想定)。
-        }
+        // (このクラス側では特に何もしない。上記コメントの通り、
+        //  溶解処理は命中された氷山側に実装されている)
     }
 }

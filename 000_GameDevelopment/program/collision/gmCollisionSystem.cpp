@@ -29,14 +29,23 @@ namespace gm {
         // 総当たり判定(ブロードフェーズ無し)。
         // 現状のオブジェクト数(船・島・流氷合わせて数十個程度)であれば
         // O(n^2)の総当たりでも性能上問題にならないはず。
+        //
+        // Note: isAlive()もあわせて見ているのは、kill()が呼ばれてから
+        // 実際にリストから取り除かれるまで(各エンティティを保持する側の
+        // 次回update()まで)最大1フレームのラグがあるため。
+        // このラグの間に「死んでいるが登録上はまだ生きている」オブジェクトが
+        // 同フレームに新規生成された別オブジェクトと衝突判定されてしまう
+        // ケースがある(例: 氷山の分裂で、死にかけの元氷山と生まれたての
+        // 破片がほぼ同座標に同居し、破片側が「衝突による位置差し戻し」で
+        // 未初期化のlastSafePosition_(0,0,0)へ飛ばされる、など)。
         // ------------------------------------------------------------
         for (size_t i = 0; i < objects_.size(); ++i) {
             auto a = objects_[i].lock();
-            if (!a) continue;
+            if (!a || !a->isAlive()) continue;      // 冒頭コメントの件で、isAliveもあわせてチェックする
 
             for (size_t j = i + 1; j < objects_.size(); ++j) {
                 auto b = objects_[j].lock();
-                if (!b) continue;
+                if (!b || !b->isAlive()) continue;  // 冒頭コメントの件で、isAliveもあわせてチェックする
 
                 // カテゴリの組み合わせ的にそもそも判定不要なら早期スキップ
                 if (!CanCollide(a->getCollisionCategory(), b->getCollisionCategory())) {

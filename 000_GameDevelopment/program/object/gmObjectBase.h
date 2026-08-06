@@ -19,6 +19,11 @@ namespace gm {
         const tnl::Vector3& getScale() const;
         void setScale(const tnl::Vector3& scale);
 
+        // 回転(Euler角、ラジアン)
+        // 用途: 分裂で生まれた氷山など、生成直後から親の向きを引き継ぎたい場合に使う
+        const tnl::Vector3& getRotation() const { return rotation_; }
+        void setRotation(const tnl::Vector3& rotation) { rotation_ = rotation; }
+
         // 識別ID
         const std::string& getId() const { return instanceID_; }
 

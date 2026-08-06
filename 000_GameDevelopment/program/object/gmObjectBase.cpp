@@ -3,7 +3,7 @@
 namespace gm {
 
     gmObjectBase::gmObjectBase(const std::string& instanceID, const tnl::Vector3& position)
-        : instanceID_(instanceID), position_(position) {
+        : instanceID_(instanceID), position_(position), lastSafePosition_(position) {
     }
 
     // 座標

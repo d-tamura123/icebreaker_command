@@ -22,6 +22,18 @@ namespace gm {
     class MeshEX {
     public:
 
+        // 氷塊を構成する「ベースメッシュ(結晶1個ぶん)+ピースごとのローカル変換行列」の組。
+        // CreateIceChunk()はこれをCreateStaticMeshGroupMVで1つに焼き込んだ結果だけを返すが、
+        // 氷山の分裂(大→中→小)のように「焼き込む前のピース単位の情報」が必要な場面のために
+        // 別出しして返せるようにしておく。
+        // 用途: 起動時に一括で「大メッシュ+分割済みの中/小メッシュ」を事前焼成する(gmIcebergManager参照)。
+        // 焼成自体はCreateStaticMeshGroupMVが内部でMV1LoadModelFromMemを伴う重い処理のため、
+        // 実行中(戦闘中)に都度呼ぶのは避け、起動時にまとめて済ませる前提。
+        struct IceChunkPieces {
+            Shared<dxe::Mesh> baseMesh;                // 共通のベースメッシュ(結晶1個ぶん、テクスチャ設定済み)
+            std::vector<tnl::Matrix> pieceMatrices;    // ピースごとのローカル変換行列
+        };
+
         // 氷塊メッシュを生成する
         // baseSize : 氷片の基本サイズ
         // pieceCount : 氷片の数（5〜10個など）
@@ -39,6 +51,18 @@ namespace gm {
             int pieceCount = 6,
             int seed = -1
         );
+
+        // CreateIceChunk(crystalPaths版)の「焼き込む前」のピース情報を返す版。
+        // 呼び出し側で好きな部分集合を選んでdxe::Mesh::CreateStaticMeshGroupMV(baseMesh, subset)に
+        // 渡せば、その部分集合だけのメッシュを別途焼成できる(氷山の分裂用途を想定)。
+        static IceChunkPieces CreateIceChunkPieces(
+            const std::vector<std::string>& crystalPaths,
+            Shared<dxe::Texture> texture,
+            float baseSize,
+            int pieceCount = 6,
+            int seed = -1
+        );
+
 
     private:
 
