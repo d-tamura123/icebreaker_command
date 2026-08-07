@@ -49,7 +49,7 @@ namespace gm
 
 
         // --- 島リスト ---
-        const std::vector<IslandInfo>& GetIslands() const { return islands; }
+        const std::vector<IslandInfo>& GetIslands() const { return islands_; }
 
         // --- 地形 ---
         uint8_t GetTile(int x, int y) const;
@@ -77,7 +77,7 @@ namespace gm
 
         // --- 航路 ---
         // 読み込めた航路の本数
-        size_t GetRouteCount() const { return routes.size(); }
+        size_t GetRouteCount() const { return routes_.size(); }
         // セル座標のまま返す(routeIndexが範囲外なら空のRouteInfoを返す)
         const RouteInfo& GetRoute(size_t routeIndex) const;
         // ワールド座標へ変換したウェイポイント列を返す(routeIndexが範囲外なら空配列)
@@ -88,20 +88,20 @@ namespace gm
         tnl::Vector2f SampleFlowFloat(float fx, float fy) const;
 
     private:
-        uint8_t map[MAP_CHIP_HEIGHT][MAP_CHIP_WIDTH];
-        Vector2D oceanFlow[MAP_CHIP_HEIGHT][MAP_CHIP_WIDTH];
+        uint8_t map_[MAP_CHIP_HEIGHT][MAP_CHIP_WIDTH];
+        Vector2D oceanFlow_[MAP_CHIP_HEIGHT][MAP_CHIP_WIDTH];
 
-        gmMapLoader mapLoader;
-        gmOceanFlowLoader oceanFlowLoader;
-        gmFlowField flowField;
-        gmRouteLoader routeLoader;
+        gmMapLoader mapLoader_;
+        gmOceanFlowLoader oceanFlowLoader_;
+        gmFlowField flowField_;
+        gmRouteLoader routeLoader_;
 
-        std::vector<IslandInfo> islands;
-        std::vector<RouteInfo> routes;
+        std::vector<IslandInfo> islands_;
+        std::vector<RouteInfo> routes_;
 
         // --- 追加保持データ ---
-        tnl::Vector2i playerStartCell;
-        std::vector<tnl::Vector2i> npcTradeSpawnCells;
+        tnl::Vector2i playerStartCell_;
+        std::vector<tnl::Vector2i> npcTradeSpawnCells_;
 
         // --- 内部処理 ---
         void AnalyzeMapFlags();

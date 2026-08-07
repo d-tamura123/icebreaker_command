@@ -8,14 +8,16 @@
 namespace gm
 {
     gmMapManager::gmMapManager()
-        : flowField(oceanFlow)
-        , playerStartCell(0, 0)
+        : map_{}                    // C26495対策: 生配列は明示的にゼロ初期化しないと未初期化警告が出るため
+        , oceanFlow_{}              // 同上
+        , flowField_(oceanFlow_)
+        , playerStartCell_(0, 0)
     {
     }
 
     bool gmMapManager::LoadMap(const char* path)
     {
-        if (!mapLoader.Load(path, map))
+        if (!mapLoader_.Load(path, map_))
             return false;
 
         AnalyzeMapFlags();
@@ -24,7 +26,7 @@ namespace gm
 
     bool gmMapManager::LoadOceanFlow(const char* path)
     {
-        return oceanFlowLoader.Load(path, oceanFlow);
+        return oceanFlowLoader_.Load(path, oceanFlow_);
     }
 
     // ------------------------------------------------------------
@@ -36,7 +38,7 @@ namespace gm
     // ------------------------------------------------------------
     bool gmMapManager::LoadRoutes()
     {
-        routes.clear();
+        routes_.clear();
 
         int routeIndex = 1;
         for (;;)
@@ -45,16 +47,16 @@ namespace gm
             sprintf_s(filePath, "%s%d.bin", ROUTE_FILE_PATH_PREFIX, routeIndex);
 
             RouteInfo info;
-            if (!routeLoader.Load(filePath, info.waypointCells))
+            if (!routeLoader_.Load(filePath, info.waypointCells))
             {
                 break; // このインデックスの航路ファイルが存在しない＝ここで走査終了
             }
 
-            routes.push_back(info);
+            routes_.push_back(info);
             ++routeIndex;
         }
 
-        return !routes.empty();
+        return !routes_.empty();
     }
 
 
@@ -66,7 +68,7 @@ namespace gm
         {
             return 0;
         }
-        return map[y][x];
+        return map_[y][x];
     }
 
     bool gmMapManager::IsLand(int x, int y) const
@@ -79,7 +81,7 @@ namespace gm
     // -------------------------
     tnl::Vector2i gmMapManager::GetPlayerStartCell() const
     {
-        return playerStartCell;
+        return playerStartCell_;
     }
 
     tnl::Vector2f gmMapManager::GetPlayerStartWorld() const
@@ -88,8 +90,8 @@ namespace gm
         // 2D->3D変換ロジック
         // 2D座標でY座標が小さいほど北になるためplayerStartCell.yにマイナスする
         return tnl::Vector2f(
-            playerStartCell.x * CELL_SIZE,
-            -playerStartCell.y * CELL_SIZE
+            playerStartCell_.x * CELL_SIZE,
+            -playerStartCell_.y * CELL_SIZE
         );
     }
 
@@ -99,15 +101,15 @@ namespace gm
     // -------------------------
     const std::vector<tnl::Vector2i>& gmMapManager::GetNpcTradeSpawnCells() const
     {
-        return npcTradeSpawnCells;
+        return npcTradeSpawnCells_;
     }
 
     std::vector<tnl::Vector2f> gmMapManager::GetNpcTradeSpawnWorld() const
     {
         std::vector<tnl::Vector2f> result;
-        result.reserve(npcTradeSpawnCells.size());
+        result.reserve(npcTradeSpawnCells_.size());
 
-        for (auto& c : npcTradeSpawnCells)
+        for (auto& c : npcTradeSpawnCells_)
         {
             // Note:
             // 2D->3D変換ロジック
@@ -127,23 +129,23 @@ namespace gm
     {
         static const RouteInfo emptyRoute; // 範囲外アクセス時に返す空のルート(waypointCellsが空)
 
-        if (routeIndex >= routes.size())
+        if (routeIndex >= routes_.size())
         {
             return emptyRoute;
         }
-        return routes[routeIndex];
+        return routes_[routeIndex];
     }
 
     std::vector<tnl::Vector2f> gmMapManager::GetRouteWorldPoints(size_t routeIndex) const
     {
         std::vector<tnl::Vector2f> result;
 
-        if (routeIndex >= routes.size())
+        if (routeIndex >= routes_.size())
         {
             return result; // 範囲外は空配列を返す(呼び出し元でのクラッシュを避ける)
         }
 
-        const std::vector<tnl::Vector2i>& cells = routes[routeIndex].waypointCells;
+        const std::vector<tnl::Vector2i>& cells = routes_[routeIndex].waypointCells;
         result.reserve(cells.size());
 
         for (const auto& c : cells)
@@ -170,13 +172,13 @@ namespace gm
             return tnl::Vector2f(0, 0);
         }
 
-        const Vector2D& v = oceanFlow[y][x];
+        const Vector2D& v = oceanFlow_[y][x];
         return tnl::Vector2f(v.x, v.y);
     }
 
     tnl::Vector2f gmMapManager::SampleFlowFloat(float fx, float fy) const
     {
-        return flowField.SampleFloat(fx, fy);
+        return flowField_.SampleFloat(fx, fy);
     }
 
     // -------------------------
@@ -192,29 +194,39 @@ namespace gm
     // -------------------------
     void gmMapManager::AnalyzeMapFlags()
     {
-        npcTradeSpawnCells.clear();
-        islands.clear();
+        npcTradeSpawnCells_.clear();
+        islands_.clear();
 
-        bool visited[MAP_CHIP_HEIGHT][MAP_CHIP_WIDTH] = {};
+        // 島探索で処理済みセルを記録するフラグ 
+        // インデックスは y * MAP_CHIP_WIDTH + x で1次元化してアクセスする。
+        //
+        // Note: 要素型はboolではなくuint8_tを使う。
+        // std::vector<bool>はビット詰めのための特殊仕様を持ち
+        // (operator[]がbool&ではなく専用のproxyオブジェクトを返す等)、
+        // 他のvector<T>と挙動が異なる罠として知られているため、あえて避けている
+        // (この関数はマップ読み込み時に1回しか呼ばれないため、ビット詰めによる
+        // メモリ節約のメリットよりも、素直な挙動のvectorである方を優先する)。
+        std::vector<uint8_t> visited(static_cast<size_t>(MAP_CHIP_HEIGHT) * MAP_CHIP_WIDTH, 0);
 
         for (int y = 0; y < MAP_CHIP_HEIGHT; ++y)
         {
             for (int x = 0; x < MAP_CHIP_WIDTH; ++x)
             {
-                uint8_t v = map[y][x];
+                uint8_t v = map_[y][x];
 
                 if (v & 2)  // bit1: プレイヤー開始地点
                 {
-                    playerStartCell = tnl::Vector2i(x, y);
+                    playerStartCell_ = tnl::Vector2i(x, y);
                 }
 
-                if (v & 4)  // bit2: NPC交易船スポーン
+                if (v & 4)  // bit2: NPC交易船スポーン(TODO: 港街ビジュアル配置用の目印として利用予定)
                 {
-                    npcTradeSpawnCells.emplace_back(x, y);
+                    npcTradeSpawnCells_.emplace_back(x, y);
                 }
 
                 // 島（bit0）
-                if ((v & 1) && !visited[y][x]) {
+                const size_t visitedIndex = static_cast<size_t>(y) * MAP_CHIP_WIDTH + x;
+                if ((v & 1) && !visited[visitedIndex]) {
 
                     // flood fill で島領域を抽出
                     IslandInfo info;
@@ -223,7 +235,7 @@ namespace gm
 
                     std::queue<tnl::Vector2i> q;
                     q.push({ x, y });
-                    visited[y][x] = true;
+                    visited[visitedIndex] = true;
 
                     while (!q.empty()) {
                         auto c = q.front(); q.pop();
@@ -246,8 +258,9 @@ namespace gm
                                 ny < 0 || ny >= MAP_CHIP_HEIGHT)
                                 continue;
 
-                            if (!visited[ny][nx] && (map[ny][nx] & 1)) {
-                                visited[ny][nx] = true;
+                            const size_t neighborIndex = static_cast<size_t>(ny) * MAP_CHIP_WIDTH + nx;
+                            if (!visited[neighborIndex] && (map_[ny][nx] & 1)) {
+                                visited[neighborIndex] = true;
                                 q.push({ nx, ny });
                             }
                         }
@@ -262,9 +275,8 @@ namespace gm
                     info.worldX = info.cellMin.x * CELL_SIZE + (info.width * 0.5f);
                     info.worldZ = -info.cellMin.y * CELL_SIZE - (info.depth * 0.5f);
 
-                    islands.push_back(info);
+                    islands_.push_back(info);
                 }
-
             }
         }
     }
