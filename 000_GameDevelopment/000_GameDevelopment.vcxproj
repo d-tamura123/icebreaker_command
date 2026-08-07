@@ -226,6 +226,7 @@
     <ClInclude Include="program\map\gmMapLoader.h" />
     <ClInclude Include="program\map\gmMapManager.h" />
     <ClInclude Include="program\map\gmOceanFlowLoader.h" />
+    <ClInclude Include="program\map\gmRouteLoader.h" />
     <ClInclude Include="program\mesh_ex\gmMeshEX.h" />
     <ClInclude Include="program\object\gmFlameThrowerAttack.h" />
     <ClInclude Include="program\object\gmIceberg.h" />
@@ -343,6 +344,7 @@
     <ClCompile Include="program\map\gmMapLoader.cpp" />
     <ClCompile Include="program\map\gmMapManager.cpp" />
     <ClCompile Include="program\map\gmOceanFlowLoader.cpp" />
+    <ClCompile Include="program\map\gmRouteLoader.cpp" />
     <ClCompile Include="program\mesh_ex\gmMeshEX.cpp" />
     <ClCompile Include="program\object\gmFlameThrowerAttack.cpp" />
     <ClCompile Include="program\object\gmIceberg.cpp" />

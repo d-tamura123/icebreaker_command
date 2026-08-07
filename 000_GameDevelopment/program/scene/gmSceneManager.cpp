@@ -18,6 +18,7 @@ namespace gm
         context_->map = std::make_shared<gmMapManager>();
         context_->map->LoadMap(gm::MAP_FILE_PATH);
         context_->map->LoadOceanFlow(gm::FLOW_STO_N_PATH);
+        context_->map->LoadRoutes();                            // route_1.bin, route_2.bin, ... を読めるだけ読み込む(NPC交易船の航路)
 
         // カメラ
         context_->camera = std::make_shared<dxe::Camera>(

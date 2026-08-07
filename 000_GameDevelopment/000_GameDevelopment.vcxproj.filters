@@ -416,6 +416,9 @@
     <ClInclude Include="program\weapon\gmFlameThrowerManager.h">
       <Filter>Source\[004] game\weapon</Filter>
     </ClInclude>
+    <ClInclude Include="program\map\gmRouteLoader.h">
+      <Filter>Source\[004] game\map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -747,6 +750,9 @@
     </ClCompile>
     <ClCompile Include="program\weapon\gmFlameThrowerManager.cpp">
       <Filter>Source\[004] game\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="program\map\gmRouteLoader.cpp">
+      <Filter>Source\[004] game\map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
