@@ -27,8 +27,6 @@ namespace gm
         // --- 航路の情報（NPC交易船が追従する1本ぶんの経路） ---
         struct RouteInfo {
             // 始点(S)→終点(G)の順に並んだウェイポイントのセル座標。
-            // 両端(先頭=S/末尾=G)は、NPC交易船から見れば「どちらからでも出現しうる
-            // スポーン/デスポーン地点」であり、片方向専用という意味は持たない
             // (gmRouteLoaderのエンコード規則を参照)。
             std::vector<tnl::Vector2i> waypointCells;
         };
