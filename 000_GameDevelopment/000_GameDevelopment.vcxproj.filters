@@ -419,6 +419,9 @@
     <ClInclude Include="program\map\gmRouteLoader.h">
       <Filter>Source\[004] game\map</Filter>
     </ClInclude>
+    <ClInclude Include="program\effect\gmRouteVisualizer.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -753,6 +756,9 @@
     </ClCompile>
     <ClCompile Include="program\map\gmRouteLoader.cpp">
       <Filter>Source\[004] game\map</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmRouteVisualizer.cpp">
+      <Filter>Source\[004] game\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

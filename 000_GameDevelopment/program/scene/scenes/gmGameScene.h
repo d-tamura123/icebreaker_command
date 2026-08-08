@@ -14,6 +14,8 @@
 #include "../../weapon/gmFlameThrowerManager.h"
 #include "../../mesh_ex/gmMeshEX.h"
 
+#include "../../effect/gmRouteVisualizer.h"
+
 #include "../../debugger/gmKyleDebugger.h"
 
 namespace gm
@@ -55,6 +57,7 @@ namespace gm
         std::shared_ptr<gmProjectileManager>     projectileManager_;
         std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
         std::unique_ptr<gmUIManager>             uiManager_;
+        std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;   // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
 
         // ---- カメラ操作用 ----
         bool         isDrag_ = false;                   // ドラッグ中かどうか(フリーカメラ操作用)

@@ -151,6 +151,10 @@ namespace gm
         tnl::Vector2f miniMapPos(1000.0f, 20.0f);
         uiManager_ = std::make_unique<gmUIManager>(miniMapPos, context_->map, playerShip_, icebergManager_);
 
+        // 航路の可視化(NPC交易船の航路をリボンメッシュで描画。判定には関与しない)
+        // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
+        routeVisualizer_ = std::make_unique<gmRouteVisualizer>(context_->map);
+
     }
 
     // ------------------------------------------------------------
@@ -219,6 +223,10 @@ namespace gm
             uiManager_->update(dt, context_->camera);
         }
 
+        // 航路可視化のUVスクロール更新(ジオメトリ自体は起動時に生成済みのため再生成しない)
+        if (routeVisualizer_) {
+            routeVisualizer_->update(dt);
+        }
     }
 
     // ------------------------------------------------------------
@@ -245,6 +253,11 @@ namespace gm
         dxe::DirectXRenderBegin();
         water_->render(context_->camera);
         dxe::DirectXRenderEnd();
+
+        // 航路の可視化(水面より奥、戦闘エフェクトより手前という背景寄りの扱い)
+        if (routeVisualizer_) {
+            routeVisualizer_->render(context_->camera);
+        }
 
         if (projectileManager_) {
             projectileManager_->render(context_->camera);
