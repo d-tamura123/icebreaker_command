@@ -20,6 +20,15 @@ namespace gm {
            -1.0f, -0.5f, 0.0f, 0.25f, 0.5f, 1.0f
         };
 
+        // Q/Eキー(トグル式の舵角操作)用の5段階。SPEED_LEVELSと同じ考え方で、
+        // 押すたびに1段ずつ移動する(gmPlayerShip::handleInput()参照)。
+        static constexpr float RUDDER_LEVELS[5] = {
+           -1.0f, -0.5f, 0.0f, 0.5f, 1.0f
+        };
+
+        // 舵角が0から最大値(±1.0)に到達するまでの時間(秒)。
+        static constexpr float RUDDER_RAMP_TIME = 2.8f;
+
         tnl::Vector3 getForward() const {
             // Y軸回転（船の向き）から forward ベクトルを作る
             float yaw = dynamics_.yaw;

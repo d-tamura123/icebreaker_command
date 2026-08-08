@@ -45,8 +45,25 @@ namespace gm {
 	// -----------------------------
 	void gmShip::updateRudder(float deltaTime)
 	{
-		// targetRudder も派生クラスが設定する
-		dynamics_.rudder += (dynamics_.targetRudder - dynamics_.rudder) * 0.1f;
+		// targetRudder は派生クラス(プレイヤー入力 or NPC操舵AI)が設定する。
+		//
+		// 1秒あたりに変化できる舵角の量を上限で制限する「線形レート制限」。
+		// これにより、舵を切り始めてから最大舵角に達するまで、常にRUDDER_RAMP_TIME秒かかる
+		// 中立へ戻す時・左右を切り替える時も同じレートで変化する。
+		//
+		// NPC船もこの関数を共有するため、航路追従AIの操舵も自動的に同じ挙動になる。
+		//
+		const float rudderChangeRate = 1.0f / RUDDER_RAMP_TIME; // 1秒あたりに変化できる舵角の上限
+		const float maxDelta = rudderChangeRate * deltaTime;
+
+		const float diff = dynamics_.targetRudder - dynamics_.rudder;
+
+		if (fabsf(diff) <= maxDelta) {
+			dynamics_.rudder = dynamics_.targetRudder; // 目標に十分近ければピッタリ合わせる(オーバーシュート防止)
+		}
+		else {
+			dynamics_.rudder += (diff > 0.0f) ? maxDelta : -maxDelta;
+		}
 	}
 
 	// -----------------------------
