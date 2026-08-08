@@ -1,5 +1,7 @@
 ﻿// gmGameConfig.h
 #pragma once
+#include <cstdint>      // uint8_t
+
 
 namespace gm
 {

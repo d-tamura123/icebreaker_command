@@ -354,6 +354,6 @@ namespace gm {
         SetWriteZBuffer3D(TRUE);
         SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
         SetUseZBuffer3D(TRUE);
-        SetUseBackCulling(TRUE);;
+        SetUseBackCulling(TRUE);
     }
 }
