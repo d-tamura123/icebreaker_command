@@ -155,6 +155,8 @@ namespace gm
         // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
         routeVisualizer_ = std::make_unique<gmRouteVisualizer>(context_->map);
 
+        // NPC交易船のスポナー
+        tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_);
     }
 
     // ------------------------------------------------------------
@@ -191,6 +193,14 @@ namespace gm
         if (icebergManager_) {
             icebergManager_->update(dt);
         }
+
+        // NPC交易船(スポーン判定 + 航路追従)
+        if (tradeShipManager_) {
+            tradeShipManager_->update(dt);
+        }
+
+        // NPC交易船の異常系デバッグ用ホットキー(O/P。デバッグモード時のみ)
+        updateTradeShipDebugHotkeys();
 
         // プレイヤーのクリック発射(デバッグモード中はフリーカメラ操作を優先し、発射は行わない)
         if (!debugger_->isDebugModeOn() || !debugger_->isFreeCameraEnabled()) {
@@ -248,6 +258,10 @@ namespace gm
 
         if (icebergManager_) {
             icebergManager_->render(context_->camera);
+        }
+
+        if (tradeShipManager_) {
+            tradeShipManager_->render(context_->camera);
         }
 
         dxe::DirectXRenderBegin();
@@ -357,4 +371,37 @@ namespace gm
         // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
         // flameThrowerManager_->fire(playerShip_, targetPos);
     }
+
+    // ------------------------------------------------------------
+    // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を、
+    // O/Pキーで意図的に発生させる。デバッグモード時のみ有効。
+    //   O: 強制操舵破綻のON/OFFをトグル(既存・新規スポーン問わず全船に適用し続ける)
+    //      → しばらく放置すると、進捗停滞タイムアウト+ワープが発生するはず
+    //   P: その時点で存在する全船に、島衝突時と同じバック挙動を即座に発生させる(単発)
+    //
+    // gmTradeShip側の実装(debugSetForcedBadSteering() / debugTriggerCollisionBackoff())は
+    // 既存の航路追従・衝突ロジックを一切変更せず、末尾に追記する形で作られている。
+    // ------------------------------------------------------------
+    void gmGameScene::updateTradeShipDebugHotkeys()
+    {
+        if (!debugger_ || !debugger_->isDebugModeOn()) return;
+        if (!tradeShipManager_) return;
+
+        if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_O)) {
+            debugTradeShipForcedBadSteering_ = !debugTradeShipForcedBadSteering_;
+        }
+
+        const bool triggerBackoffTest = tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_P);
+
+        for (auto& ship : tradeShipManager_->getEntities()) {
+            if (!ship) continue;
+
+            ship->debugSetForcedBadSteering(debugTradeShipForcedBadSteering_);
+
+            if (triggerBackoffTest) {
+                ship->debugTriggerCollisionBackoff();
+            }
+        }
+    }
+
 }

@@ -15,6 +15,7 @@
 #include "../../mesh_ex/gmMeshEX.h"
 
 #include "../../effect/gmRouteVisualizer.h"
+#include "../../spawner/gmTradeShipManager.h"
 
 #include "../../debugger/gmKyleDebugger.h"
 
@@ -43,6 +44,11 @@ namespace gm
         // クリック位置を海面(y=0)へレイキャストし、命中すれば通常弾を発射する
         void tryFireProjectileOnClick();
 
+        // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を
+        // O/Pキーで意図的に発生させ、動作確認しやすくする(gmTradeShipのdebug*系メソッド参照)。
+        // debugger_->isDebugModeOn()の間だけ有効。
+        void updateTradeShipDebugHotkeys();
+
         std::shared_ptr<gmGameContext> context_;
 
         std::shared_ptr<gmKyleDebugger>          debugger_;
@@ -58,6 +64,11 @@ namespace gm
         std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
         std::unique_ptr<gmUIManager>             uiManager_;
         std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;   // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
+        std::shared_ptr<gmTradeShipManager>      tradeShipManager_;  // NPC交易船のスポーンと一元管理
+
+        // デバッグ専用(updateTradeShipDebugHotkeys()参照): Oキーでのトグル状態を保持する。
+        // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。
+        bool debugTradeShipForcedBadSteering_ = false;
 
         // ---- カメラ操作用 ----
         bool         isDrag_ = false;                   // ドラッグ中かどうか(フリーカメラ操作用)

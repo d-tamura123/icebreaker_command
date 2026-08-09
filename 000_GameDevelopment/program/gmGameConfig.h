@@ -1,7 +1,7 @@
 ﻿// gmGameConfig.h
 #pragma once
 #include <cstdint>      // uint8_t
-
+#include <cstddef>      // size_t
 
 namespace gm
 {
@@ -85,4 +85,56 @@ namespace gm
     static const uint8_t ROUTE_SHADOW_RIBBON_ALPHA_SCALE    = 90;     // 影リボンの最大アルファ(0〜255。空中リボンより控えめにする)
     static const uint8_t ROUTE_SHADOW_RIBBON_COLOR_SCALE    = 140;    // 影リボンの頂点色に掛ける明度スケール(0〜255。暗めにする)
 
+
+    // ------------------------------------------------------------
+    // NPC交易船(gmTradeShip / gmTradeShipManager)
+    // ------------------------------------------------------------
+    // モデル・テクスチャのパス。
+    // NOTE: S2〜S10等の専用モデルに差し替え予定だが、変換(mv1化)が済むまでの暫定として
+    //       プレイヤー船と同じS1.mv1を使う(色味だけTRADE_SHIP_TINT_COLORで変える)。
+    //       差し替える際はこの2つのパスを書き換えるだけでよい。
+    static const char* const TRADE_SHIP_MESH_FILE_PATH      = "resource/mesh/mv/test/S1.mv1";
+    static const char* const TRADE_SHIP_TEXTURE_FILE_PATH   = "resource/graphics/test/S1_BaseColor.png";
+    static const float       TRADE_SHIP_MESH_SCALE          = 0.5f; // プレイヤー船と同じスケール(create()の第2引数)
+
+    // プレイヤー船と見分けやすいよう、頂点ディフューズカラーで色味を変える(交易船=金のコンセプト)。
+    // dxe::Mesh::setMtrlDiffuse()へtnl::Vector3(R,G,B)として渡す想定(0.0〜1.0)。
+    // gmGameConfig.hは軽量に保ちたいため、ここではtnl::Vector3型を使わずfloat 3つに分けている。
+    static const float TRADE_SHIP_TINT_COLOR_R = 1.0f;
+    static const float TRADE_SHIP_TINT_COLOR_G = 0.85f;
+    static const float TRADE_SHIP_TINT_COLOR_B = 0.5f;
+
+    // コライダー(setupManualColliderへそのまま渡す値)。
+    static const float TRADE_SHIP_COLLIDER_RADIUS = 40.0f;
+    static const float TRADE_SHIP_COLLIDER_LENGTH = 120.0f;
+
+    // 巡航速度(dynamics_.targetSpeedにそのまま渡す。gmShip::SPEED_LEVELSと同じ単位系)
+    static const float TRADE_SHIP_CRUISE_SPEED = 0.4f;
+
+    // 操舵AI: 現在位置から中心線上でどれだけ先の点を「狙う点」にするか(world単位)。
+    // 大きいほど穏やかに、小さいほど機敏に(ただし曲がりきれず外側にカットしやすく)なる。
+    static const float TRADE_SHIP_LOOKAHEAD_DISTANCE = 250.0f;
+
+    // 操舵AI: 狙う点への角度差(ラジアン)からtargetRudderへ変換する際のゲイン。
+    // 角度差×このゲイン をそのまま-1〜1にクランプしてtargetRudderにする。
+    static const float TRADE_SHIP_STEERING_GAIN = 1.2f;
+
+    // 終点(G)までの残り距離がこれ未満になったら到達とみなし、デスポーンする(world単位)
+    static const float TRADE_SHIP_ARRIVAL_THRESHOLD = 80.0f;
+
+    // 進捗停滞タイムアウト+ワープの保険。
+    // 経路上の進捗(累積距離のハイウォーターマーク)がこの秒数だけ更新されなければ、
+    // 最寄りの中心線上の点(＋少し先)へワープし、向きも補正する。
+    static const float TRADE_SHIP_STUCK_TIMEOUT = 90.0f;
+    // ワープ先を、停滞検知位置からさらにこれだけ先に進めておく(同じ地点で即再発するのを防ぐ)
+    static const float TRADE_SHIP_WARP_ADVANCE_DISTANCE = 150.0f;
+
+    // 島衝突時の一時バック挙動。SPEED_LEVELSの負の段階(後退)を使う。
+    static const float TRADE_SHIP_COLLISION_BACKOFF_SPEED = -0.5f;      // バック中のtargetSpeed(SPEED_LEVELS[1]相当)
+    static const float TRADE_SHIP_COLLISION_BACKOFF_DURATION = 2.0f;    // バックを続ける秒数
+
+    // 交易船スポナー
+    static const size_t TRADE_SHIP_MAX_ENTITIES = 6;            // 同時に存在できる交易船の上限(暴走防止)
+    static const float  TRADE_SHIP_SPAWN_INTERVAL_MIN = 20.0f;  // 秒
+    static const float  TRADE_SHIP_SPAWN_INTERVAL_MAX = 40.0f;
 }

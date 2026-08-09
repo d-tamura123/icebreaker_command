@@ -239,6 +239,7 @@
     <ClInclude Include="program\object\gmProjectileBase.h" />
     <ClInclude Include="program\object\gmShip.h" />
     <ClInclude Include="program\object\gmSplitProjectile.h" />
+    <ClInclude Include="program\object\gmTradeShip.h" />
     <ClInclude Include="program\object\gmVirtualWave.h" />
     <ClInclude Include="program\object\gmWaterPlane.h" />
     <ClInclude Include="program\scene\gmFadeTransitionEffect.h" />
@@ -248,8 +249,10 @@
     <ClInclude Include="program\scene\scenes\gmGameScene.h" />
     <ClInclude Include="program\spawner\gmIcebergManager.h" />
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
+    <ClInclude Include="program\spawner\gmTradeShipManager.h" />
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
+    <ClInclude Include="program\util\gmRouteCenterlineUtil.h" />
     <ClInclude Include="program\weapon\gmFlameThrowerManager.h" />
     <ClInclude Include="program\weapon\gmProjectileManager.h" />
     <ClInclude Include="Resource.h" />
@@ -358,14 +361,17 @@
     <ClCompile Include="program\object\gmProjectileBase.cpp" />
     <ClCompile Include="program\object\gmShip.cpp" />
     <ClCompile Include="program\object\gmSplitProjectile.cpp" />
+    <ClCompile Include="program\object\gmTradeShip.cpp" />
     <ClCompile Include="program\object\gmVirtualWave.cpp" />
     <ClCompile Include="program\object\gmWaterPlane.cpp" />
     <ClCompile Include="program\scene\gmFadeTransitionEffect.cpp" />
     <ClCompile Include="program\scene\gmSceneManager.cpp" />
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
+    <ClCompile Include="program\spawner\gmTradeShipManager.cpp" />
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
+    <ClCompile Include="program\util\gmRouteCenterlineUtil.cpp" />
     <ClCompile Include="program\weapon\gmFlameThrowerManager.cpp" />
     <ClCompile Include="program\weapon\gmProjectileManager.cpp" />
   </ItemGroup>

@@ -422,6 +422,15 @@
     <ClInclude Include="program\effect\gmRouteVisualizer.h">
       <Filter>Source\[004] game\effect</Filter>
     </ClInclude>
+    <ClInclude Include="program\util\gmRouteCenterlineUtil.h">
+      <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="program\object\gmTradeShip.h">
+      <Filter>Source\[004] game\object</Filter>
+    </ClInclude>
+    <ClInclude Include="program\spawner\gmTradeShipManager.h">
+      <Filter>Source\[004] game\spawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -759,6 +768,15 @@
     </ClCompile>
     <ClCompile Include="program\effect\gmRouteVisualizer.cpp">
       <Filter>Source\[004] game\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\util\gmRouteCenterlineUtil.cpp">
+      <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="program\object\gmTradeShip.cpp">
+      <Filter>Source\[004] game\object</Filter>
+    </ClCompile>
+    <ClCompile Include="program\spawner\gmTradeShipManager.cpp">
+      <Filter>Source\[004] game\spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
