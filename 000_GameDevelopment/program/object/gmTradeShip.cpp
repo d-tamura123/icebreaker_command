@@ -223,8 +223,7 @@ namespace gm {
     // 衝突時、簡易な優先度ルールに基づいて一時バック挙動に入る
     // (既にバック中なら何もしない)。
     // 
-    // 位置の巻き戻し(revertToLastSafePosition())は、バック開始のきっかけになった
-    // 最初の接触の時だけ行う(詳細は関数内コメント参照)。
+    // revertToLastSafePosition()は衝突カテゴリを問わず常に呼ぶ(既存の移動抑止動作)。
     // ------------------------------------------------------------
     void gmTradeShip::onCollisionEnter(gmObjectBase* other)
     {
@@ -297,11 +296,14 @@ namespace gm {
     // デバッグ専用: 実際の衝突無しに、島衝突時と同じバック挙動を即座に発生させる(Pキー)。
     // onCollisionEnter()の島衝突時の処理(collisionBackoff_関連の状態遷移)と全く同じことを、
     // テスト用の固定の舵バイアスで行うだけ。既存のonCollisionEnter()自体は無改変。
+    // リリースビルドの成果物に含めないため#ifdef _DEBUGで囲む(宣言側も同様、gmTradeShip.h参照)。
     // ------------------------------------------------------------
+#ifdef _DEBUG
     void gmTradeShip::debugTriggerCollisionBackoff()
     {
         collisionBackoff_ = true;
         collisionBackoffTimer_ = TRADE_SHIP_COLLISION_BACKOFF_DURATION;
         collisionRudderBias_ = 1.0f; // テスト用に固定(実際の衝突時は接触方向から自動算出される)
     }
+#endif
 }

@@ -199,8 +199,10 @@ namespace gm
             tradeShipManager_->update(dt);
         }
 
-        // NPC交易船の異常系デバッグ用ホットキー(O/P。デバッグモード時のみ)
+        // NPC交易船の異常系デバッグ用ホットキー(O/P。デバッグモード時のみ。リリースビルドには含めない)
+#ifdef _DEBUG
         updateTradeShipDebugHotkeys();
+#endif
 
         // プレイヤーのクリック発射(デバッグモード中はフリーカメラ操作を優先し、発射は行わない)
         if (!debugger_->isDebugModeOn() || !debugger_->isFreeCameraEnabled()) {
@@ -367,7 +369,7 @@ namespace gm
         // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
         const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
-         projectileManager_->fire(playerShip_->getPosition(), targetPos);
+        projectileManager_->fire(playerShip_->getPosition(), targetPos);
         // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
         // flameThrowerManager_->fire(playerShip_, targetPos);
     }
@@ -382,6 +384,7 @@ namespace gm
     // gmTradeShip側の実装(debugSetForcedBadSteering() / debugTriggerCollisionBackoff())は
     // 既存の航路追従・衝突ロジックを一切変更せず、末尾に追記する形で作られている。
     // ------------------------------------------------------------
+#ifdef _DEBUG
     void gmGameScene::updateTradeShipDebugHotkeys()
     {
         if (!debugger_ || !debugger_->isDebugModeOn()) return;
@@ -403,5 +406,6 @@ namespace gm
             }
         }
     }
+#endif
 
 }

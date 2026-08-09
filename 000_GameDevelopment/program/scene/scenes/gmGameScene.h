@@ -46,8 +46,11 @@ namespace gm
 
         // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を
         // O/Pキーで意図的に発生させ、動作確認しやすくする(gmTradeShipのdebug*系メソッド参照)。
-        // debugger_->isDebugModeOn()の間だけ有効。
+        // debugger_->isDebugModeOn()の間だけ有効。リリースビルドの成果物には含めない
+        // (呼び出し先のgmTradeShip側のdebug*系メソッドも同様に#ifdef _DEBUGで囲んである)。
+#ifdef _DEBUG
         void updateTradeShipDebugHotkeys();
+#endif
 
         std::shared_ptr<gmGameContext> context_;
 
