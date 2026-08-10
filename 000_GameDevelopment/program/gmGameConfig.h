@@ -93,9 +93,11 @@ namespace gm
     // NOTE: S2〜S10等の専用モデルに差し替え予定だが、変換(mv1化)が済むまでの暫定として
     //       プレイヤー船と同じS1.mv1を使う(色味だけTRADE_SHIP_TINT_COLORで変える)。
     //       差し替える際はこの2つのパスを書き換えるだけでよい。
-    static const char* const TRADE_SHIP_MESH_FILE_PATH      = "resource/mesh/mv/test/S1.mv1";
-    static const char* const TRADE_SHIP_TEXTURE_FILE_PATH   = "resource/graphics/test/S1_BaseColor.png";
-    static const float       TRADE_SHIP_MESH_SCALE          = 0.5f; // プレイヤー船と同じスケール(create()の第2引数)
+    static const char* const TRADE_SHIP_MESH_FILE_PATH          = "resource/mesh/mv/ship/TradeShip.mv1";
+    static const char* const TRADE_SHIP_TEXTURE_FILE_PATH       = "resource/graphics/ship/tradeship/Textures.png";
+    static const char* const TRADE_SHIP_NORMAL_MAP_FILE_PATH    = "resource/graphics/ship/tradeship/Normals.png";
+
+    static const float       TRADE_SHIP_MESH_SCALE          = 0.01f;
 
     // プレイヤー船と見分けやすいよう、頂点ディフューズカラーで色味を変える(交易船=金のコンセプト)。
     // dxe::Mesh::setMtrlDiffuse()へtnl::Vector3(R,G,B)として渡す想定(0.0〜1.0)。

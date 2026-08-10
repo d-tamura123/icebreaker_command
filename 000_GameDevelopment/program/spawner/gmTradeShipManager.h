@@ -39,6 +39,7 @@ namespace gm {
         std::shared_ptr<gmCollisionSystem> collisionSystem_;
 
         Shared<dxe::Texture> texture_;
+        Shared<dxe::Texture> normalMapTexture_;
     };
 
 }

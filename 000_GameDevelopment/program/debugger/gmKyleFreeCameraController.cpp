@@ -1,8 +1,12 @@
-#include "gmKyleFreeCameraController.h"
+ï»¿#include "gmKyleFreeCameraController.h"
+#undef min              // std::max, std::minã®ãƒã‚¯ãƒ­ç«¶åˆè§£æ¶ˆ
+#undef max
+#include <algorithm>
+
 namespace gm {
     void gmKyleFreeCameraController::update(Shared<dxe::Camera>& camera)
     {
-        // 1. ƒ}ƒEƒXƒhƒ‰ƒbƒO‚Å‰ñ“]Šp‚ÌXV
+        // 1. ãƒã‚¦ã‚¹ãƒ‰ãƒ©ãƒƒã‚°ã§å›è»¢è§’ã®æ›´æ–°
         if (tnl::Input::IsMouseDown(eMouse::RIGHT)) {
             auto v = tnl::Input::GetMouseVelocity();
             yaw_ += v.x * 0.005f;
@@ -10,15 +14,15 @@ namespace gm {
             pitch_ = std::clamp(pitch_, -1.5f, 1.5f);
         }
 
-        // 2. ƒzƒC[ƒ‹‚Å‹——£iƒY[ƒ€j‚ÌXVií‚ÉÅV‚Ì dist_ ‚ğˆÛj
+        // 2. ãƒ›ã‚¤ãƒ¼ãƒ«ã§è·é›¢ï¼ˆã‚ºãƒ¼ãƒ ï¼‰ã®æ›´æ–°ï¼ˆå¸¸ã«æœ€æ–°ã® dist_ ã‚’ç¶­æŒï¼‰
         int wheel = tnl::Input::GetMouseWheel();
         if (wheel != 0) {
-            float zoom = -wheel * 5.0f;
+            float zoom = -wheel * std::max(dist_ * 0.001f, 0.1f);
             dist_ += zoom;
             dist_ = std::clamp(dist_, 10.0f, 5000.0f);
         }
 
-        // 3. ƒL[ƒ{[ƒh‚É‚æ‚é’‹“_itarget_j‚ÌˆÚ“®
+        // 3. ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã«ã‚ˆã‚‹æ³¨è¦–ç‚¹ï¼ˆtarget_ï¼‰ã®ç§»å‹•
         float moveSpeed = 20.0f;
         if (tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_UP))    camTarget_.z += moveSpeed;
         if (tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_DOWN))  camTarget_.z -= moveSpeed;
@@ -27,18 +31,18 @@ namespace gm {
         if (tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_PGUP))  camTarget_.y += moveSpeed;
         if (tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_PGDN))  camTarget_.y -= moveSpeed;
 
-        // 4. ‰ñ“]Šp‚©‚çƒJƒƒ‰‚ÌŒü‚«iforward ƒxƒNƒgƒ‹j‚ğŒvZ
+        // 4. å›è»¢è§’ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã®å‘ãï¼ˆforward ãƒ™ã‚¯ãƒˆãƒ«ï¼‰ã‚’è¨ˆç®—
         tnl::Vector3 forward = {
             cosf(pitch_) * sinf(yaw_),
             sinf(pitch_),
             cosf(pitch_) * cosf(yaw_)
         };
 
-        // 5. ’‹“_itarget_j‚ÆŒü‚«iforwardjA‹——£idist_j‚©‚çÅI“I‚ÈƒJƒƒ‰À•Wiposj‚ğZo
-        // ¦ƒzƒC[ƒ‹‚Ì—L–³‚ÉŠÖ‚í‚ç‚¸A–ˆƒtƒŒ[ƒ€•K‚¸ŒvZ‚·‚é
+        // 5. æ³¨è¦–ç‚¹ï¼ˆtarget_ï¼‰ã¨å‘ãï¼ˆforwardï¼‰ã€è·é›¢ï¼ˆdist_ï¼‰ã‹ã‚‰æœ€çµ‚çš„ãªã‚«ãƒ¡ãƒ©åº§æ¨™ï¼ˆposï¼‰ã‚’ç®—å‡º
+        // â€»ãƒ›ã‚¤ãƒ¼ãƒ«ã®æœ‰ç„¡ã«é–¢ã‚ã‚‰ãšã€æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å¿…ãšè¨ˆç®—ã™ã‚‹
         tnl::Vector3 pos = camTarget_ - forward * dist_;
 
-        // 6. ƒJƒƒ‰‚Ö”½‰f
+        // 6. ã‚«ãƒ¡ãƒ©ã¸åæ˜ 
         camera->setPosition(pos);
         camera->setTarget(camTarget_);
         camera->update();

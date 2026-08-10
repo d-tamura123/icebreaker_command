@@ -18,6 +18,7 @@ namespace gm {
         , collisionSystem_(collisionSystem)
     {
         texture_ = dxe::Texture::CreateFromFile(TRADE_SHIP_TEXTURE_FILE_PATH);
+        normalMapTexture_ = dxe::Texture::CreateFromFile(TRADE_SHIP_NORMAL_MAP_FILE_PATH);
 
         maxEntities_ = TRADE_SHIP_MAX_ENTITIES;
         spawnTimer_ = rollNextInterval(); // 開始直後にまとめて湧かないよう最初の間隔を設定
@@ -61,7 +62,21 @@ namespace gm {
 
         ship->create(TRADE_SHIP_MESH_FILE_PATH, TRADE_SHIP_MESH_SCALE);
         if (auto mesh = ship->getMesh()) {
+
             mesh->setTexture(texture_);
+
+            // ノーマルマップ。
+            // TODO: 保留中。dxe開発者にMV1のノーマルマップの扱い・対応状況を確認中のため、
+            // 結論が出るまでコメントアウトしておく。
+            // (調査過程のメモ: MV1SetTextureGraphHandle()の第2引数は「マテリアルの種類
+            //  (ディフューズ/法線等)」ではなく「モデル内部のテクスチャ一覧の何番目か」を表す
+            //  通し番号らしいという情報はあるが、dxe::Mesh::BUMPが正しい値かは未確定。
+            //  ライティング周りの検証(gmKyleDebugger側)も原因切り分けの決め手にならず保留。)
+//            if (normalMapTexture_) {
+//                // mesh->setTexture(normalMapTexture_, dxe::Mesh::BUMP);
+//                // mesh->setTexture(normalMapTexture_, 2);
+//            }
+
             // プレイヤー船と見分けやすいよう色味を変える(交易船=金のコンセプト。TODO参照)
             mesh->setMtrlDiffuse(tnl::Vector3(
                 TRADE_SHIP_TINT_COLOR_R, TRADE_SHIP_TINT_COLOR_G, TRADE_SHIP_TINT_COLOR_B));
