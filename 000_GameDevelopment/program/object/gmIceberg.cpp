@@ -30,7 +30,7 @@ namespace gm {
         mesh_ = mesh;
 
         // 個体ごとに自転の向き・速さをばらつかせる(演出用)
-        spinSpeed_ = tnl::GetRandomDistribution<float>(-0.15f, 0.15f);
+        spinSpeed_ = tnl::GetRandomDistribution<float>(-0.02f, 0.02f);
 
         // 球コライダーを自動設定する
         // Note: mesh_->getBoundingSphereRadius()はDxLibのメッシュインデックス0だけを

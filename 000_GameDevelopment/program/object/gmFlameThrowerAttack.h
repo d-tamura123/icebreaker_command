@@ -72,7 +72,7 @@ namespace gm {
         // コンストラクタ引数から上書きする想定。
         static constexpr float DEFAULT_FAN_ANGLE_DEG = 45.0f;   // 扇の開き角(度)
         static constexpr int   DEFAULT_LINE_COUNT    = 5;       // 扇の中のライン本数(奇数だと中心ラインがクリック方向とちょうど重なる)
-        static constexpr float DEFAULT_RANGE         = 160.0f;  // 射程(world単位)
+        static constexpr float DEFAULT_RANGE         = 200.0f;  // 射程(world単位)
         static constexpr float DEFAULT_DURATION      = 1.2f;    // 発動から自動終了までの秒数
 
         static constexpr float LINE_VISUAL_WIDTH    = 45.0f;   // ラインの太さ(見た目、world単位)

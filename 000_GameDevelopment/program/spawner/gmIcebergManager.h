@@ -66,16 +66,16 @@ namespace gm {
         // 大(4ピース)の基準サイズ・ピース数
         // Note: 1ピースの基本サイズは体感で小さく見えたため、以前の1.0fから拡大している。
         //       実機で見ながら調整した値。
-        static constexpr float PIECE_BASE_SIZE = 1.4f;
+        static constexpr float PIECE_BASE_SIZE = 6.0f;
         static constexpr int   LARGE_PIECE_COUNT = 4;
 
         // ---- 分裂時の押し出し・自転 ----
-        static constexpr float SPLIT_PUSH_SPEED = 80.0f;       // 押し出し初速(world単位/秒)。以後は既存の慣性減衰に任せる
-        static constexpr float SPLIT_SPIN_BOOST = 4.0f;        // 分裂直後だけ自転を強める倍率
+        static constexpr float SPLIT_PUSH_SPEED = 120.0f;      // 押し出し初速(world単位/秒)。以後は既存の慣性減衰に任せる
+        static constexpr float SPLIT_SPIN_BOOST = 0.5f;        // 分裂直後だけ自転を強める倍率
 
         // 分裂直後、兄弟フラグメント同士の押し戻し判定を無視する猶予秒数。
         // SPLIT_PUSH_SPEEDで離れるのに十分な時間を確保する(短すぎると押し戻しループが再発する)。
-        static constexpr float SPLIT_COLLISION_GRACE_SEC = 1.5f;
+        static constexpr float SPLIT_COLLISION_GRACE_SEC = 3.0f;
 
         // ---- 生成範囲(グリッド単位。南端の帯状エリア) ----
         // worldZ = -y * CELL_SIZE のため、"南端"は行番号(y)が大きい側

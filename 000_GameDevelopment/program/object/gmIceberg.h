@@ -128,7 +128,7 @@ namespace gm {
         // ---- 調整用パラメータ ----
         static constexpr float DRIFT_SCALE          = 22.0f;            // 海流ベクトル→速度への倍率
         static constexpr float INERTIA_RATE_PER_SEC = 0.075f;           // 慣性の強さ(小さいほど鈍い=重い動き)
-        static constexpr float SPLIT_PUSH_DECAY_RATE_PER_SEC = 1.2f;    // 分裂の押し出し(splitPushVelocity_)専用の減衰レート
+        static constexpr float SPLIT_PUSH_DECAY_RATE_PER_SEC = 0.6f;    // 分裂の押し出し(splitPushVelocity_)専用の減衰レート
         static constexpr float WAVE_DAMPING         = 0.1f;             // 上下動の減衰(1.0だと船と同じ強さになる)
         static constexpr float TILT_DAMPING         = 0.1f;             // 傾きの減衰
         static constexpr float OUT_OF_BOUNDS_MARGIN = 50.0f;            // マップ端からの余裕(world単位)
@@ -156,15 +156,17 @@ namespace gm {
         // ---- ティア別ダメージ倍率 ----
         // 戦略性の設計: 「割ってから攻撃する方が効率が良い」を成立させるための倍率。
         // 通常弾: 2ピースを1/2、4ピースを1/4にすると「割っても割らなくても効率は同じ(とんとん)」に
-        // なってしまうため、それよりわずかに効率を悪くしてある(1/3, 1/6)。
-        // 火炎放射: 1ピースまで分解しないと利きが悪い、という体感になるよう、
-        // 通常弾よりもさらに急な落ち込み(1/8, 1/16)にしてある。
+        // なってしまうため、それよりかなり効率を悪くしてある(1/6, 1/12)。
+        // 火炎放射: 小1ピースまで分解しないと利きが悪い、
+        //           中2ピースまで分解すればそこそこ効く
+        //           大4ピースではぜんぜん効かない、という体感になるよう、
+        // 通常弾よりもさらに急な落ち込み(1/8, 1/24)にしてある。
         static constexpr float SHOT_DAMAGE_MULT_SMALL   = 1.0f;
-        static constexpr float SHOT_DAMAGE_MULT_MEDIUM  = 1.0f / 3.0f;
-        static constexpr float SHOT_DAMAGE_MULT_LARGE   = 1.0f / 6.0f;
+        static constexpr float SHOT_DAMAGE_MULT_MEDIUM  = 1.0f / 6.0f;
+        static constexpr float SHOT_DAMAGE_MULT_LARGE   = 1.0f / 12.0f;
 
         static constexpr float FLAME_DAMAGE_MULT_SMALL  = 1.0f;
         static constexpr float FLAME_DAMAGE_MULT_MEDIUM = 1.0f / 8.0f;
-        static constexpr float FLAME_DAMAGE_MULT_LARGE  = 1.0f / 16.0f;
+        static constexpr float FLAME_DAMAGE_MULT_LARGE  = 1.0f / 24.0f;
     };
 }

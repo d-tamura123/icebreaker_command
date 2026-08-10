@@ -369,8 +369,8 @@ namespace gm
         // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
         const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
-        projectileManager_->fire(playerShip_->getPosition(), targetPos);
-        // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+        // projectileManager_->fire(playerShip_->getPosition(), targetPos);
+        projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
         // flameThrowerManager_->fire(playerShip_, targetPos);
     }
 
