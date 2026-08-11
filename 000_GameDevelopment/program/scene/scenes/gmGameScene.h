@@ -17,6 +17,8 @@
 #include "../../effect/gmRouteVisualizer.h"
 #include "../../spawner/gmTradeShipManager.h"
 
+#include "../gmFadeTransitionEffect.h"
+
 #include "../../debugger/gmKyleDebugger.h"
 
 namespace gm
@@ -44,6 +46,11 @@ namespace gm
         // クリック位置を海面(y=0)へレイキャストし、命中すれば通常弾を発射する
         void tryFireProjectileOnClick();
 
+        // プレイヤー撃沈演出完了時のコールバック本体。
+        // フェードアウト→(コールバック内で)HP全回復・初期位置へ再配置・カメラリセット→フェードイン、
+        // という一連の処理を行う。playerShip_->setOnDestroyedCompleteCallback()に渡す。
+        void respawnPlayer();
+
         // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を
         // O/Pキーで意図的に発生させ、動作確認しやすくする(gmTradeShipのdebug*系メソッド参照)。
         // debugger_->isDebugModeOn()の間だけ有効。リリースビルドの成果物には含めない
@@ -66,9 +73,10 @@ namespace gm
         std::shared_ptr<gmProjectileManager>     projectileManager_;
         std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
         std::unique_ptr<gmUIManager>             uiManager_;
-        std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;   // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
-        std::shared_ptr<gmTradeShipManager>      tradeShipManager_;  // NPC交易船のスポーンと一元管理
-
+        std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;      // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
+        std::shared_ptr<gmTradeShipManager>      tradeShipManager_;     // NPC交易船のスポーンと一元管理
+        std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;          // プレイヤー撃沈時の再配置演出専用のフェード
+        
         // デバッグ専用(updateTradeShipDebugHotkeys()参照): Oキーでのトグル状態を保持する。
         // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。
         bool debugTradeShipForcedBadSteering_ = false;

@@ -44,16 +44,18 @@ namespace gm {
 
     void gmTradeShip::update(float deltaTime)
     {
-        // 進捗計測・停滞タイムアウトは、バック中かどうかによらず常に行う
-        // (updateSteeringAI()の中だけに置くと、バック中はこの判定自体が止まってしまい、
-        // 最終防衛ラインとして機能しなくなるため)。
-        updateProgressTracking(deltaTime);
+        if (!isDestroyed()) {
+            // 進捗計測・停滞タイムアウトは、バック中かどうかによらず常に行う
+            // (updateSteeringAI()の中だけに置くと、バック中はこの判定自体が止まってしまい、
+            // 最終防衛ラインとして機能しなくなるため)。
+            updateProgressTracking(deltaTime);
 
-        if (collisionBackoff_) {
-            updateCollisionBackoff(deltaTime);
-        }
-        else {
-            updateSteeringAI(deltaTime);
+            if (collisionBackoff_) {
+                updateCollisionBackoff(deltaTime);
+            }
+            else {
+                updateSteeringAI(deltaTime);
+            }
         }
 
         gmShip::update(deltaTime);
@@ -223,10 +225,16 @@ namespace gm {
     // 衝突時、簡易な優先度ルールに基づいて一時バック挙動に入る
     // (既にバック中なら何もしない)。
     // 
+    // 流氷が相手の場合は、バック要否の判定とは別に
+    // gmShip::applyIcebergContactDamage()でダメージ判定も行う。
+    //
     // revertToLastSafePosition()は衝突カテゴリを問わず常に呼ぶ(既存の移動抑止動作)。
     // ------------------------------------------------------------
     void gmTradeShip::onCollisionEnter(gmObjectBase* other)
     {
+        // 撃沈演出中(Destroyed状態)は衝突応答そのものを無視する。
+        if (isDestroyed()) return;
+
         // Note:
         // 位置の巻き戻しは、バック開始のきっかけになった最初の接触の時だけ行う。
         // バック中(collisionBackoff_が既にtrue)にまで毎フレーム巻き戻してしまうと、
@@ -241,6 +249,10 @@ namespace gm {
         if (!other) {
             return;
         }
+
+        // 流氷との接触ダメージ判定(氷山インスタンスごとの猶予タイマー管理込み)。
+        // バック要否の判定(このあとのswitch文)とは独立して行う。
+        applyIcebergContactDamage(other);
 
         // ------------------------------------------------------------
         // 船同士の衝突について。
@@ -289,16 +301,25 @@ namespace gm {
         }
     }
 
+    // ------------------------------------------------------------
+    // 撃沈演出完了時: 交易船は単純にkill()してデスポーンするだけでよい。
+    // ゴールに到着していれば得られたはずの資金の機会損失、という扱いでスコアは特に操作しない
+    // ------------------------------------------------------------
+    void gmTradeShip::onDestroyedComplete()
+    {
+        kill();
+    }
 
 
 
+
+#ifdef _DEBUG
     // ------------------------------------------------------------
     // デバッグ専用: 実際の衝突無しに、島衝突時と同じバック挙動を即座に発生させる(Pキー)。
     // onCollisionEnter()の島衝突時の処理(collisionBackoff_関連の状態遷移)と全く同じことを、
     // テスト用の固定の舵バイアスで行うだけ。既存のonCollisionEnter()自体は無改変。
     // リリースビルドの成果物に含めないため#ifdef _DEBUGで囲む(宣言側も同様、gmTradeShip.h参照)。
     // ------------------------------------------------------------
-#ifdef _DEBUG
     void gmTradeShip::debugTriggerCollisionBackoff()
     {
         collisionBackoff_ = true;

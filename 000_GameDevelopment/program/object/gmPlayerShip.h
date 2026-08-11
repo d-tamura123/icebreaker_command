@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "gmShip.h"
+#include <functional>
 
 namespace gm {
 
@@ -11,8 +12,35 @@ namespace gm {
 
         void update(float deltaTime) override;
 
+        // ------------------------------------------------------------
+        // プレイヤー撃沈演出の完了時に呼ばれるコールバックを設定する。
+        // 
+        // フェード遷移(gmFadeTransitionEffect)、マップ再配置(gmMapManager)、
+        // カメラリセットなどは gmGameScene 側の責務であり、gmPlayerShip が
+        // gmGameContext 等へ直接依存しないよう、外部からコールバックとして受け取る。
+        //
+        // このコールバックは gmGameScene::onEnter() で一度だけ設定する想定。
+        // ------------------------------------------------------------
+        void setOnDestroyedCompleteCallback(std::function<void()> callback) {
+            onDestroyedCompleteCallback_ = callback;
+        }
+
+        // Destroyed状態を解除して通常状態に戻す(gmShip::resetToNormalState()の公開ラッパー)。
+        // 位置・向きの再配置自体は呼び出し元(setPosition/setYaw)の責務。
+        void resetAfterRespawn() {
+            resetToNormalState();
+            rudderIndex_ = 2;             // RUDDER_LEVELSの中央(0.0)
+            rudderHeldLastFrame_ = false;
+        }
+
+    protected:
+        // 撃沈演出完了時、設定済みのコールバックを呼ぶだけ(実際のフェード・再配置はgmGameScene側)。
+        void onDestroyedComplete() override;
+
     private:
         void handleInput();
+
+        std::function<void()> onDestroyedCompleteCallback_;
 
         // A/D(押しっぱなし方式)がちょうど離された瞬間を検知するためのフラグ。
         // A/D=離すと中央へ戻る/Q/E=押すたびに切り替わり離しても保持される、という

@@ -58,6 +58,17 @@ namespace gm
         playerShip_->setupManualCollider(40.0f, 120.0f, 0.0f);
         collisionSystem_->registerObject(playerShip_);
 
+        // プレイヤー撃沈時の再配置演出専用のフェード(gmSceneManagerのシーン切り替え用フェードとは別物)
+        respawnFade_ = std::make_shared<gmFadeTransitionEffect>();
+        respawnFade_->setScreenSize(DXE_WINDOW_WIDTH, DXE_WINDOW_HEIGHT);
+        respawnFade_->setFadeColor(0, 0, 0);
+
+        // プレイヤー撃沈演出(gmShip::updateDestroyed())が完了した瞬間に呼ばれるコールバックを設定する
+        playerShip_->setOnDestroyedCompleteCallback([this]() { respawnPlayer(); });
+
+
+
+
         // 氷塊
         auto iceTex = dxe::Texture::CreateFromFile("resource/graphics/test/White-Ice4.jpg");
 
@@ -167,6 +178,8 @@ namespace gm
     {
         float dt = dxe::GetDeltaTime();
 
+        respawnFade_->update(dt); // プレイヤー撃沈時の再配置演出用フェード(Idle中は何もしない)
+
         debugger_->update();
         playerShip_->update(dt);
         water_->update(context_->camera);
@@ -176,8 +189,9 @@ namespace gm
             // フリーカメラモード
             debugger_->getFreeCamera()->update(context_->camera);
         }
-        else {
+        else if(!playerShip_->isDestroyed()) {
             // 船追従カメラ
+            // Note: 撃沈中(isDestroyed())はこの分岐自体をスキップし、カメラを据え置きにする。
             tnl::Vector3 shipForward = playerShip_->getForward();
             tnl::Vector3 shipPos = playerShip_->getPosition();
 
@@ -304,6 +318,8 @@ namespace gm
 
         debugger_->render(context_->camera, collisionSystem_);
 
+        respawnFade_->draw(); // プレイヤー撃沈時の再配置演出用フェード(最前面に描画)
+
         dxe::DrawFpsIndicator({ 10, DXE_WINDOW_HEIGHT - 10 });
     }
 
@@ -312,6 +328,26 @@ namespace gm
         // 特に破棄処理は不要
     }
 
+
+    // ------------------------------------------------------------
+    // プレイヤー撃沈演出完了時のコールバック本体。
+    // フェードアウト→(暗転中に)HP全回復・初期位置へ再配置→フェードイン、という流れ。
+    // カメラは追従カメラ(update()内)がplayerShip_の位置・向きを毎フレーム見て自動追従する
+    // ため、ここで明示的にリセットする必要は無い(yaw_/pitch_/dist_はフリーカメラ専用の変数で、
+    // 通常の追従カメラの計算には使われていない)。
+    // ------------------------------------------------------------
+    void gmGameScene::respawnPlayer()
+    {
+        respawnFade_->fadeOutIn([this]() {
+            playerShip_->resetAfterRespawn(); // HP全回復・Destroyed状態解除・傾き/フェードのリセット
+
+            tnl::Vector2f startPos2D = context_->map->GetPlayerStartWorld();
+            playerShip_->setPosition(tnl::Vector3(startPos2D.x, 0.0f, startPos2D.y));
+            playerShip_->setYaw(tnl::PI); // シーン開始時と同じ、南向き初期配置
+
+            // TODO: 資金マイナス等のスコア処理はここに追加する(後タスクで実装予定)
+            });
+    }
 
     // ------------------------------------------------------------
     // クリック位置を海面(y=0の平面)へレイキャストし、命中すれば割り砲弾を発射する。
@@ -374,6 +410,10 @@ namespace gm
         // flameThrowerManager_->fire(playerShip_, targetPos);
     }
 
+
+
+
+#ifdef _DEBUG
     // ------------------------------------------------------------
     // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を、
     // O/Pキーで意図的に発生させる。デバッグモード時のみ有効。
@@ -384,7 +424,6 @@ namespace gm
     // gmTradeShip側の実装(debugSetForcedBadSteering() / debugTriggerCollisionBackoff())は
     // 既存の航路追従・衝突ロジックを一切変更せず、末尾に追記する形で作られている。
     // ------------------------------------------------------------
-#ifdef _DEBUG
     void gmGameScene::updateTradeShipDebugHotkeys()
     {
         if (!debugger_ || !debugger_->isDebugModeOn()) return;

@@ -139,4 +139,38 @@ namespace gm
     static const size_t TRADE_SHIP_MAX_ENTITIES = 6;            // 同時に存在できる交易船の上限(暴走防止)
     static const float  TRADE_SHIP_SPAWN_INTERVAL_MIN = 20.0f;  // 秒
     static const float  TRADE_SHIP_SPAWN_INTERVAL_MAX = 40.0f;
+
+
+
+    // ------------------------------------------------------------
+    // 船のHP・被弾・撃沈演出(gmShip共通。プレイヤー船・交易船の両方に効く)
+    // ------------------------------------------------------------
+    static const float SHIP_MAX_HP = 100.0f;
+
+    // 流氷との接触ダメージ。
+    // 「初回接触(または猶予明け後の再接触)は大ダメージ、以後接触し続けている間は
+    //  小さな継続ダメージ(DoT)」というモデル。
+    // 氷山インスタンスごとに猶予タイマーを持つため、
+    // 短時間で接触→離脱→再接触を繰り返しても大ダメージが連発しない
+    static const float SHIP_ICEBERG_BIG_HIT_DAMAGE      = 25.0f;    // 初回(または猶予明け)接触時の大ダメージ
+    static const float SHIP_ICEBERG_DOT_DAMAGE_PER_SEC  = 5.0f;     // 接触し続けている間の継続ダメージ(秒あたり)
+    static const float SHIP_ICEBERG_CONTACT_GRACE_SEC   = 3.0f;     // 大ダメージ後、同じ氷山からの大ダメージを抑止する猶予秒数
+
+    // 撃沈演出(Destroyed状態)。
+    // 「垂直方向に傾きながら沈み、完全に水面下へ潜ることで消えたとみなす」という演出を
+    // gmShip::updateDestroyed()で共通実装する。
+    // 傾き・沈み込みとも、経過時間の割合(t)をイーズイン(t^EASE_POWER)してから適用することで、
+    // 始めはゆっくり、徐々に加速していく動きにしている。
+    static const float SHIP_DESTROYED_TILT_TARGET_RAD   = 0.9f;   // 最終的な傾き角度(ラジアン。約51度)
+    static const float SHIP_DESTROYED_SUBMERGE_DEPTH    = 150.0f; // 死亡時のY座標から、これだけ沈んだら完全に消えたとみなす(world単位)
+    static const float SHIP_DESTROYED_DURATION          = 5.0f;   // 演出全体の尺(秒)。この時間でTILT_TARGET/SUBMERGE_DEPTHに到達する
+    static const float SHIP_DESTROYED_EASE_POWER        = 2.0f;   // イーズインの強さ(t^EASE_POWER)。大きいほど始めがよりゆっくりになる
+
+    // 傾きは全体の前半で完了させ、沈み込みは傾きが終わりかけた頃から始めて
+    // 全体の終わりで完了する、という時間差を付ける(SHIP_DESTROYED_DURATIONに対する割合で指定)。
+    // 例: TILT_PORTION=0.6, SINK_START_PORTION=0.4なら、傾きは0〜60%の区間で完了し、
+    // 沈み込みは40%〜100%の区間で進む(40〜60%の間は両方同時に進む重なり区間)。
+    static const float SHIP_DESTROYED_TILT_PORTION = 0.6f;
+    static const float SHIP_DESTROYED_SINK_START_PORTION = 0.25f;
+
 }

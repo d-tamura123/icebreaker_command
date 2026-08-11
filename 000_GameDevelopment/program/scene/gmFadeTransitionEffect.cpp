@@ -1,4 +1,4 @@
-#include "gmFadeTransitionEffect.h"
+ï»¿#include "gmFadeTransitionEffect.h"
 #include "DxLib.h"
 
 gmFadeTransitionEffect::gmFadeTransitionEffect()
@@ -30,17 +30,17 @@ void gmFadeTransitionEffect::setScreenSize(int width, int height)
 }
 
 // ------------------------------------------------------------
-// ‚ƒŒƒxƒ‹ APIFƒtƒF[ƒhƒAƒEƒg ¨ Ø‘Ö ¨ ƒtƒF[ƒhƒCƒ“
+// é«˜ãƒ¬ãƒ™ãƒ« APIï¼šãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ â†’ åˆ‡æ›¿ â†’ ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
 // ------------------------------------------------------------
 void gmFadeTransitionEffect::fadeOutIn(std::function<void()> onSwitch)
 {
-    onSwitchCallback_ = onSwitch;
     reset();
+    onSwitchCallback_ = onSwitch;
     start();
 }
 
 // ------------------------------------------------------------
-// ƒtƒF[ƒhŠJniƒtƒF[ƒhƒAƒEƒg‚©‚çƒXƒ^[ƒgj
+// ãƒ•ã‚§ãƒ¼ãƒ‰é–‹å§‹ï¼ˆãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã‹ã‚‰ã‚¹ã‚¿ãƒ¼ãƒˆï¼‰
 // ------------------------------------------------------------
 void gmFadeTransitionEffect::start()
 {
@@ -51,7 +51,7 @@ void gmFadeTransitionEffect::start()
 }
 
 // ------------------------------------------------------------
-// XVˆ—
+// æ›´æ–°å‡¦ç†
 // ------------------------------------------------------------
 void gmFadeTransitionEffect::update(float deltaTime)
 {
@@ -72,7 +72,7 @@ void gmFadeTransitionEffect::update(float deltaTime)
             elapsed_ = 0.0f;
             switchTiming_ = true;
 
-            // š ‰ü‘P“_F‚±‚±‚Å©“®ƒR[ƒ‹ƒoƒbƒN
+            // â˜… æ”¹å–„ç‚¹ï¼šã“ã“ã§è‡ªå‹•ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
             if (onSwitchCallback_) {
                 onSwitchCallback_();
                 onSwitchCallback_ = nullptr;
@@ -109,7 +109,7 @@ void gmFadeTransitionEffect::update(float deltaTime)
 }
 
 // ------------------------------------------------------------
-// •`‰æ
+// æç”»
 // ------------------------------------------------------------
 void gmFadeTransitionEffect::draw()
 {
@@ -122,7 +122,7 @@ void gmFadeTransitionEffect::draw()
 }
 
 // ------------------------------------------------------------
-// ó‘Ôƒ`ƒFƒbƒN
+// çŠ¶æ…‹ãƒã‚§ãƒƒã‚¯
 // ------------------------------------------------------------
 bool gmFadeTransitionEffect::isSwitchTiming() const
 {
@@ -135,7 +135,7 @@ bool gmFadeTransitionEffect::isFinished() const
 }
 
 // ------------------------------------------------------------
-// ƒŠƒZƒbƒg
+// ãƒªã‚»ãƒƒãƒˆ
 // ------------------------------------------------------------
 void gmFadeTransitionEffect::reset()
 {

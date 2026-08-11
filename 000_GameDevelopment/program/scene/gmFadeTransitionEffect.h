@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "gmSceneTransitionEffectBase.h"
 #include "dxe_build_setting.h"
 #include <functional>
@@ -7,16 +7,16 @@ class gmFadeTransitionEffect : public gmSceneTransitionEffectBase {
 public:
     gmFadeTransitionEffect();
 
-    // İ’è
+    // è¨­å®š
     void setFadeOutDuration(float seconds);
     void setFadeInDuration(float seconds);
     void setFadeColor(int r, int g, int b);
     void setScreenSize(int width, int height) override;
 
-    // ‚ƒŒƒxƒ‹ APIFƒtƒF[ƒhƒAƒEƒg ¨ Ø‘Ö ¨ ƒtƒF[ƒhƒCƒ“ ‚ğ©“®ˆ—
+    // é«˜ãƒ¬ãƒ™ãƒ« APIï¼šãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ â†’ åˆ‡æ›¿ â†’ ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ ã‚’è‡ªå‹•å‡¦ç†
     void fadeOutIn(std::function<void()> onSwitch);
 
-    // SceneTransitionEffect ‚ÌÀ‘•
+    // SceneTransitionEffect ã®å®Ÿè£…
     void start() override;
     void update(float deltaTime) override;
     void draw() override;
@@ -28,12 +28,12 @@ private:
     enum class Phase { Idle, FadeOut, SwitchWait, FadeIn, Done };
     Phase phase_ = Phase::Idle;
 
-    // İ’è’l
+    // è¨­å®šå€¤
     float fadeOutDuration_ = 0.3f;
     float fadeInDuration_ = 0.3f;
     int colorR_ = 0, colorG_ = 0, colorB_ = 0;
 
-    // ó‘Ô
+    // çŠ¶æ…‹
     float elapsed_ = 0.0f;
     int alpha_ = 0;
     bool switchTiming_ = false;
@@ -41,6 +41,6 @@ private:
     int screenW_ = DXE_WINDOW_WIDTH;
     int screenH_ = DXE_WINDOW_HEIGHT;
 
-    // ‰ü‘P“_FƒR[ƒ‹ƒoƒbƒN“à‘ 
+    // æ”¹å–„ç‚¹ï¼šã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯å†…è”µ
     std::function<void()> onSwitchCallback_;
 };

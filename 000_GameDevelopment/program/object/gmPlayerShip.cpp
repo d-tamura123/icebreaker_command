@@ -5,8 +5,26 @@ namespace gm {
 
     void gmPlayerShip::update(float deltaTime)
     {
-        handleInput();              // プレイヤー入力だけ差分
+        // 撃沈演出(傾き・沈み込み・フェード)は
+        // gmShip::update()側のupdateDestroyed()に一任する。
+        // プレイヤー入力は受け付けない。
+        
+        if (!isDestroyed()) {
+            handleInput();  // 破壊中は入力しない
+        }
+
         gmShip::update(deltaTime);  // 共通ロジックは親に任せる
+    }
+
+    // ------------------------------------------------------------
+    // 撃沈演出完了時: 実際のフェード・再配置・カメラリセットはgmGameScene側の責務のため、
+    // ここでは設定済みのコールバックを呼ぶだけにする(未設定なら何もしない)。
+    // ------------------------------------------------------------
+    void gmPlayerShip::onDestroyedComplete()
+    {
+        if (onDestroyedCompleteCallback_) {
+            onDestroyedCompleteCallback_();
+        }
     }
 
     void gmPlayerShip::handleInput()
@@ -27,7 +45,7 @@ namespace gm {
         // -----------------------------
         // 舵角（A/D=押しっぱなし方式 / Q/E=段階トグル方式）
         // -----------------------------
-        // WoWs本家は両方の操作方式をサポートしているため、両方実装する。
+        // 「押しっぱなし方式」と「段階トグル方式」の両方を実装する。
         //   A/D: 押している間だけ最大舵角まで旋回し、離すと中央へ戻る(従来通り)
         //   Q/E: W/Sの速度段階(SPEED_LEVELS)と同じ考え方で、RUDDER_LEVELSの5段階
         //        (-1.0, -0.5, 0.0, 0.5, 1.0)を押すたびに1段ずつ移動する。離しても保持される。
