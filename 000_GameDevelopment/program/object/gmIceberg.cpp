@@ -1,5 +1,6 @@
 ﻿#include "gmIceberg.h"
 #include "../map/gmMapManager.h"
+#include "../wallet/gmWallet.h"
 #include "gmWaterPlane.h"
 #include "../gmGameConfig.h"
 #include "../util/gmMeshBoundsUtil.h"
@@ -65,6 +66,11 @@ namespace gm {
     void gmIceberg::setWater(const std::shared_ptr<gmWaterPlane>& water)
     {
         water_ = water;
+    }
+
+    void gmIceberg::setWallet(const std::shared_ptr<gmWallet>& wallet)
+    {
+        wallet_ = wallet;
     }
 
     void gmIceberg::update(float deltaTime)
@@ -274,12 +280,20 @@ namespace gm {
 
     // ------------------------------------------------------------
     // 耐久値を減らし、見た目(スケール)とコライダーを追従させる。
+    // ダメージ量に応じた「溶かす経験値」をウォレットへ加算する。
     // 0まで減ったら(=完全に溶けたら)kill()する。
+    // (通常弾・炎放射どちらのダメージもここを通るため、ここ1箇所で完結)
     // ------------------------------------------------------------
     void gmIceberg::applyMeltDamage(float amount)
     {
         if (amount <= 0.0f || health_ <= 0.0f) return;
 
+        // ウォレットへ加算
+        if (auto wallet = wallet_.lock()) {
+            wallet->addMeltExp(amount * MELT_EXP_PER_DAMAGE_POINT);
+        }
+        
+        // ダメージ算出とkill()
         health_ = std::max(0.0f, health_ - amount);
 
         if (health_ <= 0.0f) {

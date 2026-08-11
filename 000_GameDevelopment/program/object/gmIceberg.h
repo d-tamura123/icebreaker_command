@@ -4,8 +4,10 @@
 
 namespace gm {
 
+    // 前方宣言
     class gmMapManager;
     class gmWaterPlane;
+    class gmWallet;
 
     // ------------------------------------------------------------
     // 海流に流される流氷
@@ -33,6 +35,10 @@ namespace gm {
 
         void setMap(const std::shared_ptr<gmMapManager>& map);
         void setWater(const std::shared_ptr<gmWaterPlane>& water);
+
+        // 溶かすダメージに応じた経験値の付与先。分裂で生まれる子氷山にも
+        // gmIcebergManager側で必ず設定される想定(applyMeltDamage()参照)。
+        void setWallet(const std::shared_ptr<gmWallet>& wallet);
 
         // 衝突検出イベント
         // : 相手のカテゴリによって挙動を分岐する
@@ -89,6 +95,7 @@ namespace gm {
 
         std::weak_ptr<gmMapManager> map_;
         std::weak_ptr<gmWaterPlane> water_;
+        std::weak_ptr<gmWallet> wallet_;
 
         tnl::Vector3 velocity_{ 0.0f, 0.0f, 0.0f };
         

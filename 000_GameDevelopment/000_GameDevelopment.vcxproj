@@ -253,6 +253,7 @@
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
     <ClInclude Include="program\util\gmRouteCenterlineUtil.h" />
+    <ClInclude Include="program\wallet\gmWallet.h" />
     <ClInclude Include="program\weapon\gmFlameThrowerManager.h" />
     <ClInclude Include="program\weapon\gmProjectileManager.h" />
     <ClInclude Include="Resource.h" />

@@ -173,4 +173,15 @@ namespace gm
     static const float SHIP_DESTROYED_TILT_PORTION = 0.6f;
     static const float SHIP_DESTROYED_SINK_START_PORTION = 0.25f;
 
+    
+    // ------------------------------------------------------------
+    // ウォレット(資金・溶かす経験値)関連
+    // ------------------------------------------------------------
+    // 交易船が終点(G)へ満タンHPで到着した場合の資金報酬(基準値)。
+    // 実際の報酬 = この値 × (到着時のHP ÷ 最大HP)。ダメージを受けているほど減額される。
+    static const int TRADE_SHIP_ARRIVAL_REWARD_BASE = 1000;
+
+    // 流氷への溶かすダメージ1ポイントあたりに得られる、溶かす経験値の量。
+    // 1.0でダメージ量とそのまま等倍(通常弾・炎放射どちらのダメージにも同じ比率で適用される)。
+    static const float MELT_EXP_PER_DAMAGE_POINT = 1.0f;
 }

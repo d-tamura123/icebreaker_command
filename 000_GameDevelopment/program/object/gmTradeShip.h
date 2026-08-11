@@ -1,6 +1,7 @@
 ﻿// gmTradeShip.h
 #pragma once
 #include <vector>
+#include <functional>
 #include "gmShip.h"
 
 namespace gm {
@@ -51,6 +52,17 @@ namespace gm {
         // 相手に応じてバック要否を決める。
         // 流氷が相手ならgmShip::applyIcebergContactDamage()でダメージ判定も行う。
         void onCollisionEnter(gmObjectBase* other) override;
+
+        // ------------------------------------------------------------
+        // 終点(G)へ到達した瞬間(kill()の直前)に呼ばれるコールバックを設定する。
+        // 引数は到着時点のHP比率(0.0〜1.0)。資金報酬の計算・付与は
+        // gmTradeShipManager側の責務のため、gmTradeShip自身はgmWallet等を
+        // 直接知らずに済むよう、汎用的なコールバックとして受け取る形にしている
+        // (gmPlayerShip::setOnDestroyedCompleteCallback()と同じ考え方)。
+        // ------------------------------------------------------------
+        void setOnArrivedCallback(std::function<void(float hpRatio)> callback) {
+            onArrivedCallback_ = callback;
+        }
 
 #ifdef _DEBUG
         // ------------------------------------------------------------
@@ -112,6 +124,9 @@ namespace gm {
         float  collisionRudderBias_ = 1.0f;         // バック中に軽くかける舵の向き(対称性を崩し、同じ島へ再度当たるのを防ぐ)
 
         bool   debugForcedBadSteering_ = false;     // デバッグ専用: trueの間、操舵を強制的に破綻させる(Oキー)
+        
+        // ---- コールバック関連 (イベントハンドラ) ----
+        std::function<void(float hpRatio)> onArrivedCallback_; // 終点到達時に呼ばれる(setOnArrivedCallback()参照)
     };
 
 }

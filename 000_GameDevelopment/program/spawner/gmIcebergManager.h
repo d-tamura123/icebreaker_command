@@ -8,9 +8,11 @@
 
 namespace gm {
 
+    // 前方宣言
     class gmMapManager;
     class gmWaterPlane;
     class gmCollisionSystem;
+    class gmWallet;
 
     // ------------------------------------------------------------
     // 氷山のスポーンと一元管理
@@ -23,7 +25,9 @@ namespace gm {
             const std::shared_ptr<gmWaterPlane>& water,
             const std::vector<std::string>& crystalPaths,
             const std::string& texturePath,
-            const std::shared_ptr<gmCollisionSystem>& collisionSystem);
+            const std::shared_ptr<gmCollisionSystem>& collisionSystem,
+            const std::shared_ptr<gmWallet>& wallet
+        );
 
     protected:
         void trySpawn() override;
@@ -58,6 +62,9 @@ namespace gm {
 
         // 衝突システム
         std::shared_ptr<gmCollisionSystem> collisionSystem_;
+
+        // 溶かすダメージに応じた経験値の付与先(生成する全氷山にsetWallet()で渡す)
+        std::shared_ptr<gmWallet> wallet_;
 
         // 氷山ファミリー(起動時にまとめて生成し、以後使い回す。分裂時も再焼成しない)
         std::vector<IcebergFamily> families_;

@@ -1,5 +1,6 @@
 ﻿#include "gmIcebergManager.h"
 #include "../map/gmMapManager.h"
+#include "../wallet/gmWallet.h"
 #include "../object/gmWaterPlane.h"
 #include "../mesh_ex/gmMeshEX.h"
 #include "../collision/gmCollisionSystem.h"
@@ -12,11 +13,14 @@ namespace gm {
         const std::shared_ptr<gmWaterPlane>& water,
         const std::vector<std::string>& crystalPaths,
         const std::string& texturePath,
-        const std::shared_ptr<gmCollisionSystem>& collisionSystem)
+        const std::shared_ptr<gmCollisionSystem>& collisionSystem,
+        const std::shared_ptr<gmWallet>& wallet
+    )
         : map_(map)
         , water_(water)
         , crystalPaths_(crystalPaths)
         , collisionSystem_(collisionSystem)
+        , wallet_(wallet)
     {
         texture_ = dxe::Texture::CreateFromFile(texturePath);
 
@@ -130,6 +134,7 @@ namespace gm {
             "iceberg", tnl::Vector3(worldX, initialY, worldZ), family.largeMesh);
         iceberg->setMap(map_);
         iceberg->setWater(water_);
+        iceberg->setWallet(wallet_);
         iceberg->setFamilyIndex(familyIndex);
         iceberg->setTier(gmIceberg::Tier::Large);
 
@@ -225,6 +230,7 @@ namespace gm {
                 "iceberg_fragment", source.getPosition(), nextMesh[i]);
             fragment->setMap(map_);
             fragment->setWater(water_);
+            fragment->setWallet(wallet_);
             fragment->setFamilyIndex(familyIndex);
             fragment->setTier(nextTier);
             fragment->setMediumIndex(nextMediumIndex[i]);

@@ -79,6 +79,13 @@ namespace gm {
         // 進捗計測(advanceNearestIndex等)はupdateProgressTracking()側で毎フレーム行われている前提
         const float remaining = cumulativeDistance_.back() - cumulativeDistance_[nearestIndex_];
         if (remaining <= TRADE_SHIP_ARRIVAL_THRESHOLD) {
+
+            // ゴール到達時のイベントハンドラを呼び出す
+            if (onArrivedCallback_) {
+                const float hpRatio = (getMaxHp() > 0.0f) ? (getHp() / getMaxHp()) : 0.0f;
+                onArrivedCallback_(hpRatio);
+            }
+
             kill();
             return;
         }

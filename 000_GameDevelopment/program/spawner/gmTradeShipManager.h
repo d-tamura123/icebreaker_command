@@ -7,9 +7,11 @@
 
 namespace gm {
 
+    // 前方宣言
     class gmMapManager;
     class gmWaterPlane;
     class gmCollisionSystem;
+    class gmWallet;
 
     // ------------------------------------------------------------
     // NPC交易船のスポーンと一元管理。
@@ -27,7 +29,9 @@ namespace gm {
         gmTradeShipManager(
             const std::shared_ptr<gmMapManager>& map,
             const std::shared_ptr<gmWaterPlane>& water,
-            const std::shared_ptr<gmCollisionSystem>& collisionSystem);
+            const std::shared_ptr<gmCollisionSystem>& collisionSystem,
+            const std::shared_ptr<gmWallet>& wallet
+        );
 
     protected:
         void trySpawn() override;
@@ -37,6 +41,7 @@ namespace gm {
         std::shared_ptr<gmMapManager> map_;
         std::shared_ptr<gmWaterPlane> water_;
         std::shared_ptr<gmCollisionSystem> collisionSystem_;
+        std::shared_ptr<gmWallet> wallet_;
 
         Shared<dxe::Texture> texture_;
         Shared<dxe::Texture> normalMapTexture_;

@@ -69,6 +69,9 @@
     <Filter Include="Source\[004] game\weapon">
       <UniqueIdentifier>{585c2eae-d760-4c04-94de-b8fc3a1a45ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\wallet">
+      <UniqueIdentifier>{1d668766-09b2-4895-a19b-95cc9568202a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="program\spawner\gmTradeShipManager.h">
       <Filter>Source\[004] game\spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="program\wallet\gmWallet.h">
+      <Filter>Source\[004] game\wallet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,9 @@ namespace gm
         context_->fade = std::make_shared<gmFadeTransitionEffect>();
         context_->fade->setScreenSize(DXE_WINDOW_WIDTH, DXE_WINDOW_HEIGHT);
         context_->fade->setFadeColor(0, 0, 0); // 黒フェード
+
+        // ウォレット
+        context_->wallet = std::make_shared<gmWallet>();
     }
 
     // ------------------------------------------------------------

@@ -1,6 +1,7 @@
 ﻿// gmTradeShipManager.cpp
 #include "gmTradeShipManager.h"
 #include "../map/gmMapManager.h"
+#include "../wallet/gmWallet.h"
 #include "../object/gmWaterPlane.h"
 #include "../collision/gmCollisionSystem.h"
 #include "../util/gmRouteCenterlineUtil.h"
@@ -12,10 +13,13 @@ namespace gm {
     gmTradeShipManager::gmTradeShipManager(
         const std::shared_ptr<gmMapManager>& map,
         const std::shared_ptr<gmWaterPlane>& water,
-        const std::shared_ptr<gmCollisionSystem>& collisionSystem)
+        const std::shared_ptr<gmCollisionSystem>& collisionSystem,
+        const std::shared_ptr<gmWallet>& wallet
+        )
         : map_(map)
         , water_(water)
         , collisionSystem_(collisionSystem)
+        , wallet_(wallet)
     {
         texture_ = dxe::Texture::CreateFromFile(TRADE_SHIP_TEXTURE_FILE_PATH);
         normalMapTexture_ = dxe::Texture::CreateFromFile(TRADE_SHIP_NORMAL_MAP_FILE_PATH);
@@ -83,6 +87,15 @@ namespace gm {
         }
         ship->setWater(water_);
         ship->setupManualCollider(TRADE_SHIP_COLLIDER_RADIUS, TRADE_SHIP_COLLIDER_LENGTH, 0.0f);
+
+        // 終点到達時の資金報酬。基準額×到着時のHP比率(ダメージを受けているほど減額される)。
+        std::weak_ptr<gmWallet> walletWeak = wallet_;
+        ship->setOnArrivedCallback([walletWeak](float hpRatio) {
+            if (auto wallet = walletWeak.lock()) {
+                const int reward = static_cast<int>(TRADE_SHIP_ARRIVAL_REWARD_BASE * hpRatio);
+                wallet->addFunds(reward);
+            }
+        });
 
         entities_.push_back(ship);
 

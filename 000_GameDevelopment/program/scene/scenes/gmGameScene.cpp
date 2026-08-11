@@ -119,7 +119,8 @@ namespace gm
             water_,
             crystalPaths,
             "resource/graphics/test/White-Ice4.jpg",
-            collisionSystem_
+            collisionSystem_,
+            context_->wallet
         );
 
         // スプライトアニメーション(VFX)のメタデータを起動時に1回だけ読み込む
@@ -167,7 +168,7 @@ namespace gm
         routeVisualizer_ = std::make_unique<gmRouteVisualizer>(context_->map);
 
         // NPC交易船のスポナー
-        tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_);
+        tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_, context_->wallet);
     }
 
     // ------------------------------------------------------------
@@ -405,8 +406,8 @@ namespace gm
         // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
         const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
-        // projectileManager_->fire(playerShip_->getPosition(), targetPos);
-        projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+        projectileManager_->fire(playerShip_->getPosition(), targetPos);
+        // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
         // flameThrowerManager_->fire(playerShip_, targetPos);
     }
 

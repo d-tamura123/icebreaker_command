@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <memory>
 #include <dxe.h>
 
@@ -6,30 +6,35 @@
 //#include "../input/gmInputManager.h"
 //#include "../sound/gmSoundManager.h"
 #include "./map/gmMapManager.h"
+#include "./wallet/gmWallet.h"
+
 #include "./scene/gmFadeTransitionEffect.h"
 
 namespace gm
 {
-    // ƒQ[ƒ€‘S‘Ì‚Å‹¤—L‚·‚éˆË‘¶‚ğ‚Ü‚Æ‚ß‚½ƒRƒ“ƒeƒi
+    // ã‚²ãƒ¼ãƒ å…¨ä½“ã§å…±æœ‰ã™ã‚‹ä¾å­˜ã‚’ã¾ã¨ã‚ãŸã‚³ãƒ³ãƒ†ãƒŠ
     struct gmGameContext
     {
-        // “ü—ÍŠÇ—
+        // å…¥åŠ›ç®¡ç†
         //std::shared_ptr<gmInputManager> input;
 
-        // ƒTƒEƒ“ƒhŠÇ—
+        // ã‚µã‚¦ãƒ³ãƒ‰ç®¡ç†
         //std::shared_ptr<gmSoundManager> sound;
 
-        // ƒ}ƒbƒvŠÇ—imap.bin / ocean_flow.binj
+        // ãƒãƒƒãƒ—ç®¡ç†ï¼ˆmap.bin / ocean_flow.binï¼‰
         std::shared_ptr<gmMapManager> map;
 
-        // ƒJƒƒ‰idxe::Cameraj
+        // ã‚«ãƒ¡ãƒ©ï¼ˆdxe::Cameraï¼‰
         std::shared_ptr<dxe::Camera> camera;
 
-        // ƒtƒF[ƒhƒCƒ“/ƒAƒEƒg
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³/ã‚¢ã‚¦ãƒˆ
         std::shared_ptr<gmFadeTransitionEffect> fade;
 
-        // ƒQ[ƒ€İ’èiCELL_SIZE ‚È‚Çj
-        // ‚±‚ê‚Í static const ‚ÌW‚Ü‚è‚È‚Ì‚ÅƒCƒ“ƒXƒ^ƒ“ƒX•s—v
-        // gmGameConfig ‚Í include ‚·‚é‚¾‚¯‚Å OK
+        // ã‚¦ã‚©ãƒ¬ãƒƒãƒˆ(è³‡é‡‘ãƒ»æº¶ã‹ã™çµŒé¨“å€¤ãªã©)
+        std::shared_ptr<gmWallet> wallet;
+
+        // ã‚²ãƒ¼ãƒ è¨­å®šï¼ˆCELL_SIZE ãªã©ï¼‰
+        // ã“ã‚Œã¯ static const ã®é›†ã¾ã‚Šãªã®ã§ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸è¦
+        // gmGameConfig ã¯ include ã™ã‚‹ã ã‘ã§ OK
     };
 }
