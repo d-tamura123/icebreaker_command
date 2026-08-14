@@ -66,7 +66,8 @@ namespace gm
         // プレイヤー撃沈演出(gmShip::updateDestroyed())が完了した瞬間に呼ばれるコールバックを設定する
         playerShip_->setOnDestroyedCompleteCallback([this]() { respawnPlayer(); });
 
-
+        // 入力管理をプレイヤー船へ接続
+        playerShip_->setInputManager(context_->input);
 
 
         // 氷塊
@@ -364,7 +365,8 @@ namespace gm
     // ------------------------------------------------------------
     void gmGameScene::tryFireProjectileOnClick()
     {
-        if (!tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
+        if (!context_->input ||
+            !context_->input->consumePress(gmAction::Weapon_Fire, gmInputCallerId::GameScene_WeaponFire)) {
             return;
         }
         if (!projectileManager_ || !playerShip_) {

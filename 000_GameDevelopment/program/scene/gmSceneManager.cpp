@@ -9,7 +9,8 @@ namespace gm
         context_ = std::make_shared<gmGameContext>();
 
         // 入力
-        //context_->input = std::make_shared<gmInputManager>();
+        context_->input = std::make_shared<gmInputManager>();
+        context_->input->initialize(gmInputLayer::Gameplay);
 
         // サウンド
         //context_->sound = std::make_shared<gmSoundManager>();
@@ -78,6 +79,12 @@ namespace gm
                 isTransitioning_ = false;
             }
             return;
+        }
+
+        // 入力管理の更新(consumePress()の消費フラグのリセット処理)
+        // dxe::Input自体の更新はcommon/dxe/dxe.cpp側で既に毎フレーム行われているため、ここでは行わない。
+        if (context_->input) {
+            context_->input->update();
         }
 
         // 通常更新

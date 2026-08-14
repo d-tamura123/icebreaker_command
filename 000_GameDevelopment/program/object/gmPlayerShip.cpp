@@ -1,4 +1,5 @@
 ﻿#include "gmPlayerShip.h"
+#include "../input/gmInputManager.h"
 #include <dxe.h>
 
 namespace gm {
@@ -29,13 +30,16 @@ namespace gm {
 
     void gmPlayerShip::handleInput()
     {
+        auto input = inputManager_.lock();
+        if (!input) return; // 入力管理が未設定の間は何もしない(setInputManager()呼び出し前の保険)
+
         // -----------------------------
         // 速度段階（W/S）
         // -----------------------------
-        if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_W))
+        if (input->consumePress(gmAction::Ship_SpeedUp, gmInputCallerId::PlayerShip_SpeedUp))
             speedIndex_++;
 
-        if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_S))
+        if (input->consumePress(gmAction::Ship_SpeedDown, gmInputCallerId::PlayerShip_SpeedDown))
             speedIndex_--;
 
         speedIndex_ = std::clamp(speedIndex_, 0, 5);
@@ -55,8 +59,8 @@ namespace gm {
         // これにより、Q/Eで進めた段階はA/Dに一切触れていない限りそのまま保持される。
         const float MAX_RUDDER = 1.0f;
 
-        const bool aHeld = tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_A);
-        const bool dHeld = tnl::Input::IsKeyDown(tnl::Input::eKeys::KB_D);
+        const bool aHeld = input->isHeld(gmAction::Ship_RudderLeftHold);
+        const bool dHeld = input->isHeld(gmAction::Ship_RudderRightHold);
 
         if (aHeld) {
             dynamics_.targetRudder = -MAX_RUDDER;
@@ -70,10 +74,10 @@ namespace gm {
             dynamics_.targetRudder = RUDDER_LEVELS[rudderIndex_];
         }
         else {
-            if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_Q))
+            if (input->consumePress(gmAction::Ship_RudderLeftStep, gmInputCallerId::PlayerShip_RudderLeftStep))
                 rudderIndex_--;
 
-            if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_E))
+            if (input->consumePress(gmAction::Ship_RudderRightStep, gmInputCallerId::PlayerShip_RudderRightStep))
                 rudderIndex_++;
 
             rudderIndex_ = std::clamp(rudderIndex_, 0, 4);

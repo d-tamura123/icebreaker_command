@@ -1,8 +1,12 @@
 ﻿#pragma once
 #include "gmShip.h"
 #include <functional>
+#include <memory>
 
 namespace gm {
+
+    // 前方宣言
+    class gmInputManager;
 
     class gmPlayerShip : public gmShip {
     public:
@@ -11,6 +15,11 @@ namespace gm {
         }
 
         void update(float deltaTime) override;
+
+        // 入力管理への参照を設定
+        void setInputManager(const std::shared_ptr<gmInputManager>& inputManager) {
+            inputManager_ = inputManager;
+        }
 
         // ------------------------------------------------------------
         // プレイヤー撃沈演出の完了時に呼ばれるコールバックを設定する。
@@ -39,6 +48,8 @@ namespace gm {
 
     private:
         void handleInput();
+
+        std::weak_ptr<gmInputManager> inputManager_;
 
         std::function<void()> onDestroyedCompleteCallback_;
 

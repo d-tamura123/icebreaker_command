@@ -3,7 +3,7 @@
 #include <dxe.h>
 
 #include "gmGameConfig.h"
-//#include "../input/gmInputManager.h"
+#include "./input/gmInputManager.h"
 //#include "../sound/gmSoundManager.h"
 #include "./map/gmMapManager.h"
 #include "./wallet/gmWallet.h"
@@ -16,7 +16,7 @@ namespace gm
     struct gmGameContext
     {
         // 入力管理
-        //std::shared_ptr<gmInputManager> input;
+        std::shared_ptr<gmInputManager> input;
 
         // サウンド管理
         //std::shared_ptr<gmSoundManager> sound;

@@ -72,6 +72,9 @@
     <Filter Include="Source\[004] game\wallet">
       <UniqueIdentifier>{1d668766-09b2-4895-a19b-95cc9568202a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\input">
+      <UniqueIdentifier>{9f8b75e1-4e30-4b81-bb36-a25d71acfb18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -437,6 +440,18 @@
     <ClInclude Include="program\wallet\gmWallet.h">
       <Filter>Source\[004] game\wallet</Filter>
     </ClInclude>
+    <ClInclude Include="program\input\gmInputManager.h">
+      <Filter>Source\[004] game\input</Filter>
+    </ClInclude>
+    <ClInclude Include="program\input\gmAction.h">
+      <Filter>Source\[004] game\input</Filter>
+    </ClInclude>
+    <ClInclude Include="program\input\gmInputCallerId.h">
+      <Filter>Source\[004] game\input</Filter>
+    </ClInclude>
+    <ClInclude Include="program\input\gmInputLayer.h">
+      <Filter>Source\[004] game\input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -783,6 +798,9 @@
     </ClCompile>
     <ClCompile Include="program\spawner\gmTradeShipManager.cpp">
       <Filter>Source\[004] game\spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="program\input\gmInputManager.cpp">
+      <Filter>Source\[004] game\input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

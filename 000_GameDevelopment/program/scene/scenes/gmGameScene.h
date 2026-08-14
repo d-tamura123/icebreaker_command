@@ -77,6 +77,8 @@ namespace gm
         std::shared_ptr<gmTradeShipManager>      tradeShipManager_;     // NPC交易船のスポーンと一元管理
         std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;          // プレイヤー撃沈時の再配置演出専用のフェード
         
+
+
         // デバッグ専用(updateTradeShipDebugHotkeys()参照): Oキーでのトグル状態を保持する。
         // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。
         bool debugTradeShipForcedBadSteering_ = false;
