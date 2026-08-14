@@ -222,6 +222,8 @@
     <ClInclude Include="program\gm_main.h" />
     <ClInclude Include="program\gui\gmMiniMap.h" />
     <ClInclude Include="program\gui\gmOceanFlowVisualizer.h" />
+    <ClInclude Include="program\gui\gmTopBarUI.h" />
+    <ClInclude Include="program\gui\gmUIImageButton.h" />
     <ClInclude Include="program\gui\gmUIManager.h" />
     <ClInclude Include="program\gui\gmUIObjectBase.h" />
     <ClInclude Include="program\input\gmAction.h" />
@@ -256,6 +258,7 @@
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\spawner\gmTradeShipManager.h" />
     <ClInclude Include="program\util\gmCursorUtil.h" />
+    <ClInclude Include="program\util\gmFontCache.h" />
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
     <ClInclude Include="program\util\gmRouteCenterlineUtil.h" />
@@ -351,6 +354,8 @@
     <ClCompile Include="program\gm_main.cpp" />
     <ClCompile Include="program\gui\gmMiniMap.cpp" />
     <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp" />
+    <ClCompile Include="program\gui\gmTopBarUI.cpp" />
+    <ClCompile Include="program\gui\gmUIImageButton.cpp" />
     <ClCompile Include="program\gui\gmUIManager.cpp" />
     <ClCompile Include="program\gui\gmUIObjectBase.cpp" />
     <ClCompile Include="program\input\gmInputManager.cpp" />
@@ -379,6 +384,7 @@
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\spawner\gmTradeShipManager.cpp" />
     <ClCompile Include="program\util\gmCursorUtil.cpp" />
+    <ClCompile Include="program\util\gmFontCache.cpp" />
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
     <ClCompile Include="program\util\gmRouteCenterlineUtil.cpp" />

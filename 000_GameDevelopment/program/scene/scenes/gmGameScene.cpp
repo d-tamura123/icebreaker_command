@@ -162,8 +162,14 @@ namespace gm
         context_->camera->update();
 
         // UIマネージャーの初期化
-        tnl::Vector2f miniMapPos(1000.0f, 20.0f);
-        uiManager_ = std::make_unique<gmUIManager>(miniMapPos, context_->map, playerShip_, icebergManager_);
+        // 右マージン24px(1280 - 1000 - 256 = 24)、下マージン20pxで統一
+        tnl::Vector2f miniMapPos(1000.0f, DXE_WINDOW_HEIGHT_F - 256.0f - 20.0f);
+        uiManager_ = std::make_unique<gmUIManager>(
+            miniMapPos, context_->map, playerShip_, icebergManager_,
+            context_->wallet,
+            [this]() {
+                // ToDo: メニューボタンのクリック処理。タスク8(簡易ポーズメニュー)実装まではプレースホルダー。
+            });
 
         // 航路の可視化(NPC交易船の航路をリボンメッシュで描画。判定には関与しない)
         // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
@@ -248,7 +254,11 @@ namespace gm
 
         // UIマネージャーの更新処理
         if (uiManager_) {
-            uiManager_->update(dt, context_->camera);
+            uiManager_->update(
+                dt, 
+                context_->camera, 
+                cameraController_ && cameraController_->isCursorModeActive()    // Altキーのマウスカーソルモードかを示すフラグ
+            );
         }
 
         // 航路可視化のUVスクロール更新(ジオメトリ自体は起動時に生成済みのため再生成しない)
@@ -375,6 +385,10 @@ namespace gm
     // ------------------------------------------------------------
     void gmGameScene::tryFireProjectileOnClick()
     {
+        if (cameraController_ && cameraController_->isCursorModeActive()) {
+            // カーソルモード(Alt押下中)はUI操作を優先する。攻撃発火はしない。
+            return;
+        }
         if (!context_->input ||
             !context_->input->consumePress(gmAction::Weapon_Fire, gmInputCallerId::GameScene_WeaponFire)) {
             return;

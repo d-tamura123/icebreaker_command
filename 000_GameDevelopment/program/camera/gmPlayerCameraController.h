@@ -53,6 +53,10 @@ namespace gm {
         // プレイヤー船 〜 狙い先までの距離(world単位)。フェーズ3のHUD表示用。
         float getAimTargetDistance() const { return aimTargetDistance_; }
 
+        // カーソルモード(Altキー押下中。カーソル表示+ロック解除+カメラ操作凍結)かどうか。
+        // trueの間は画面上のUI要素(gmUIImageButton等)がホバー/クリック判定を行ってよい、という合図に使う。
+        bool isCursorModeActive() const { return cursorModeActive_; }
+
         // ------------------------------------------------------------
         // 撃沈演出(gmShip::updateDestroyed())の見せ場用に、カメラを固定の俯瞰位置へ切り替える。
         // gmPlayerShip::setOnDeathCallback()経由で、HPが0になった瞬間に1回だけ呼ぶ想定。
@@ -99,6 +103,8 @@ namespace gm {
 
         tnl::Vector3 aimTargetWorld_;
         float aimTargetDistance_ = 0.0f;
+
+        bool cursorModeActive_ = false;
     };
 
 }

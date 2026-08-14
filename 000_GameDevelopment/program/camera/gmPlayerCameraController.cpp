@@ -25,6 +25,9 @@ namespace gm {
         // カメラの角度・ズームは一切更新せず凍結する(UI操作中にカメラが暴れないように)。
         // ------------------------------------------------------------
         const bool cursorMode = input_->keep(dxe::Input::eButton::KB_LALT) || input_->keep(dxe::Input::eButton::KB_RALT);
+
+        cursorModeActive_ = cursorMode;
+
         if (cursorMode) {
             dxe::SetVisibleMousePointer(true);
             gmCursorUtil::UnlockCursorFromWindow();

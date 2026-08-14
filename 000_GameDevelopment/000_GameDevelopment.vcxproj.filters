@@ -461,6 +461,15 @@
     <ClInclude Include="program\util\gmCursorUtil.h">
       <Filter>Source\[004] game\util</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmUIImageButton.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmTopBarUI.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\util\gmFontCache.h">
+      <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -815,6 +824,15 @@
       <Filter>Source\[004] game\camera</Filter>
     </ClCompile>
     <ClCompile Include="program\util\gmCursorUtil.cpp">
+      <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmUIImageButton.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmTopBarUI.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\util\gmFontCache.cpp">
       <Filter>Source\[004] game\util</Filter>
     </ClCompile>
   </ItemGroup>

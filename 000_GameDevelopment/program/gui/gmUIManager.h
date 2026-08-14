@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <memory>
+#include <functional>
 #include <dxe.h>
 
 namespace gm {
@@ -7,9 +8,11 @@ namespace gm {
     // 前方宣言
     class gmMiniMap;
     class gmOceanFlowVisualizer;
+    class gmTopBarUI;
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
+    class gmWallet;
 
     class gmUIManager {
     public:
@@ -17,11 +20,17 @@ namespace gm {
             const tnl::Vector2f& miniMapPos,
             std::shared_ptr<gmMapManager> map,
             std::shared_ptr<gmPlayerShip> player,
-            std::shared_ptr<gmIcebergManager> icebergManager);
+            std::shared_ptr<gmIcebergManager> icebergManager,
+            std::shared_ptr<gmWallet> wallet,
+            std::function<void()> onMenuClick
+        );
+
         ~gmUIManager();
 
         // UI全体の更新
-        void update(float dt, const Shared<dxe::Camera>& camera);
+        // arg3... カーソルモード(Alt押下中)かどうか。ボタン等のホバー/クリック判定の有効/無効に使う
+        void update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive);
+
 
         // UI全体の描画（要件に合わせてrenderという名前にしています）
         void renderTerrainIntegration(const Shared<dxe::Camera>& camera);
@@ -34,5 +43,6 @@ namespace gm {
 
         std::unique_ptr<gmOceanFlowVisualizer> flowVisualizer_;
 
+        std::unique_ptr<gmTopBarUI> topBar_;
     };
 }

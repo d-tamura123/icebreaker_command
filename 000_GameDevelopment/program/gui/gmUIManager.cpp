@@ -1,6 +1,7 @@
 ﻿#include "gmUIManager.h"
 #include "gmMiniMap.h" // 実装ファイル側で実体をインクルード
 #include "gmOceanFlowVisualizer.h"
+#include "gmTopBarUI.h"
 
 namespace gm {
 
@@ -8,13 +9,19 @@ namespace gm {
         const tnl::Vector2f& miniMapPos,
         std::shared_ptr<gmMapManager> map,
         std::shared_ptr<gmPlayerShip> player,
-        std::shared_ptr<gmIcebergManager> icebergManager)
+        std::shared_ptr<gmIcebergManager> icebergManager,
+        std::shared_ptr<gmWallet> wallet,
+        std::function<void()> onMenuClick
+    )
     {
         // gmMiniMap のインスタンスを生成して保持
         miniMap_ = std::make_unique<gmMiniMap>(miniMapPos, map, player, icebergManager);
 
         // gmOceanFlowVisualizer のインスタンスを生成して保持
         flowVisualizer_ = std::make_unique<gmOceanFlowVisualizer>(map);
+
+        // gmTopBarUI(画面上端バー。フェーズ1.2)のインスタンスを生成して保持
+        topBar_ = std::make_unique<gmTopBarUI>(std::move(wallet), std::move(onMenuClick));
 
     }
 
@@ -23,7 +30,7 @@ namespace gm {
         // std::unique_ptr が自動的に解放するため、明示的なdeleteは不要です
     }
 
-    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera)
+    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive)
     {
         if (flowVisualizer_) {
             flowVisualizer_->update(camera);
@@ -33,6 +40,10 @@ namespace gm {
             miniMap_->update(dt); // ミニマップの更新
         }
 
+        if (topBar_) {
+            topBar_->setCursorModeActive(cursorModeActive);
+            topBar_->update(dt);
+        }
         // 今後、他のUIのupdate処理が増えたらここに追記します
     }
 
@@ -55,6 +66,10 @@ namespace gm {
         if (miniMap_) {
 
             miniMap_->draw(); // ミニマップの描画
+        }
+
+        if (topBar_) {
+            topBar_->draw(); // 画面上端バーの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します
