@@ -75,6 +75,9 @@
     <Filter Include="Source\[004] game\input">
       <UniqueIdentifier>{9f8b75e1-4e30-4b81-bb36-a25d71acfb18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\camera">
+      <UniqueIdentifier>{7d0f0c23-2f0c-4e64-afde-05a1bbca3dd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -452,6 +455,12 @@
     <ClInclude Include="program\input\gmInputLayer.h">
       <Filter>Source\[004] game\input</Filter>
     </ClInclude>
+    <ClInclude Include="program\camera\gmPlayerCameraController.h">
+      <Filter>Source\[004] game\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="program\util\gmCursorUtil.h">
+      <Filter>Source\[004] game\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -801,6 +810,12 @@
     </ClCompile>
     <ClCompile Include="program\input\gmInputManager.cpp">
       <Filter>Source\[004] game\input</Filter>
+    </ClCompile>
+    <ClCompile Include="program\camera\gmPlayerCameraController.cpp">
+      <Filter>Source\[004] game\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="program\util\gmCursorUtil.cpp">
+      <Filter>Source\[004] game\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,17 @@ namespace gm {
         }
 
         // ------------------------------------------------------------
+        // 撃沈開始時(HPが0になり、Destroyed状態に入った瞬間)に呼ばれるコールバックを設定する。
+        // 沈む姿を見せるためのカメラ演出切り替えなど、gmGameScene側の責務をここから呼び出す想定。
+        // setOnDestroyedCompleteCallback()(演出"完了"時)とは呼ばれるタイミングが異なるので注意。
+        //
+        // このコールバックは gmGameScene::onEnter() で一度だけ設定する想定。
+        // ------------------------------------------------------------
+        void setOnDeathCallback(std::function<void()> callback) {
+            onDeathCallback_ = callback;
+        }
+
+        // ------------------------------------------------------------
         // プレイヤー撃沈演出の完了時に呼ばれるコールバックを設定する。
         // 
         // フェード遷移(gmFadeTransitionEffect)、マップ再配置(gmMapManager)、
@@ -43,14 +54,20 @@ namespace gm {
         }
 
     protected:
+
+        // 撃沈開始時(HP0到達の瞬間)、設定済みのコールバックを呼ぶだけ。
+        void onDeath() override;
+
         // 撃沈演出完了時、設定済みのコールバックを呼ぶだけ(実際のフェード・再配置はgmGameScene側)。
         void onDestroyedComplete() override;
+
 
     private:
         void handleInput();
 
         std::weak_ptr<gmInputManager> inputManager_;
 
+        std::function<void()> onDeathCallback_;
         std::function<void()> onDestroyedCompleteCallback_;
 
         // A/D(押しっぱなし方式)がちょうど離された瞬間を検知するためのフラグ。

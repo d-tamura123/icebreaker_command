@@ -184,4 +184,54 @@ namespace gm
     // 流氷への溶かすダメージ1ポイントあたりに得られる、溶かす経験値の量。
     // 1.0でダメージ量とそのまま等倍(通常弾・炎放射どちらのダメージにも同じ比率で適用される)。
     static const float MELT_EXP_PER_DAMAGE_POINT = 1.0f;
+
+
+
+    // ------------------------------------------------------------
+    // プレイヤーカメラ(gmPlayerCameraController)
+    // ------------------------------------------------------------
+    // ズーム(マウスホイールで0.0〜1.0に蓄積)のうち、この値未満なら周回モード、
+    // 以上ならエイムモードとして扱う境界値。
+    static const float CAMERA_ZOOM_AIM_THRESHOLD = 0.1f;
+
+    // マウスホイールのノッチ1回あたりに、zoomRatio_を増減させる量。
+    static const float CAMERA_ZOOM_STEP_PER_WHEEL_NOTCH = 0.05f;
+
+    // 周回モード: カメラ〜プレイヤー船の距離(world単位)。
+    // zoomRatio_ = 0 でDIST_MAX、CAMERA_ZOOM_AIM_THRESHOLDでDIST_MINになるよう線形補間する。
+    static const float CAMERA_ORBIT_DIST_MAX = 500.0f;
+    static const float CAMERA_ORBIT_DIST_MIN = 200.0f;
+
+    // 周回モード: カメラ高さ(y座標)の下限・上限(world単位)。
+    // 海面(y=0)に潜らない下限と、船を真上から見下ろしすぎない上限。
+    static const float CAMERA_ORBIT_HEIGHT_MIN = 30.0f;
+    static const float CAMERA_ORBIT_HEIGHT_MAX = 900.0f;
+
+    // 周回モード: マウス移動量に対する視点回転の感度(gmKyleFreeCameraControllerと同じ値を採用)
+    static const float CAMERA_ORBIT_MOUSE_SENSITIVITY = 0.005f;
+
+    // 周回モード: pitch(見下ろし角。負値=見下ろす方向)の可動範囲(ラジアン)
+    static const float CAMERA_ORBIT_PITCH_MIN = -1.4f; // ほぼ真上から見下ろす
+    static const float CAMERA_ORBIT_PITCH_MAX = -0.05f; // ほぼ水平
+
+    // エイムモード: カメラ位置をプレイヤー船の位置からどれだけ高く持ち上げるか(world単位)。
+    // 文字通り船の原点(y=0)にカメラを置くと、海面(y=0)へのレイキャストが
+    // ほぼ水平・数値的に不安定になるため、見張り台程度の高さを持たせている。
+    static const float CAMERA_AIM_HEIGHT_OFFSET = 100.0f;
+
+    // エイムモード: マウス移動量に対する視点回転の感度(周回モードよりやや繊細にしている)
+    static const float CAMERA_AIM_MOUSE_SENSITIVITY = 0.003f;
+
+    // エイムモード: pitchの可動範囲(ラジアン)
+    static const float CAMERA_AIM_PITCH_MIN = -1.0f;    // 自船を消しているのでその矛盾を映さない相当の角度
+    static const float CAMERA_AIM_PITCH_MAX = -0.02f;   // ほぼ水平(0だと海面と平行になり狙い先が求まらないため僅かに残す)
+
+    // エイムモード: 攻撃の最大射程(world単位)。狙い先(海面上の点)をこの距離までに制限する。
+    // 通常弾・割り砲弾・火炎放射のいずれにも、これまでこの概念は無かったため新規に定義する。
+    static const float CAMERA_AIM_MAX_RANGE = 1500.0f;
+
+    // エイムモード: ズーム値(閾値〜1.0)に応じて狭めるカメラの画角(度)。
+    // 閾値でFOV_WIDE、zoomRatio_=1.0でFOV_NARROWになるよう線形補間する。
+    static const float CAMERA_AIM_FOV_WIDE_DEG = 50.0f;
+    static const float CAMERA_AIM_FOV_NARROW_DEG = 15.0f;
 }

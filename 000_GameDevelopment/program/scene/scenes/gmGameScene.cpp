@@ -63,6 +63,12 @@ namespace gm
         respawnFade_->setScreenSize(DXE_WINDOW_WIDTH, DXE_WINDOW_HEIGHT);
         respawnFade_->setFadeColor(0, 0, 0);
 
+        // 撃沈開始の瞬間(HP0到達時)、沈む姿を見せるための固定俯瞰カメラへ切り替える
+       // (エイムモード中に死亡した場合、船非表示+狭い画角のままだと沈む姿が見えないため)
+        playerShip_->setOnDeathCallback([this]() {
+            cameraController_->enterDestroyedShowcase(playerShip_, context_->camera);
+            });
+
         // プレイヤー撃沈演出(gmShip::updateDestroyed())が完了した瞬間に呼ばれるコールバックを設定する
         playerShip_->setOnDestroyedCompleteCallback([this]() { respawnPlayer(); });
 
@@ -140,13 +146,8 @@ namespace gm
         // プレイヤー船の位置
         tnl::Vector3 shipPos = playerShip_->getPosition();
 
-        // カメラターゲットを船に合わせる（重要）
-        camTarget_ = shipPos;
-
-        // カメラの初期角度と距離
-        pitch_ = -0.3f;    // 少し見下ろす
-        yaw_ = 0.0f;
-        dist_ = 300.0f;
+        // プレイヤーカメラ(周回モード/エイムモードの制御)
+        cameraController_ = std::make_unique<gmPlayerCameraController>();
 
         // カメラ初期位置（船の後方・上方）
         tnl::Vector3 camPos = {
@@ -188,21 +189,20 @@ namespace gm
 
         // カメラ制御
         if (debugger_->isDebugModeOn() && debugger_->isFreeCameraEnabled()) {
-            // フリーカメラモード
+            // フリーカメラモード。
+            // cameraController_->update()が非表示+ウィンドウ内ロックしたままのカーソルを、
+            // フリーカメラ操作(右クリックドラッグ想定)のために戻しておく。
+            dxe::SetVisibleMousePointer(true);
+            gmCursorUtil::UnlockCursorFromWindow();
+
             debugger_->getFreeCamera()->update(context_->camera);
         }
-        else if(!playerShip_->isDestroyed()) {
-            // 船追従カメラ
+        else if (!playerShip_->isDestroyed()) {
+            // プレイヤーカメラ(周回モード/エイムモード。フェーズ2)
             // Note: 撃沈中(isDestroyed())はこの分岐自体をスキップし、カメラを据え置きにする。
-            tnl::Vector3 shipForward = playerShip_->getForward();
-            tnl::Vector3 shipPos = playerShip_->getPosition();
-
-            tnl::Vector3 camPos =
-                shipPos - shipForward * 250.0f + tnl::Vector3(0, 100, 0);
-
-            context_->camera->setPosition(camPos);
-            context_->camera->setTarget(shipPos);
-            context_->camera->update();
+            if (cameraController_) {
+                cameraController_->update(dt, playerShip_, context_->camera);
+            }
         }
 
         // 流氷(スポーン判定 + 海流に乗せた移動)
@@ -264,7 +264,13 @@ namespace gm
     // ------------------------------------------------------------
     void gmGameScene::draw()
     {
-        playerShip_->render(context_->camera);
+        // エイムモード中はプレイヤー船本体を非表示にする
+        //
+        // ただし撃沈演出中(isDestroyed())は、死亡した瞬間のエイム状態がそのまま残っていても
+        // 必ず表示する(沈む姿を見せるため。カメラ側はenterDestroyedShowcase()で既に俯瞰へ切替済み)。
+        if (playerShip_->isDestroyed() || !cameraController_ || !cameraController_->isAimMode()) {
+            playerShip_->render(context_->camera);
+        }
 
         if (iceChunk_) {
             iceChunk_->render(context_->camera);
@@ -327,16 +333,20 @@ namespace gm
 
     void gmGameScene::onExit()
     {
-        // 特に破棄処理は不要
+        // gmPlayerCameraController::update()がプレイ中に非表示+ウィンドウ内ロックしている
+        // マウスカーソルを、他のシーン(タイトル/リザルト/将来のポーズメニュー等)へ
+        // 抜ける前に必ず通常状態へ戻す。
+        dxe::SetVisibleMousePointer(true);
+        gmCursorUtil::UnlockCursorFromWindow();
     }
 
 
     // ------------------------------------------------------------
     // プレイヤー撃沈演出完了時のコールバック本体。
     // フェードアウト→(暗転中に)HP全回復・初期位置へ再配置→フェードイン、という流れ。
-    // カメラは追従カメラ(update()内)がplayerShip_の位置・向きを毎フレーム見て自動追従する
-    // ため、ここで明示的にリセットする必要は無い(yaw_/pitch_/dist_はフリーカメラ専用の変数で、
-    // 通常の追従カメラの計算には使われていない)。
+    // 
+    // カメラはcameraController_->update()がplayerShip_の位置・向きを毎フレーム見て
+    // 自動追従するため、ここで明示的にリセットする必要は無い。
     // ------------------------------------------------------------
     void gmGameScene::respawnPlayer()
     {
@@ -376,37 +386,46 @@ namespace gm
             return;
         }
 
+        tnl::Vector3 targetPos;
 
-        // ---- 手順1: レイ(半直線)の始点と方向を求める ----
-        const tnl::Vector3 mousePos = tnl::Input::GetMousePosition();
-        const float screenW = context_->camera->getScreenWidth();
-        const float screenH = context_->camera->getScreenHeight();
-
-        const tnl::Vector3 rayOrigin = context_->camera->getPosition();
-        const tnl::Vector3 rayDir = tnl::Vector3::CreateScreenRay(
-            mousePos.x, mousePos.y, screenW, screenH,
-            context_->camera->getViewMatrix(), context_->camera->getProjectionMatrix());
-
-        // ---- 手順2: レイと海面(y=0の平面)との交点を求める ----
-        // (実際の波の高さは無視する。狙い先の判定用途であれば十分な精度のため)
-        //
-        // レイ上の点は、始点rayOriginから方向rayDirへtだけ進んだ点として
-        //   点 = rayOrigin + rayDir × t
-        // と表せる(tは「どれだけ進んだか」を表す媒介変数)。
-        // この点のY座標がちょうど0になるtを求めれば、それが海面との交点になる。
-        //   rayOrigin.y + rayDir.y × t = 0
-        //   ⇔ t = -rayOrigin.y / rayDir.y
-        if (std::abs(rayDir.y) < 1e-5f) {
-            return; // レイがほぼ水平で、海面と交わらない(rayDir.yが0に近いと上の式で0除算になるため)
+        if (cameraController_ && cameraController_->isAimMode()) {
+            // エイムモード中: 画面中央の照準(≒カメラの向き)が狙い先(フェーズ2/3仕様)。
+            // 最大射程でクランプ済みの値をそのまま使う。
+            targetPos = cameraController_->getAimTargetWorldPosition();
         }
+        else {
+            // 周回モード中(未エイム): 従来通り、マウスカーソル位置を海面へレイキャストする。
+            // ---- 手順1: レイ(半直線)の始点と方向を求める ----
+            const tnl::Vector3 mousePos = tnl::Input::GetMousePosition();
+            const float screenW = context_->camera->getScreenWidth();
+            const float screenH = context_->camera->getScreenHeight();
 
-        const float t = (0.0f - rayOrigin.y) / rayDir.y;
-        if (t <= 0.0f) {
-            return; // 海面がカメラの後ろ側にある(通常は起こらないはずだが念のため)
+            const tnl::Vector3 rayOrigin = context_->camera->getPosition();
+            const tnl::Vector3 rayDir = tnl::Vector3::CreateScreenRay(
+                mousePos.x, mousePos.y, screenW, screenH,
+                context_->camera->getViewMatrix(), context_->camera->getProjectionMatrix());
+
+            // ---- 手順2: レイと海面(y=0の平面)との交点を求める ----
+            // (実際の波の高さは無視する。狙い先の判定用途であれば十分な精度のため)
+            //
+            // レイ上の点は、始点rayOriginから方向rayDirへtだけ進んだ点として
+            //   点 = rayOrigin + rayDir × t
+            // と表せる(tは「どれだけ進んだか」を表す媒介変数)。
+            // この点のY座標がちょうど0になるtを求めれば、それが海面との交点になる。
+            //   rayOrigin.y + rayDir.y × t = 0
+            //   ⇔ t = -rayOrigin.y / rayDir.y
+            if (std::abs(rayDir.y) < 1e-5f) {
+                return; // レイがほぼ水平で、海面と交わらない(rayDir.yが0に近いと上の式で0除算になるため)
+            }
+
+            const float t = (0.0f - rayOrigin.y) / rayDir.y;
+            if (t <= 0.0f) {
+                return; // 海面がカメラの後ろ側にある(通常は起こらないはずだが念のため)
+            }
+
+            // ---- 手順3: 交点を目標地点とする ----
+            targetPos = rayOrigin + rayDir * t;
         }
-
-        // ---- 手順3: 交点を目標地点として、割り砲弾を発射する ----
-        const tnl::Vector3 targetPos = rayOrigin + rayDir * t;
 
         projectileManager_->fire(playerShip_->getPosition(), targetPos);
         // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);

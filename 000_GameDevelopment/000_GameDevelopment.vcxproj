@@ -201,6 +201,7 @@
     <ClInclude Include="..\common\tnl\tnl_vector3.h" />
     <ClInclude Include="000_GameDevelopment.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="program\camera\gmPlayerCameraController.h" />
     <ClInclude Include="program\collision\gmCollider.h" />
     <ClInclude Include="program\collision\gmCollisionCategory.h" />
     <ClInclude Include="program\collision\gmCollisionSystem.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="program\spawner\gmIcebergManager.h" />
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\spawner\gmTradeShipManager.h" />
+    <ClInclude Include="program\util\gmCursorUtil.h" />
     <ClInclude Include="program\util\gmMeshBoundsUtil.h" />
     <ClInclude Include="program\util\gmRenderUtil.h" />
     <ClInclude Include="program\util\gmRouteCenterlineUtil.h" />
@@ -332,6 +334,7 @@
     <ClCompile Include="..\common\tnl\tnl_vector2i.cpp" />
     <ClCompile Include="..\common\tnl\tnl_vector3.cpp" />
     <ClCompile Include="000_GameDevelopment.cpp" />
+    <ClCompile Include="program\camera\gmPlayerCameraController.cpp" />
     <ClCompile Include="program\collision\gmCollider.cpp" />
     <ClCompile Include="program\collision\gmCollisionSystem.cpp" />
     <ClCompile Include="program\collision\gmIntersectEx.cpp" />
@@ -375,6 +378,7 @@
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\spawner\gmTradeShipManager.cpp" />
+    <ClCompile Include="program\util\gmCursorUtil.cpp" />
     <ClCompile Include="program\util\gmMeshBoundsUtil.cpp" />
     <ClCompile Include="program\util\gmRenderUtil.cpp" />
     <ClCompile Include="program\util\gmRouteCenterlineUtil.cpp" />

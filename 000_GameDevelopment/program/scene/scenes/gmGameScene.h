@@ -3,6 +3,7 @@
 #include "../gmSceneBase.h"
 #include "../../gmGameContext.h"
 
+#include "../../camera/gmPlayerCameraController.h"
 #include "../../object/gmPlayerShip.h"
 #include "../../object/gmWaterPlane.h"
 #include "../../object/gmIsland.h"
@@ -12,7 +13,9 @@
 #include "../../effect/gmVFXManager.h"
 #include "../../weapon/gmProjectileManager.h"
 #include "../../weapon/gmFlameThrowerManager.h"
+
 #include "../../mesh_ex/gmMeshEX.h"
+#include "../../util/gmCursorUtil.h"
 
 #include "../../effect/gmRouteVisualizer.h"
 #include "../../spawner/gmTradeShipManager.h"
@@ -62,6 +65,7 @@ namespace gm
         std::shared_ptr<gmGameContext> context_;
 
         std::shared_ptr<gmKyleDebugger>          debugger_;
+        std::unique_ptr<gmPlayerCameraController> cameraController_;
         std::shared_ptr<gmPlayerShip>            playerShip_;
         std::shared_ptr<gmWaterPlane>            water_;
         std::vector<std::shared_ptr<gmIsland>>   islands_;
