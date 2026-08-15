@@ -5,6 +5,7 @@
 #include "gmSpeedHUD.h"
 #include "gmRudderHUD.h"
 #include "gmWeaponSelectHUD.h"
+#include "gmHpBarUI.h"
 
 namespace gm {
 
@@ -36,6 +37,9 @@ namespace gm {
 
         // gmWeaponSelectHUD(武器選択HUD)のインスタンスを生成して保持
         weaponSelectHUD_ = std::make_unique<gmWeaponSelectHUD>(std::move(weaponSelection), std::move(onRecoveryClick));
+
+        // gmHpBarUI(プレイヤーHPバー)のインスタンスを生成して保持
+        hpBarUI_ = std::make_unique<gmHpBarUI>(player);
     }
 
     gmUIManager::~gmUIManager()
@@ -69,6 +73,10 @@ namespace gm {
         if (weaponSelectHUD_) {
             weaponSelectHUD_->setCursorModeActive(cursorModeActive);
             weaponSelectHUD_->update(dt);
+        }
+
+        if (hpBarUI_) {
+            hpBarUI_->update(dt);
         }
 
         // 今後、他のUIのupdate処理が増えたらここに追記します
@@ -109,6 +117,10 @@ namespace gm {
 
         if (weaponSelectHUD_) {
             weaponSelectHUD_->draw(); // 武器選択HUDの描画
+        }
+
+        if (hpBarUI_) {
+            hpBarUI_->draw(); // プレイヤーHPバーの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します

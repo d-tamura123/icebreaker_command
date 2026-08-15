@@ -482,6 +482,9 @@
     <ClInclude Include="program\weapon\gmWeaponSelectionState.h">
       <Filter>Source\[004] game\weapon</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmHpBarUI.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -858,6 +861,9 @@
     </ClCompile>
     <ClCompile Include="program\weapon\gmWeaponSelectionState.cpp">
       <Filter>Source\[004] game\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmHpBarUI.cpp">
+      <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

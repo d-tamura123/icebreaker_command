@@ -6,6 +6,7 @@
 #include <DxLib.h>
 #include <cstdio>
 #include <cmath>
+#include <algorithm>
 
 namespace gm {
 
@@ -68,18 +69,44 @@ namespace gm {
         }
 
         // ---- 実速度(演出用kts表示)。選択行と同じ高さ、パネルの右側に表示する ----
-        const float currentSpeed = playerShip->getDynamics().speed;
+        const float currentSpeed = playerShip->getDisplaySpeed();
         const float displayValue = std::fabs(currentSpeed) * SPEED_DISPLAY_KTS_SCALE;
 
         char buf[32];
         std::snprintf(buf, sizeof(buf), "< %.1fkt", displayValue);
         speedValueText_->setString(buf);
 
-        const int selectedRow = 6 - currentSpeedIndex;
+        // Y座標は選択段階の行に固定するのではなく、
+        // 実速度(currentSpeed)を連続的にY座標へ反映する。
+        //
+        // ただしSPEED_LEVELSは後退2段階(0.5刻み)・前進4段階(0.25刻み)という非対称な配列のため、
+        // 「-1.0〜+1.0を7行へ均等配分」という単純な線形補間だと、各行の実際の値とズレてしまう
+        // (例: speed=0.0がSTOP行ではなく1/4の行の位置に来てしまう)。
+        // そのため、現在の速度が挟まれている「隣り合う2段階」を探し、その2段階に対応する行の
+        // 間だけで補間する(区分的線形補間)。
+        const float clampedSpeed = std::clamp(currentSpeed, gmShip::SPEED_LEVELS[0], gmShip::SPEED_LEVELS[6]);
+
+        int levelIndexLower = 0;
+        for (; levelIndexLower < 6; ++levelIndexLower) {
+            if (clampedSpeed <= gmShip::SPEED_LEVELS[levelIndexLower + 1]) break;
+        }
+        const float lowerValue = gmShip::SPEED_LEVELS[levelIndexLower];
+        const float upperValue = gmShip::SPEED_LEVELS[levelIndexLower + 1];
+        const float segT = (upperValue - lowerValue > 1e-6f)
+            ? (clampedSpeed - lowerValue) / (upperValue - lowerValue)
+            : 0.0f;
+
+        // 添字→行の変換は他の場所と同じ「6 - 添字」(添字が大きい=速度が速いほど上の行)
+        const float rowForLower = static_cast<float>(6 - levelIndexLower);
+        const float rowForUpper = static_cast<float>(6 - (levelIndexLower + 1));
+        const float rowFloat = rowForLower + segT * (rowForUpper - rowForLower);
+
+        const float valueY = panelTopLeft_.y + ROW_HEIGHT * rowFloat + ROW_HEIGHT * 0.5f;
+
         speedValueText_->setPosition({
             panelTopLeft_.x + ROW_WIDTH + SPEED_VALUE_GAP,
-            panelTopLeft_.y + ROW_HEIGHT * static_cast<float>(selectedRow) + ROW_HEIGHT * 0.5f
-        });
+            valueY
+            });
     }
 
     void gmSpeedHUD::draw()

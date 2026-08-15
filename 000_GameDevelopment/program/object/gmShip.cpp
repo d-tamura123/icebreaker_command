@@ -18,6 +18,8 @@ namespace gm {
 		}
 
 		snapshotPosition();			// 移動キャンセルにつかう、移動前の位置情報を退避
+		collidedThisFrame_ = false;	// このフレームの衝突有無を再判定する(onCollisionEnter()が立てる)
+
 		updateEngine(deltaTime);
 		updateRudder(deltaTime);
 		updateMovement(deltaTime);
@@ -211,8 +213,8 @@ namespace gm {
 
 		revertToLastSafePosition();
 
-		// 衝突で実際には進めていないので、内部速度も止まった扱いにする
-		dynamics_.speed = 0.0f;   
+		// HUD表示用の「このフレームは衝突で進めなかった」という情報だけを別途フラグで残す
+		collidedThisFrame_ = true;
 
 		applyIcebergContactDamage(other);
 	}
@@ -266,9 +268,14 @@ namespace gm {
 
 		if (contact.graceTimer <= 0.0f) {
 			applyDamage(SHIP_ICEBERG_BIG_HIT_DAMAGE, iceberg, true);
-			contact.graceTimer = SHIP_ICEBERG_CONTACT_GRACE_SEC;
 			contact.justBigHit = true;
 		}
+
+		// 接触し続けている間は猶予を毎フレーム最大値へリセットし続ける。
+		// (減衰はupdateIcebergContactDamage()側で、離れているフレームのみ行う。
+		//  これにより「離れてから猶予秒数が経過して初めて、次の大ダメージが有効になる」
+		//  仕様になる。逆に触れ続けている間は猶予が尽きないため、大ダメージは初回のみ)
+		contact.graceTimer = SHIP_ICEBERG_CONTACT_GRACE_SEC;
 	}
 
 	// ------------------------------------------------------------
@@ -285,7 +292,12 @@ namespace gm {
 				applyDamage(SHIP_ICEBERG_DOT_DAMAGE_PER_SEC * deltaTime, it->first, false);
 			}
 
-			contact.graceTimer = std::max(0.0f, contact.graceTimer - deltaTime);
+			// 猶予の減衰は「離れているフレーム」だけ行う。接触中はapplyIcebergContactDamage()側で
+			// 毎フレーム最大値へリセットされ続けるため、ここで一緒に減らしてしまうと
+			// 接触し続けていても猶予が尽きて大ダメージが再発してしまう。
+			if (!contact.touchedThisFrame) {
+				contact.graceTimer = std::max(0.0f, contact.graceTimer - deltaTime);
+			}
 
 			const bool stillRelevant = contact.touchedThisFrame || contact.graceTimer > 0.0f;
 

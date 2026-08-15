@@ -220,6 +220,7 @@
     <ClInclude Include="program\gmGameConfig.h" />
     <ClInclude Include="program\gmGameContext.h" />
     <ClInclude Include="program\gm_main.h" />
+    <ClInclude Include="program\gui\gmHpBarUI.h" />
     <ClInclude Include="program\gui\gmMiniMap.h" />
     <ClInclude Include="program\gui\gmOceanFlowVisualizer.h" />
     <ClInclude Include="program\gui\gmRudderHUD.h" />
@@ -356,6 +357,7 @@
     <ClCompile Include="program\effect\gmSpriteAnimRegistry.cpp" />
     <ClCompile Include="program\effect\gmVFXManager.cpp" />
     <ClCompile Include="program\gm_main.cpp" />
+    <ClCompile Include="program\gui\gmHpBarUI.cpp" />
     <ClCompile Include="program\gui\gmMiniMap.cpp" />
     <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp" />
     <ClCompile Include="program\gui\gmRudderHUD.cpp" />

@@ -13,6 +13,7 @@ namespace gm {
     class gmRudderHUD;
     class gmWeaponSelectHUD;
     class gmWeaponSelectionState;
+    class gmHpBarUI;
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
@@ -56,5 +57,8 @@ namespace gm {
         std::unique_ptr<gmRudderHUD> rudderHUD_;
 
         std::unique_ptr<gmWeaponSelectHUD> weaponSelectHUD_;
+
+        std::unique_ptr<gmHpBarUI> hpBarUI_;
+
     };
 }

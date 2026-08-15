@@ -94,6 +94,11 @@ namespace gm {
         int getSpeedIndex() const { return speedIndex_; }
         const ShipDynamics& getDynamics() const { return dynamics_; }
 
+        // HUD表示専用の速度値。このフレームが衝突で実際には進めなかった場合は0を返す
+        // (dynamics_.speed自体は物理演算用の値なのでこのために書き換えない。onCollisionEnter()参照)。
+        float getDisplaySpeed() const { return collidedThisFrame_ ? 0.0f : dynamics_.speed; }
+
+
     private:
         void updateEngine(float deltaTime);                 // 速度段階・慣性
         void updateRudder(float deltaTime);                 // 舵角
@@ -138,7 +143,8 @@ namespace gm {
         ShipState state_ = ShipState::Normal;
 
         ShipDynamics dynamics_;
-        int speedIndex_ = 2; // 停止
+        int speedIndex_ = 2;                // 停止
+        bool collidedThisFrame_ = false;    // このフレーム、衝突で移動が押し戻されたか(HUD表示専用。getDisplaySpeed()参照)
         float waveTime_ = 0.0f;
         tnl::Vector3 wavePos_ {0, 0, 0};
 
