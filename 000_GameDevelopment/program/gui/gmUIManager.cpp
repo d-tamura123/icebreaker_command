@@ -6,6 +6,7 @@
 #include "gmRudderHUD.h"
 #include "gmWeaponSelectHUD.h"
 #include "gmHpBarUI.h"
+#include "gmAimReticleUI.h"
 
 namespace gm {
 
@@ -40,6 +41,10 @@ namespace gm {
 
         // gmHpBarUI(プレイヤーHPバー)のインスタンスを生成して保持
         hpBarUI_ = std::make_unique<gmHpBarUI>(player);
+
+        // gmAimReticleUI(エイム時の照準・目盛りメーター)のインスタンスを生成して保持
+        aimReticleUI_ = std::make_unique<gmAimReticleUI>();
+
     }
 
     gmUIManager::~gmUIManager()
@@ -47,7 +52,7 @@ namespace gm {
         // std::unique_ptr が自動的に解放するため、明示的なdeleteは不要です
     }
 
-    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive)
+    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive, bool isAimMode, float aimTargetDistance)
     {
         if (flowVisualizer_) {
             flowVisualizer_->update(camera);
@@ -77,6 +82,12 @@ namespace gm {
 
         if (hpBarUI_) {
             hpBarUI_->update(dt);
+        }
+
+        if (aimReticleUI_) {
+            aimReticleUI_->setVisible(isAimMode);
+            aimReticleUI_->setAimTargetDistance(aimTargetDistance);
+            aimReticleUI_->update(dt);
         }
 
         // 今後、他のUIのupdate処理が増えたらここに追記します
@@ -121,6 +132,10 @@ namespace gm {
 
         if (hpBarUI_) {
             hpBarUI_->draw(); // プレイヤーHPバーの描画
+        }
+
+        if (aimReticleUI_) {
+            aimReticleUI_->draw(); // エイム時の照準・目盛りメーターの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します

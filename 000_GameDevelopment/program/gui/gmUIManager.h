@@ -14,6 +14,7 @@ namespace gm {
     class gmWeaponSelectHUD;
     class gmWeaponSelectionState;
     class gmHpBarUI;
+    class gmAimReticleUI;
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
@@ -35,8 +36,9 @@ namespace gm {
         ~gmUIManager();
 
         // UI全体の更新
-        // arg3... カーソルモード(Alt押下中)かどうか。ボタン等のホバー/クリック判定の有効/無効に使う
-        void update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive);
+        // arg4... エイムモード中かどうか(gmAimReticleUIの表示/非表示に使う)
+        // arg5... プレイヤー船〜狙い先までの距離(world単位。gmAimReticleUIの距離表示に使う)
+        void update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive, bool isAimMode, float aimTargetDistance);
 
 
         // UI全体の描画（要件に合わせてrenderという名前にしています）
@@ -59,6 +61,8 @@ namespace gm {
         std::unique_ptr<gmWeaponSelectHUD> weaponSelectHUD_;
 
         std::unique_ptr<gmHpBarUI> hpBarUI_;
+
+        std::unique_ptr<gmAimReticleUI> aimReticleUI_;
 
     };
 }

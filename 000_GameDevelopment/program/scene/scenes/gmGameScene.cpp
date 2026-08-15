@@ -274,10 +274,10 @@ namespace gm
         // UIマネージャーの更新処理
         if (uiManager_) {
             uiManager_->update(
-                dt, 
-                context_->camera, 
-                cameraController_ && cameraController_->isCursorModeActive()    // Altキーのマウスカーソルモードかを示すフラグ
-            );
+                dt, context_->camera,
+                cameraController_ && cameraController_->isCursorModeActive(),
+                cameraController_ && cameraController_->isAimMode(),
+                cameraController_ ? cameraController_->getAimTargetDistance() : 0.0f);
         }
 
         // 航路可視化のUVスクロール更新(ジオメトリ自体は起動時に生成済みのため再生成しない)
