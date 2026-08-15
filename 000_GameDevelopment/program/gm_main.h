@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 void gameStart();
 void gameMain( float delta_time );
@@ -10,7 +10,7 @@ float col[3] = { 0 };
 float slider = 0;
 
 //------------------------------------------------------------------------------------------------------------
-// –ˆƒtƒŒ[ƒ€Às‚³‚ê‚Ü‚·
+// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å®Ÿè¡Œã•ã‚Œã¾ã™
 void gameMain(float delta_time) {
 
     DrawCircle(300, 300, 200, dxe::Colors::Red, true);
@@ -19,20 +19,20 @@ void gameMain(float delta_time) {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    //  ƒfƒ‚ƒEƒBƒ“ƒhƒE‚Ì•`‰æ
+    //  ãƒ‡ãƒ¢ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æç”»
     //ImGui::ShowDemoWindow();
 
-    //  V‚µ‚¢ƒEƒBƒ“ƒhƒE‚Ìì¬
+    //  æ–°ã—ã„ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
     ImGui::SetWindowSize({ 200, 300 });
     ImGui::StyleColorsClassic();
     ImGui::Begin("TestWindow");
     {
-        //  ƒeƒLƒXƒg‚Ì•\¦
+        //  ãƒ†ã‚­ã‚¹ãƒˆã®è¡¨ç¤º
         ImGui::Text("Hello, world!");
 
         if (ImGui::Button("TestButton"))
         {
-            //  ƒ{ƒ^ƒ“‚ğ‰Ÿ‚³‚ê‚½‚Æ‚«‚Ìˆ—
+            //  ãƒœã‚¿ãƒ³ã‚’æŠ¼ã•ã‚ŒãŸã¨ãã®å‡¦ç†
         }
         if (ImGui::ColorPicker3("test", col)) {
         }
@@ -41,7 +41,7 @@ void gameMain(float delta_time) {
     ImGui::End();
 
 
-    //  ImGui‚Ì•`‰æˆ—
+    //  ImGuiã®æç”»å‡¦ç†
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

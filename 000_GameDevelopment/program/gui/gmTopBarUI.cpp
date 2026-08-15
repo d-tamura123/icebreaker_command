@@ -54,7 +54,7 @@ namespace gm {
             MENU_BUTTON_MARGIN
         };
         menuButton_ = std::make_unique<gmUIImageButton>(
-            menuBtnPos, MENU_BUTTON_SIZE,
+            menuBtnPos, MENU_BUTTON_SIZE, MENU_BUTTON_SIZE,
             "resource/graphics/hud/ic_btn_menu_normal_48.png",
             "resource/graphics/hud/ic_btn_menu_hover_48.png",
             "resource/graphics/hud/ic_btn_menu_pressed_48.png",

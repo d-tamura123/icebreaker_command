@@ -23,28 +23,28 @@ namespace gm {
 
         // ---- アイコンボタン(通常/ホバー/押下は画像側で作り込み済みのため、普通のボタンとして扱うだけでよい) ----
         meltBulletButton_ = std::make_unique<gmUIImageButton>(
-            meltBulletPos_, ICON_SIZE,
+            meltBulletPos_, ICON_SIZE, ICON_SIZE,
             "resource/graphics/hud/wpn_melt_bullet_normal_48.png",
             "resource/graphics/hud/wpn_melt_bullet_hover_48.png",
             "resource/graphics/hud/wpn_melt_bullet_pressed_48.png",
             [this]() { if (state_) state_->selectWeapon(gmWeaponType::MeltBullet); });
 
         breakBulletButton_ = std::make_unique<gmUIImageButton>(
-            breakBulletPos_, ICON_SIZE,
+            breakBulletPos_, ICON_SIZE, ICON_SIZE,
             "resource/graphics/hud/wpn_break_bullet_normal_48.png",
             "resource/graphics/hud/wpn_break_bullet_hover_48.png",
             "resource/graphics/hud/wpn_break_bullet_pressed_48.png",
             [this]() { if (state_) state_->selectWeapon(gmWeaponType::BreakBullet); });
 
         flamethrowerButton_ = std::make_unique<gmUIImageButton>(
-            flamethrowerPos_, ICON_SIZE,
+            flamethrowerPos_, ICON_SIZE, ICON_SIZE,
             "resource/graphics/hud/wpn_flamethrower_normal_48.png",
             "resource/graphics/hud/wpn_flamethrower_hover_48.png",
             "resource/graphics/hud/wpn_flamethrower_pressed_48.png",
             [this]() { if (state_) state_->selectWeapon(gmWeaponType::Flamethrower); });
 
         recoveryButton_ = std::make_unique<gmUIImageButton>(
-            recoveryPos_, ICON_SIZE,
+            recoveryPos_, ICON_SIZE, ICON_SIZE,
             "resource/graphics/hud/wpn_hp_recovery_normal_48.png",
             "resource/graphics/hud/wpn_hp_recovery_hover_48.png",
             "resource/graphics/hud/wpn_hp_recovery_pressed_48.png",

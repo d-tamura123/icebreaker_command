@@ -7,13 +7,15 @@ namespace gm {
 
     gmUIImageButton::gmUIImageButton(
         const tnl::Vector2f& pos,
-        float size,
+        float width,
+        float height,
         const std::string& normalImagePath,
         const std::string& hoverImagePath,
         const std::string& pressedImagePath,
         std::function<void()> onClick)
         : gmUIObjectBase(pos)
-        , size_(size)
+        , width_(width)
+        , height_(height)
         , onClick_(std::move(onClick))
     {
         hNormal_  = LoadGraph(normalImagePath.c_str());
@@ -36,8 +38,8 @@ namespace gm {
         gmCursorUtil::GetMousePoint(mx, my);
 
         const bool hovering =
-            static_cast<float>(mx) >= position_.x && static_cast<float>(mx) <= position_.x + size_ &&
-            static_cast<float>(my) >= position_.y && static_cast<float>(my) <= position_.y + size_;
+            static_cast<float>(mx) >= position_.x && static_cast<float>(mx) <= position_.x + width_ &&
+            static_cast<float>(my) >= position_.y && static_cast<float>(my) <= position_.y + height_;
 
         const bool leftHeld     = input_->keep(dxe::Input::eButton::MOUSE_LEFT);
         const bool leftReleased = input_->released(dxe::Input::eButton::MOUSE_LEFT);
@@ -73,8 +75,8 @@ namespace gm {
         DrawExtendGraph(
             static_cast<int>(position_.x),
             static_cast<int>(position_.y),
-            static_cast<int>(position_.x + size_),
-            static_cast<int>(position_.y + size_),
+            static_cast<int>(position_.x + width_),
+            static_cast<int>(position_.y + height_),
             handle,
             TRUE
         );

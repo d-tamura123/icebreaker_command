@@ -4,7 +4,7 @@
 #include "gm_main.h"
 
 #include "./scene/gmSceneManager.h"
-//#include "./scene/scenes/gmTitleScene.h"
+#include "./scene/scenes/gmTitleScene.h"
 #include "./scene/scenes/gmGameScene.h"
 
 std::shared_ptr<gm::gmSceneManager> g_sceneManager;
@@ -14,7 +14,9 @@ std::shared_ptr<gm::gmSceneManager> g_sceneManager;
 //------------------------------------------------------------
 void gameStart()
 {
-    srand(time(0));
+    // time_t(64bit環境では long long 相当) から unsigned int への暗黙変換で出ていたため、
+    // 明示的にキャストする(乱数シードとしての用途上、下位ビットだけ使われても問題は無い)。
+    srand(static_cast<unsigned int>(time(0)));
 
     // Alt(またはF10)キー押下時、Windows既定のシステムメニュー起動処理(WM_SYSKEYDOWN)を
     // DxLibが素通しすることで、キーを押している間アプリのメッセージループが一時停止してしまう
@@ -25,9 +27,9 @@ void gameStart()
     g_sceneManager = std::make_shared<gm::gmSceneManager>();
 
     // 最初のシーンはタイトル
-    //auto titleScene = std::make_shared<gm::gmTitleScene>();
-    auto gameScene = std::make_shared<gm::gmGameScene>();
-    g_sceneManager->setInitialScene(gameScene);
+    auto titleScene = std::make_shared<gm::gmTitleScene>();
+    //auto gameScene = std::make_shared<gm::gmGameScene>();
+    g_sceneManager->setInitialScene(titleScene);
 }
 
 //------------------------------------------------------------

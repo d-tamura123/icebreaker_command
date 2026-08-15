@@ -19,14 +19,16 @@ namespace gm {
     class gmUIImageButton : public gmUIObjectBase {
     public:
         // arg1... 左上座標
-        // arg2... 一辺のサイズ(正方形前提)
+        // arg2... 幅
+        // arg3... 高さ
         // arg3... 通常時の画像パス
         // arg4... ホバー時の画像パス
         // arg5... 押下時の画像パス
         // arg6... クリック確定時(ボタン上で押して、ボタン上で離した瞬間)に呼ばれるコールバック
         gmUIImageButton(
             const tnl::Vector2f& pos,
-            float size,
+            float width,
+            float height,
             const std::string& normalImagePath,
             const std::string& hoverImagePath,
             const std::string& pressedImagePath,
@@ -40,7 +42,8 @@ namespace gm {
     private:
         enum class eState { Normal, Hover, Pressed };
 
-        float size_ = 0.0f;
+        float width_ = 0.0f;
+        float height_ = 0.0f;
         int hNormal_ = -1;
         int hHover_ = -1;
         int hPressed_ = -1;

@@ -488,6 +488,9 @@
     <ClInclude Include="program\gui\gmAimReticleUI.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
+    <ClInclude Include="program\scene\scenes\gmTitleScene.h">
+      <Filter>Source\[004] game\scene\scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -870,6 +873,9 @@
     </ClCompile>
     <ClCompile Include="program\gui\gmAimReticleUI.cpp">
       <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\scene\scenes\gmTitleScene.cpp">
+      <Filter>Source\[004] game\scene\scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
