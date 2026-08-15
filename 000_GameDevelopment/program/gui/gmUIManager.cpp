@@ -3,6 +3,7 @@
 #include "gmOceanFlowVisualizer.h"
 #include "gmTopBarUI.h"
 #include "gmSpeedHUD.h"
+#include "gmRudderHUD.h"
 
 namespace gm {
 
@@ -26,6 +27,9 @@ namespace gm {
 
         // gmSpeedHUD(速度HUD)のインスタンスを生成して保持
         speedHUD_ = std::make_unique<gmSpeedHUD>(player);
+
+        // gmRudderHUD(舵角HUD)のインスタンスを生成して保持
+        rudderHUD_ = std::make_unique<gmRudderHUD>(player);
     }
 
     gmUIManager::~gmUIManager()
@@ -51,6 +55,11 @@ namespace gm {
         if (speedHUD_) {
             speedHUD_->update(dt);
         }
+
+        if (rudderHUD_) {
+            rudderHUD_->update(dt);
+        }
+
         // 今後、他のUIのupdate処理が増えたらここに追記します
     }
 
@@ -81,6 +90,10 @@ namespace gm {
 
         if (speedHUD_) {
             speedHUD_->draw(); // 速度HUDの描画
+        }
+
+        if (rudderHUD_) {
+            rudderHUD_->draw(); // 舵角HUDの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します

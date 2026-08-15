@@ -473,6 +473,9 @@
     <ClInclude Include="program\gui\gmSpeedHUD.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmRudderHUD.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -839,6 +842,9 @@
       <Filter>Source\[004] game\util</Filter>
     </ClCompile>
     <ClCompile Include="program\gui\gmSpeedHUD.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmRudderHUD.cpp">
       <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
   </ItemGroup>

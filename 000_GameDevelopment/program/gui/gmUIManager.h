@@ -10,6 +10,7 @@ namespace gm {
     class gmOceanFlowVisualizer;
     class gmTopBarUI;
     class gmSpeedHUD;
+    class gmRudderHUD;
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
@@ -47,5 +48,7 @@ namespace gm {
         std::unique_ptr<gmTopBarUI> topBar_;
 
         std::unique_ptr<gmSpeedHUD> speedHUD_;
+
+        std::unique_ptr<gmRudderHUD> rudderHUD_;
     };
 }
