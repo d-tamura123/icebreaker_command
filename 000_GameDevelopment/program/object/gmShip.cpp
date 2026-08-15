@@ -210,6 +210,10 @@ namespace gm {
 		if (state_ == ShipState::Destroyed) return;		// 撃沈演出中(Destroyed状態)は衝突応答そのものを無視する。
 
 		revertToLastSafePosition();
+
+		// 衝突で実際には進めていないので、内部速度も止まった扱いにする
+		dynamics_.speed = 0.0f;   
+
 		applyIcebergContactDamage(other);
 	}
 

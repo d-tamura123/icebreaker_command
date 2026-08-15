@@ -470,6 +470,9 @@
     <ClInclude Include="program\util\gmFontCache.h">
       <Filter>Source\[004] game\util</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmSpeedHUD.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -834,6 +837,9 @@
     </ClCompile>
     <ClCompile Include="program\util\gmFontCache.cpp">
       <Filter>Source\[004] game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmSpeedHUD.cpp">
+      <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

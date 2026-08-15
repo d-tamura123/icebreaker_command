@@ -22,8 +22,8 @@ namespace gm {
             float yaw           = 0.0f;         // 船の向き
         };
 
-        static constexpr float SPEED_LEVELS[6] = {
-           -1.0f, -0.5f, 0.0f, 0.25f, 0.5f, 1.0f
+        static constexpr float SPEED_LEVELS[7] = {
+           -1.0f, -0.5f, 0.0f, 0.25f, 0.5f, 0.75f, 1.0f
         };
 
         // Q/Eキー(トグル式の舵角操作)用の5段階。SPEED_LEVELSと同じ考え方で、
@@ -85,6 +85,9 @@ namespace gm {
         float getHp() const { return hp_; }
         float getMaxHp() const { return maxHp_; }
         bool isDestroyed() const { return state_ == ShipState::Destroyed; }
+
+        int getSpeedIndex() const { return speedIndex_; }
+        const ShipDynamics& getDynamics() const { return dynamics_; }
 
     private:
         void updateEngine(float deltaTime);                 // 速度段階・慣性

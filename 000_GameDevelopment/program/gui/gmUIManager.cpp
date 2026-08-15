@@ -2,6 +2,7 @@
 #include "gmMiniMap.h" // 実装ファイル側で実体をインクルード
 #include "gmOceanFlowVisualizer.h"
 #include "gmTopBarUI.h"
+#include "gmSpeedHUD.h"
 
 namespace gm {
 
@@ -20,9 +21,11 @@ namespace gm {
         // gmOceanFlowVisualizer のインスタンスを生成して保持
         flowVisualizer_ = std::make_unique<gmOceanFlowVisualizer>(map);
 
-        // gmTopBarUI(画面上端バー。フェーズ1.2)のインスタンスを生成して保持
+        // gmTopBarUI(画面上端バー)のインスタンスを生成して保持
         topBar_ = std::make_unique<gmTopBarUI>(std::move(wallet), std::move(onMenuClick));
 
+        // gmSpeedHUD(速度HUD)のインスタンスを生成して保持
+        speedHUD_ = std::make_unique<gmSpeedHUD>(player);
     }
 
     gmUIManager::~gmUIManager()
@@ -43,6 +46,10 @@ namespace gm {
         if (topBar_) {
             topBar_->setCursorModeActive(cursorModeActive);
             topBar_->update(dt);
+        }
+
+        if (speedHUD_) {
+            speedHUD_->update(dt);
         }
         // 今後、他のUIのupdate処理が増えたらここに追記します
     }
@@ -70,6 +77,10 @@ namespace gm {
 
         if (topBar_) {
             topBar_->draw(); // 画面上端バーの描画
+        }
+
+        if (speedHUD_) {
+            speedHUD_->draw(); // 速度HUDの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します

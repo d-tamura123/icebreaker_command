@@ -53,7 +53,7 @@ namespace gm {
         if (input->consumePress(gmAction::Ship_SpeedDown, gmInputCallerId::PlayerShip_SpeedDown))
             speedIndex_--;
 
-        speedIndex_ = std::clamp(speedIndex_, 0, 5);
+        speedIndex_ = std::clamp(speedIndex_, 0, static_cast<int>(std::size(SPEED_LEVELS)) - 1);
 
         dynamics_.targetSpeed = SPEED_LEVELS[speedIndex_];
 

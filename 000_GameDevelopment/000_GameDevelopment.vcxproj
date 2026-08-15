@@ -222,6 +222,7 @@
     <ClInclude Include="program\gm_main.h" />
     <ClInclude Include="program\gui\gmMiniMap.h" />
     <ClInclude Include="program\gui\gmOceanFlowVisualizer.h" />
+    <ClInclude Include="program\gui\gmSpeedHUD.h" />
     <ClInclude Include="program\gui\gmTopBarUI.h" />
     <ClInclude Include="program\gui\gmUIImageButton.h" />
     <ClInclude Include="program\gui\gmUIManager.h" />
@@ -354,6 +355,7 @@
     <ClCompile Include="program\gm_main.cpp" />
     <ClCompile Include="program\gui\gmMiniMap.cpp" />
     <ClCompile Include="program\gui\gmOceanFlowVisualizer.cpp" />
+    <ClCompile Include="program\gui\gmSpeedHUD.cpp" />
     <ClCompile Include="program\gui\gmTopBarUI.cpp" />
     <ClCompile Include="program\gui\gmUIImageButton.cpp" />
     <ClCompile Include="program\gui\gmUIManager.cpp" />
