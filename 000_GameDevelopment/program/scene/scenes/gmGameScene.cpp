@@ -143,6 +143,9 @@ namespace gm
         // 火炎放射攻撃の発動・管理
         flameThrowerManager_ = std::make_shared<gmFlameThrowerManager>(collisionSystem_, spriteAnimRegistry_);
 
+        // 武器選択・リキャスト・リカバリのクールダウン状態
+        weaponSelection_ = std::make_shared<gmWeaponSelectionState>();
+
         // プレイヤー船の位置
         tnl::Vector3 shipPos = playerShip_->getPosition();
 
@@ -164,12 +167,20 @@ namespace gm
         // UIマネージャーの初期化
         // 右マージン24px(1280 - 1000 - 256 = 24)、下マージン20pxで統一
         tnl::Vector2f miniMapPos(1000.0f, DXE_WINDOW_HEIGHT_F - 256.0f - 20.0f);
+
         uiManager_ = std::make_unique<gmUIManager>(
             miniMapPos, context_->map, playerShip_, icebergManager_,
+        
             context_->wallet,
             [this]() {
                 // ToDo: メニューボタンのクリック処理。タスク8(簡易ポーズメニュー)実装まではプレースホルダー。
-            });
+            },
+
+            weaponSelection_,
+            [this]() {
+                tryUseRecovery();
+            }
+        );
 
         // 航路の可視化(NPC交易船の航路をリボンメッシュで描画。判定には関与しない)
         // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
@@ -228,7 +239,15 @@ namespace gm
 
         // プレイヤーのクリック発射(デバッグモード中はフリーカメラ操作を優先し、発射は行わない)
         if (!debugger_->isDebugModeOn() || !debugger_->isFreeCameraEnabled()) {
+
+            updateWeaponSelectionInput(); // 1/2/3キーでの武器切替、5キーでのリカバリ発動
+
             tryFireProjectileOnClick();
+        }
+
+        // 武器選択・リキャスト・リカバリのクールダウン更新
+        if (weaponSelection_) {
+            weaponSelection_->update(dt);
         }
 
         // 発射済みの弾の更新
@@ -399,6 +418,10 @@ namespace gm
         if (!flameThrowerManager_ || !playerShip_) {
             return;
         }
+        if (!weaponSelection_ || !weaponSelection_->canFireSelectedWeapon()) {
+            // リキャスト中(または状態が未初期化)なら発射しない
+            return;
+        }
 
         tnl::Vector3 targetPos;
 
@@ -441,12 +464,61 @@ namespace gm
             targetPos = rayOrigin + rayDir * t;
         }
 
-        projectileManager_->fire(playerShip_->getPosition(), targetPos);
-        // projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
-        // flameThrowerManager_->fire(playerShip_, targetPos);
+
+        // ---- 選択中の武器に応じて発射処理を振り分ける ----
+        switch (weaponSelection_->getSelectedWeapon()) {
+        case gmWeaponType::MeltBullet:
+            projectileManager_->fire(playerShip_->getPosition(), targetPos);
+            break;
+        case gmWeaponType::BreakBullet:
+            projectileManager_->fireSplit(playerShip_->getPosition(), targetPos);
+            break;
+        case gmWeaponType::Flamethrower:
+            flameThrowerManager_->fire(playerShip_, targetPos);
+            break;
+        }
+
+        weaponSelection_->notifyFired(); // 選択中武器のリキャストを開始する
+
     }
 
+    // ------------------------------------------------------------
+    // 1/2/3キーでの武器切替、5キーでのリカバリ発動。
+    // カーソルモード(Alt押下中)はUI操作を優先し、ここでの入力は受け付けない
+    // (武器選択HUDのボタンクリックで代わりに操作する)。
+    // ------------------------------------------------------------
+    void gmGameScene::updateWeaponSelectionInput()
+    {
+        if (!context_->input || !weaponSelection_) return;
+        if (cameraController_ && cameraController_->isCursorModeActive()) return;
 
+        if (context_->input->consumePress(gmAction::Weapon_Switch1, gmInputCallerId::GameScene_WeaponSwitch1)) {
+            weaponSelection_->selectWeapon(gmWeaponType::MeltBullet);
+        }
+        if (context_->input->consumePress(gmAction::Weapon_Switch2, gmInputCallerId::GameScene_WeaponSwitch2)) {
+            weaponSelection_->selectWeapon(gmWeaponType::BreakBullet);
+        }
+        if (context_->input->consumePress(gmAction::Weapon_Switch3, gmInputCallerId::GameScene_WeaponSwitch3)) {
+            weaponSelection_->selectWeapon(gmWeaponType::Flamethrower);
+        }
+        if (context_->input->consumePress(gmAction::Ship_Recovery, gmInputCallerId::GameScene_Recovery)) {
+            tryUseRecovery();
+        }
+    }
+
+    // ------------------------------------------------------------
+    // リカバリ(5キー、または武器選択HUDのリカバリボタンのクリック)発動処理の本体。
+    // クールダウン判定→HPへじわじわ回復を適用開始→クールダウン開始、を行う。
+    // ------------------------------------------------------------
+    void gmGameScene::tryUseRecovery()
+    {
+        if (!weaponSelection_ || !playerShip_) return;
+        if (!weaponSelection_->canUseRecovery()) return;
+        if (playerShip_->isDestroyed()) return;
+
+        playerShip_->startRecovery(RECOVERY_HEAL_RATIO * playerShip_->getMaxHp(), RECOVERY_HEAL_DURATION_SEC);
+        weaponSelection_->notifyRecoveryUsed();
+    }
 
 
 #ifdef _DEBUG

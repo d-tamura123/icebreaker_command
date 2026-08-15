@@ -53,6 +53,22 @@ namespace gm {
             rudderHeldLastFrame_ = false;
         }
 
+        // ------------------------------------------------------------
+        // リカバリ(5キー)発動。合計amountのHPを、durationSec秒かけてじわじわ回復する
+        // (即時全回復ではない)。既に発動中の場合は、その時点の残り分を破棄して上書きする。
+        //
+        // 発射可否・クールダウン管理はgmWeaponSelectionState側の責務。
+        // このメソッドは実際の回復量の適用だけを行う(呼ぶ側でクールダウン判定は済んでいる前提)。
+        // ------------------------------------------------------------
+        void startRecovery(float amount, float durationSec) {
+            if (durationSec <= 0.0f) {
+                heal(amount);
+                return;
+            }
+            recoveryRatePerSec_ = amount / durationSec;
+            recoveryTimeRemaining_ = durationSec;
+        }
+
     protected:
 
         // 撃沈開始時(HP0到達の瞬間)、設定済みのコールバックを呼ぶだけ。
@@ -64,6 +80,7 @@ namespace gm {
 
     private:
         void handleInput();
+        void updateRecovery(float deltaTime); // リカバリのじわじわ回復の毎フレーム処理
 
         std::weak_ptr<gmInputManager> inputManager_;
 
@@ -80,6 +97,10 @@ namespace gm {
         // Q/Eキー(トグル式)での現在の舵角段階。RUDDER_LEVELSへの添字。
         // 2(=RUDDER_LEVELSの中央=0.0)を初期値とする。
         int rudderIndex_ = 2;
+
+        // リカバリ進行中の、秒あたりの回復量と残り秒数。0以下の間は何もしない。
+        float recoveryRatePerSec_ = 0.0f;
+        float recoveryTimeRemaining_ = 0.0f;
     };
 
 }

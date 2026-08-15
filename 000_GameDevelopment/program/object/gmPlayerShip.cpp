@@ -1,6 +1,9 @@
 ﻿#include "gmPlayerShip.h"
 #include "../input/gmInputManager.h"
 #include <dxe.h>
+#undef min              // std::max, std::minのマクロ競合解消
+#undef max
+#include <algorithm>
 
 namespace gm {
 
@@ -11,10 +14,26 @@ namespace gm {
         // プレイヤー入力は受け付けない。
         
         if (!isDestroyed()) {
-            handleInput();  // 破壊中は入力しない
+            handleInput();              // 破壊中は入力しない
+            updateRecovery(deltaTime);  // リカバリのじわじわ回復
         }
 
         gmShip::update(deltaTime);  // 共通ロジックは親に任せる
+    }
+
+    // ------------------------------------------------------------
+    // リカバリ(5キー)のじわじわ回復。startRecovery()で設定された
+    // 秒あたりの回復量(recoveryRatePerSec_)を、残り秒数(recoveryTimeRemaining_)が
+    // 尽きるまで毎フレーム加算し続ける。フレームレートに依存せず合計回復量が一定になるよう、
+    // 最終フレームでのdeltaTimeの超過分はstd::minで切り詰める。
+    // ------------------------------------------------------------
+    void gmPlayerShip::updateRecovery(float deltaTime)
+    {
+        if (recoveryTimeRemaining_ <= 0.0f) return;
+
+        const float step = std::min(deltaTime, recoveryTimeRemaining_);
+        heal(recoveryRatePerSec_ * step);
+        recoveryTimeRemaining_ -= step;
     }
 
     // ------------------------------------------------------------

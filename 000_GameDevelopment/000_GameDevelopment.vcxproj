@@ -228,6 +228,7 @@
     <ClInclude Include="program\gui\gmUIImageButton.h" />
     <ClInclude Include="program\gui\gmUIManager.h" />
     <ClInclude Include="program\gui\gmUIObjectBase.h" />
+    <ClInclude Include="program\gui\gmWeaponSelectHUD.h" />
     <ClInclude Include="program\input\gmAction.h" />
     <ClInclude Include="program\input\gmInputCallerId.h" />
     <ClInclude Include="program\input\gmInputLayer.h" />
@@ -267,6 +268,7 @@
     <ClInclude Include="program\wallet\gmWallet.h" />
     <ClInclude Include="program\weapon\gmFlameThrowerManager.h" />
     <ClInclude Include="program\weapon\gmProjectileManager.h" />
+    <ClInclude Include="program\weapon\gmWeaponSelectionState.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -362,6 +364,7 @@
     <ClCompile Include="program\gui\gmUIImageButton.cpp" />
     <ClCompile Include="program\gui\gmUIManager.cpp" />
     <ClCompile Include="program\gui\gmUIObjectBase.cpp" />
+    <ClCompile Include="program\gui\gmWeaponSelectHUD.cpp" />
     <ClCompile Include="program\input\gmInputManager.cpp" />
     <ClCompile Include="program\map\gmFlowField.cpp" />
     <ClCompile Include="program\map\gmMapLoader.cpp" />
@@ -394,6 +397,7 @@
     <ClCompile Include="program\util\gmRouteCenterlineUtil.cpp" />
     <ClCompile Include="program\weapon\gmFlameThrowerManager.cpp" />
     <ClCompile Include="program\weapon\gmProjectileManager.cpp" />
+    <ClCompile Include="program\weapon\gmWeaponSelectionState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="000_GameDevelopment.rc" />

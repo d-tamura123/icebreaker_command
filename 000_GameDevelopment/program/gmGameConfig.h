@@ -234,4 +234,24 @@ namespace gm
     // 閾値でFOV_WIDE、zoomRatio_=1.0でFOV_NARROWになるよう線形補間する。
     static const float CAMERA_AIM_FOV_WIDE_DEG = 50.0f;
     static const float CAMERA_AIM_FOV_NARROW_DEG = 15.0f;
+
+
+
+    // ------------------------------------------------------------
+    // 武器選択(gmWeaponSelectionState)・リカバリ
+    // フェーズ1.4仕様。値はすべて暫定(テストで調整する前提。クールタイムのみ確定値)。
+    // ------------------------------------------------------------
+    // 各武器のリキャストタイム(秒)。溶かす弾・割る弾は軌道関連の値が同じなので同じ値にしている。
+    static const float WEAPON_MELT_BULLET_RECAST_SEC    = 6.0f;
+    static const float WEAPON_BREAK_BULLET_RECAST_SEC   = 6.0f;
+    static const float WEAPON_FLAMETHROWER_RECAST_SEC   = 3.0f;
+
+    // リカバリ(5キー): 1回の発動で回復する総量(最大HPに対する割合)
+    static const float RECOVERY_HEAL_RATIO              = 0.3f;         // 1回のリカバリ操作で３割回復
+    // リカバリ: 回復総量を、何秒かけてじわじわ回復するか
+    static const float RECOVERY_HEAL_DURATION_SEC       = 5.0f;
+    // リカバリ: クールタイム(秒)
+    static const float RECOVERY_COOLDOWN_SEC            = 90.0f;
+
+
 }

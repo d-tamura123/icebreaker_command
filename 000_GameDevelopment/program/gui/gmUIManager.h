@@ -11,6 +11,8 @@ namespace gm {
     class gmTopBarUI;
     class gmSpeedHUD;
     class gmRudderHUD;
+    class gmWeaponSelectHUD;
+    class gmWeaponSelectionState;
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
@@ -24,7 +26,9 @@ namespace gm {
             std::shared_ptr<gmPlayerShip> player,
             std::shared_ptr<gmIcebergManager> icebergManager,
             std::shared_ptr<gmWallet> wallet,
-            std::function<void()> onMenuClick
+            std::function<void()> onMenuClick,
+            std::shared_ptr<gmWeaponSelectionState> weaponSelection,
+            std::function<void()> onRecoveryClick
         );
 
         ~gmUIManager();
@@ -50,5 +54,7 @@ namespace gm {
         std::unique_ptr<gmSpeedHUD> speedHUD_;
 
         std::unique_ptr<gmRudderHUD> rudderHUD_;
+
+        std::unique_ptr<gmWeaponSelectHUD> weaponSelectHUD_;
     };
 }

@@ -20,6 +20,10 @@ namespace gm {
         PlayerShip_RudderRightStep,
 
         GameScene_WeaponFire,
+        GameScene_WeaponSwitch1,
+        GameScene_WeaponSwitch2,
+        GameScene_WeaponSwitch3,
+        GameScene_Recovery,
     };
 
 }

@@ -82,6 +82,11 @@ namespace gm {
         // ------------------------------------------------------------
         void applyDamage(float amount, gmObjectBase* source, bool isBigHit);
 
+        // HPを回復する(maxHp_を超えない)。Destroyed中は何もしない。
+        // 即時全回復ではなく毎フレーム少量ずつ呼ぶような、じわじわ回復の実装は呼び出し側の責務
+        // (プレイヤーのリカバリ機能はgmPlayerShip側で秒間の回復量を計算してこれを毎フレーム呼ぶ)。
+        void heal(float amount);
+
         float getHp() const { return hp_; }
         float getMaxHp() const { return maxHp_; }
         bool isDestroyed() const { return state_ == ShipState::Destroyed; }

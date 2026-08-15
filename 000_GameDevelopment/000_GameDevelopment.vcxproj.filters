@@ -476,6 +476,12 @@
     <ClInclude Include="program\gui\gmRudderHUD.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmWeaponSelectHUD.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\weapon\gmWeaponSelectionState.h">
+      <Filter>Source\[004] game\weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -846,6 +852,12 @@
     </ClCompile>
     <ClCompile Include="program\gui\gmRudderHUD.cpp">
       <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmWeaponSelectHUD.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\weapon\gmWeaponSelectionState.cpp">
+      <Filter>Source\[004] game\weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

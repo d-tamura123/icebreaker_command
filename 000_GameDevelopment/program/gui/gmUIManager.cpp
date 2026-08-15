@@ -4,6 +4,7 @@
 #include "gmTopBarUI.h"
 #include "gmSpeedHUD.h"
 #include "gmRudderHUD.h"
+#include "gmWeaponSelectHUD.h"
 
 namespace gm {
 
@@ -13,7 +14,9 @@ namespace gm {
         std::shared_ptr<gmPlayerShip> player,
         std::shared_ptr<gmIcebergManager> icebergManager,
         std::shared_ptr<gmWallet> wallet,
-        std::function<void()> onMenuClick
+        std::function<void()> onMenuClick,
+        std::shared_ptr<gmWeaponSelectionState> weaponSelection,
+        std::function<void()> onRecoveryClick
     )
     {
         // gmMiniMap のインスタンスを生成して保持
@@ -30,6 +33,9 @@ namespace gm {
 
         // gmRudderHUD(舵角HUD)のインスタンスを生成して保持
         rudderHUD_ = std::make_unique<gmRudderHUD>(player);
+
+        // gmWeaponSelectHUD(武器選択HUD)のインスタンスを生成して保持
+        weaponSelectHUD_ = std::make_unique<gmWeaponSelectHUD>(std::move(weaponSelection), std::move(onRecoveryClick));
     }
 
     gmUIManager::~gmUIManager()
@@ -58,6 +64,11 @@ namespace gm {
 
         if (rudderHUD_) {
             rudderHUD_->update(dt);
+        }
+
+        if (weaponSelectHUD_) {
+            weaponSelectHUD_->setCursorModeActive(cursorModeActive);
+            weaponSelectHUD_->update(dt);
         }
 
         // 今後、他のUIのupdate処理が増えたらここに追記します
@@ -94,6 +105,10 @@ namespace gm {
 
         if (rudderHUD_) {
             rudderHUD_->draw(); // 舵角HUDの描画
+        }
+
+        if (weaponSelectHUD_) {
+            weaponSelectHUD_->draw(); // 武器選択HUDの描画
         }
 
         // 今後、他のUIのdraw処理が増えたらここに追記します
