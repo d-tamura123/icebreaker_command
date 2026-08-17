@@ -4,6 +4,7 @@
 #undef min              // std::max, std::minのマクロ競合解消
 #undef max
 #include <algorithm>
+#include <iterator>      // std::size()
 
 namespace gm {
 
