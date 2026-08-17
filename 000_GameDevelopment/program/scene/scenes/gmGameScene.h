@@ -29,6 +29,7 @@ namespace gm
 {
     // 前方宣言
     class gmUIManager;
+    class gmGameStopUIManager;
 
     // ------------------------------------------------------------
     // 本編プレイ中のメインシーン。
@@ -62,6 +63,10 @@ namespace gm
         // という一連の処理を行う。playerShip_->setOnDestroyedCompleteCallback()に渡す。
         void respawnPlayer();
 
+        // Escキーでのポーズメニュー開閉を処理する。一時停止中かどうかに関わらず毎フレーム呼ぶ
+        // (開く/閉じる、どちらの操作もここで処理するため)。
+        void updateSystemInput();
+
         // デバッグ専用: NPC交易船の異常系(進捗停滞タイムアウト+ワープ/島衝突時のバック)を
         // O/Pキーで意図的に発生させ、動作確認しやすくする(gmTradeShipのdebug*系メソッド参照)。
         // debugger_->isDebugModeOn()の間だけ有効。リリースビルドの成果物には含めない
@@ -86,6 +91,7 @@ namespace gm
         std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
         std::shared_ptr<gmWeaponSelectionState>  weaponSelection_;      // 武器選択・リキャスト・リカバリのクールダウン状態(フェーズ1.4)
         std::unique_ptr<gmUIManager>             uiManager_;
+        std::unique_ptr<gmGameStopUIManager>     gameStopUIManager_;    // ポーズメニュー等、ゲームを止めて表示するUIの中間管理層
         std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;      // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
         std::shared_ptr<gmTradeShipManager>      tradeShipManager_;     // NPC交易船のスポーンと一元管理
         std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;          // プレイヤー撃沈時の再配置演出専用のフェード
@@ -96,14 +102,5 @@ namespace gm
         // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。
         bool debugTradeShipForcedBadSteering_ = false;
         
-        /*
-        // ---- カメラ操作用 ----
-        bool         isDrag_ = false;                   // ドラッグ中かどうか(フリーカメラ操作用)
-        float        yaw_ = 0.0f;                       // カメラの水平方向の回転角(ラジアン)
-        float        pitch_ = 0.0f;                     // カメラの垂直方向の回転角(ラジアン)
-        float        dist_ = 250.0f;                    // 注視点からカメラまでの距離
-        tnl::Vector3 camTarget_ = { 0, 0, 0 };          // カメラの注視点
-        tnl::Vector3 camOffset_ = { 0, 200, 0 };        // 注視点からのオフセット
-        */
     };
 }

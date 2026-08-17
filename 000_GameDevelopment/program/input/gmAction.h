@@ -27,6 +27,11 @@ namespace gm {
         // Note: カメラのズーム(マウスホイール)・周回/エイム時のマウス移動量は、
         // トリガー/ホールドの離散判定になじまない連続値のため、
         // gmActionの枠組みには含めない(dxe::Input::getValue()を直接読む)。
+
+        // ---- システム ----
+        // ポーズメニューの開閉。Gameplay/Menu両レイヤーで有効にする
+        // (開く時はGameplayレイヤー中、閉じる時はMenuレイヤー中に押されるため)。
+        System_TogglePauseMenu,
     };
 
 }

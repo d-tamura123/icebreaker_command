@@ -491,6 +491,18 @@
     <ClInclude Include="program\scene\scenes\gmTitleScene.h">
       <Filter>Source\[004] game\scene\scenes</Filter>
     </ClInclude>
+    <ClInclude Include="program\gui\gmConfirmDialogUI.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmPauseMenuUI.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmGameStopUIManager.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="program\gui\gmUIStrings.h">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -876,6 +888,15 @@
     </ClCompile>
     <ClCompile Include="program\scene\scenes\gmTitleScene.cpp">
       <Filter>Source\[004] game\scene\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmConfirmDialogUI.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmPauseMenuUI.cpp">
+      <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\gui\gmGameStopUIManager.cpp">
+      <Filter>Source\[004] game\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

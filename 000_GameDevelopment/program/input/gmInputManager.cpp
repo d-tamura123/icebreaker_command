@@ -134,13 +134,13 @@ namespace gm {
         bindings_[gmAction::Weapon_Switch2]       = { { eButton::KB_2 } };
         bindings_[gmAction::Weapon_Switch3]       = { { eButton::KB_3 } };
         bindings_[gmAction::Weapon_Fire]          = { { eButton::MOUSE_LEFT } };
+
+        bindings_[gmAction::System_TogglePauseMenu] = { { eButton::KB_ESCAPE } };
+
     }
 
     // ------------------------------------------------------------
     // レイヤー別の有効アクションリスト。
-    // 
-    // ToDo:
-    // Menuは現時点で中身は空(タスク8実装時に追記する)。
     // ------------------------------------------------------------
     void gmInputManager::initializeLayerActions()
     {
@@ -156,10 +156,11 @@ namespace gm {
             gmAction::Weapon_Switch2,
             gmAction::Weapon_Switch3,
             gmAction::Weapon_Fire,
+            gmAction::System_TogglePauseMenu,
         };
 
         layerActions_[gmInputLayer::Menu] = {
-            // タスク8(ポーズメニュー)実装時に追記する
+            gmAction::System_TogglePauseMenu, // 閉じる操作(Escキー)のみMenuレイヤーでも有効にする
         };
     }
 

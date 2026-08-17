@@ -1,7 +1,9 @@
 ﻿// gmGameScene.cpp
 #include "gmGameScene.h"
+#include "gmTitleScene.h"
 #include "../gmSceneManager.h"
 #include "../../gui/gmUIManager.h"
+#include "../../gui/gmGameStopUIManager.h"
 #include "dxe.h"
 #include <cmath>
 
@@ -173,7 +175,13 @@ namespace gm
         
             context_->wallet,
             [this]() {
-                // ToDo: メニューボタンのクリック処理。タスク8(簡易ポーズメニュー)実装まではプレースホルダー。
+                // ポーズメニューを開く
+                if (gameStopUIManager_) gameStopUIManager_->togglePauseMenu();
+                if (context_->input) {
+                    context_->input->setActiveLayer(
+                        gameStopUIManager_ && gameStopUIManager_->isGameStopped()
+                        ? gmInputLayer::Menu : gmInputLayer::Gameplay);
+                }
             },
 
             weaponSelection_,
@@ -188,7 +196,49 @@ namespace gm
 
         // NPC交易船のスポナー
         tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_, context_->wallet);
-    }
+    
+        // 新しいシーン開始時は、直前のシーン(前回のポーズ中断等)がMenuレイヤーのまま
+        // 残っている可能性があるため、念のため明示的にGameplayへ戻しておく
+        // (context_(と、その中のinput)はシーンをまたいで共有されているため)。
+        if (context_->input) {
+            context_->input->setActiveLayer(gmInputLayer::Gameplay);
+        }
+
+        // ポーズメニュー等、ゲームを止めて表示するUIの中間管理層
+        gameStopUIManager_ = std::make_unique<gmGameStopUIManager>(
+            // Resume: メニューを閉じてゲームプレイへ戻る
+            [this]() {
+                if (gameStopUIManager_) gameStopUIManager_->closePauseMenu();
+                if (context_->input) context_->input->setActiveLayer(gmInputLayer::Gameplay);
+            },
+            // Restart(確認済み): 資金・経験値・全オブジェクトを含めて完全にやり直す。
+            // 個別のリセット処理は書かず、新しいgmGameSceneに丸ごと差し替えるだけで済ませる
+            // (onEnter()の初期化処理がそのまま「完全リセット」として機能するため)。
+            [this]() {
+                if (sceneManager_) {
+                    sceneManager_->requestSceneChange(std::make_shared<gmGameScene>());
+                }
+            },
+            // Return to Start(確認済み): 「自爆相当」の即時再配置。
+            // 撃沈演出(数秒かかる沈み込みアニメーション)は経由せず、respawnPlayer()
+            // (フェードアウト→HP全回復・初期位置再配置→フェードイン)を直接呼ぶことで、
+            // 可動部品を減らし、地形スタック等からの脱出手段として素早く・堅牢に機能させる。
+            [this]() {
+                if (gameStopUIManager_) gameStopUIManager_->closePauseMenu();
+                if (context_->input) context_->input->setActiveLayer(gmInputLayer::Gameplay);
+                respawnPlayer();
+            },
+            // Return to Title(確認済み): タイトルシーンへ切り替える
+            [this]() {
+                if (sceneManager_) {
+                    sceneManager_->requestSceneChange(std::make_shared<gmTitleScene>());
+                }
+            }
+        );
+
+
+
+}
 
     // ------------------------------------------------------------
     // 毎フレームの更新。各オブジェクト・マネージャーのupdate()を、
@@ -199,6 +249,27 @@ namespace gm
         float dt = dxe::GetDeltaTime();
 
         respawnFade_->update(dt); // プレイヤー撃沈時の再配置演出用フェード(Idle中は何もしない)
+
+        // ------------------------------------------------------------
+        // ポーズメニュー更新
+        // ------------------------------------------------------------
+        // ポーズメニューの開閉(Escキー)。一時停止中かどうかに関わらず毎フレーム処理する
+        // (開く操作・閉じる操作のどちらもここで拾うため)。
+        updateSystemInput();
+
+        if (gameStopUIManager_) {
+            gameStopUIManager_->update(dt);
+
+            // 一時停止中は、ここから下のゲームプレイ系の更新を丸ごとスキップする
+            // (船・NPC・衝突判定・武器入力等、すべて静止させる)。
+            if (gameStopUIManager_->isGameStopped()) {
+                return;
+            }
+        }
+
+        // ------------------------------------------------------------
+        // 通常ゲーム更新
+        // ------------------------------------------------------------
 
         debugger_->update();
         playerShip_->update(dt);
@@ -357,6 +428,10 @@ namespace gm
 
         respawnFade_->draw(); // プレイヤー撃沈時の再配置演出用フェード(最前面に描画)
 
+        if (gameStopUIManager_) {
+            gameStopUIManager_->draw(); // ポーズメニュー(一時停止中のみ、内部で判定して描画。最前面)
+        }
+
         dxe::DrawFpsIndicator({ 10, DXE_WINDOW_HEIGHT - 10 });
     }
 
@@ -388,6 +463,21 @@ namespace gm
 
             // TODO: 資金マイナス等のスコア処理はここに追加する(後タスクで実装予定)
             });
+    }
+
+    // ------------------------------------------------------------
+    // ポーズメニューの開閉(Escキー)。gmActionのSystem_TogglePauseMenuは
+    // Gameplay/Menu両レイヤーで有効なため、開く操作・閉じる操作のどちらもここで拾える。
+    // ------------------------------------------------------------
+    void gmGameScene::updateSystemInput()
+    {
+        if (!context_->input || !gameStopUIManager_) return;
+
+        if (context_->input->consumePress(gmAction::System_TogglePauseMenu, gmInputCallerId::GameScene_TogglePauseMenu)) {
+            gameStopUIManager_->togglePauseMenu();
+            context_->input->setActiveLayer(
+                gameStopUIManager_->isGameStopped() ? gmInputLayer::Menu : gmInputLayer::Gameplay);
+        }
     }
 
     // ------------------------------------------------------------

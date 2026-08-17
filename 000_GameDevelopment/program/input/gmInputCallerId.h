@@ -24,6 +24,7 @@ namespace gm {
         GameScene_WeaponSwitch2,
         GameScene_WeaponSwitch3,
         GameScene_Recovery,
+        GameScene_TogglePauseMenu,
     };
 
 }

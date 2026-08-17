@@ -23,6 +23,11 @@ void gameStart()
     // 既知の挙動への対策。
     SetSysCommandOffFlag(TRUE);
 
+    // DxLibのデフォルト仕様: アルファチャンネルの無い画像は、真っ黒(#000000)の部分を
+    // 自動的に透過色として扱ってしまう(お節介機能)。この機能自体を無効化する。
+    // アルファチャンネル付きの画像(武器アイコン等)の透過には一切影響しない。
+    SetUseTransColor(FALSE);
+
     // SceneManager 生成（内部で GameContext も生成される）
     g_sceneManager = std::make_shared<gm::gmSceneManager>();
 
