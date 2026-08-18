@@ -1,12 +1,12 @@
 ﻿// gmAimReticleUI.h
-// フェーズ3「エイム時のUI」。エイムモード中(gmPlayerCameraController::isAimMode())のみ表示する。
+// 画面中央の照準表示。
 //
-// - 画面中央に、目盛りメーター画像(aim_scale_prototype.png)を半透明で描画する。
+// - 3x3ドットの照準(図形描画)は、周回モード・エイムモードいずれでも表示する
+//
+// - 目盛りメーター画像(aim_scale_prototype.png。半透明)と、プレイヤー船〜狙い先までの
+//   距離表示は、エイムモード中のみ表示する(周回モード中は情報過多・画面圧迫になるため)。
 //   画像自体が中心軸(縦線・横線の交点)を画像の中心ピクセルに合わせて作られているため、
 //   画像全体を画面中央に置くだけで位置補正は不要。
-// - 画面中央に、3x3ドットの照準を半透明で描画する(画像ではなく図形描画)。
-// - 目盛りメーターの右下あたりに、プレイヤー船〜狙い先までの距離を数値表示する
-//   (不透明のまま。視認性を優先)。
 #pragma once
 #include "gmUIObjectBase.h"
 #include <dxe.h>
@@ -17,8 +17,13 @@ namespace gm {
     public:
         gmAimReticleUI();
 
-        // arg1... エイムモード中かどうか(この間だけ表示する)
-        void setVisible(bool visible) { visible_ = visible; }
+        // arg1... 照準ドットを表示するかどうか(周回・エイムいずれのモードでもtrueでよい。
+        //         撃沈中等、狙い先自体が無意味なタイミングだけfalseにする想定)
+        void setDotVisible(bool visible) { dotVisible_ = visible; }
+
+        // arg1... 目盛りメーター・距離表示を表示するかどうか(エイムモード中のみtrue)
+        void setAimUIVisible(bool visible) { aimUIVisible_ = visible; }
+
 
         // arg1... プレイヤー船〜狙い先までの距離(world単位)
         void setAimTargetDistance(float distance) { aimTargetDistance_ = distance; }
@@ -44,7 +49,8 @@ namespace gm {
         int hScaleImage_ = -1;
         Shared<dxe::FontText> distanceText_;
 
-        bool visible_ = false;
+        bool dotVisible_ = false;
+        bool aimUIVisible_ = false;
         float aimTargetDistance_ = 0.0f;
     };
 

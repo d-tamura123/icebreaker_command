@@ -16,7 +16,12 @@ namespace gm {
         input_ = dxe::Input::Create();
     }
 
-    void gmPlayerCameraController::update(float dt, const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera)
+    void gmPlayerCameraController::update(
+        float dt,
+        const std::shared_ptr<gmPlayerShip>& playerShip,
+        const Shared<dxe::Camera>& camera,
+        float weaponMaxRange
+    )
     {
         if (!playerShip || !camera || !input_) return;
 
@@ -53,7 +58,10 @@ namespace gm {
 
         if (hasLastCursorPoint_) {
             frameMouseDeltaX_ = static_cast<float>(curX - lastCursorX_);
-            frameMouseDeltaY_ = static_cast<float>(curY - lastCursorY_);
+            // Y軸は符号を反転させている: 画面座標は下方向が正(Y増加)だが、
+            // 「マウスを画面上へ動かす=視点が(船から)遠ざかる/カメラが遠くを見る」という
+            // 2D画面感覚に合わせるため、orbitPitch_/aimPitch_の増減方向を直感と一致させたい。
+            frameMouseDeltaY_ = static_cast<float>(lastCursorY_ - curY);
         }
         else {
             // 初回フレーム、またはカーソルモードから復帰した直後: 基準点が無いので移動量は0扱いにする
@@ -70,10 +78,10 @@ namespace gm {
         updateZoomRatio();
 
         if (isAimMode()) {
-            updateAimMode(playerShip, camera);
+            updateAimMode(playerShip, camera, weaponMaxRange);
         }
         else {
-            updateOrbitMode(playerShip, camera);
+            updateOrbitMode(playerShip, camera, weaponMaxRange);
         }
 
 
@@ -106,8 +114,17 @@ namespace gm {
     // ------------------------------------------------------------
     // 周回モード: プレイヤー船を中心に、マウス移動でカメラが周回する。
     // (gmKyleFreeCameraControllerの回転計算と同じ考え方)
+    //
+    // 狙い先(=カメラの注視点)は、船から見た水平方向(orbitYaw_)へ、距離をpitch(orbitPitch_)
+    // から線形補間で直接決めて置く(高さは常に0=海面上として扱う。tan()等の三角関数を距離の
+    // 計算に経由しないため、急角度でも距離が破綻しない)。
+    //   急角度(CAMERA_ORBIT_PITCH_MIN側) → 近距離(CAMERA_ORBIT_AIM_DIST_MIN)
+    //   水平に近い(CAMERA_ORBIT_PITCH_MAX側) → 遠距離(CAMERA_ORBIT_AIM_DIST_MAX)
+    // カメラの位置は船を中心に周回する(pos = 船の位置 - forward × dist)が、注視点は
+    // 船そのものではなく狙い先にする。これにより船は自然と画面中央より手前・下寄りに映り、
+    // 画面中央に描く照準ドットは狙い先そのものと厳密に一致する。
     // ------------------------------------------------------------
-    void gmPlayerCameraController::updateOrbitMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera)
+    void gmPlayerCameraController::updateOrbitMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera, float weaponMaxRange)
     {
         orbitYaw_ += frameMouseDeltaX_ * CAMERA_ORBIT_MOUSE_SENSITIVITY;
         orbitPitch_ += frameMouseDeltaY_ * CAMERA_ORBIT_MOUSE_SENSITIVITY;
@@ -117,19 +134,38 @@ namespace gm {
         const float t = std::clamp(zoomRatio_ / CAMERA_ZOOM_AIM_THRESHOLD, 0.0f, 1.0f);
         const float dist = CAMERA_ORBIT_DIST_MAX + (CAMERA_ORBIT_DIST_MIN - CAMERA_ORBIT_DIST_MAX) * t;
 
-        const tnl::Vector3 target = playerShip->getPosition();
         const tnl::Vector3 forward = {
             cosf(orbitPitch_) * sinf(orbitYaw_),
             sinf(orbitPitch_),
             cosf(orbitPitch_) * cosf(orbitYaw_)
         };
 
-        tnl::Vector3 pos = target - forward * dist;
+        // ---- カメラ位置。船を中心に周回する ----
+        tnl::Vector3 pos = playerShip->getPosition() - forward * dist;
         pos.y = std::clamp(pos.y, CAMERA_ORBIT_HEIGHT_MIN, CAMERA_ORBIT_HEIGHT_MAX);
+
+        // ---- 狙い先(発射目標・HUD距離表示・照準ドット・カメラの注視点、全て共通で使う) ----
+        // 船から見た水平方向(orbitYaw_のみ。高さは常に0として扱う)
+        const tnl::Vector3 horizontalDir = { sinf(orbitYaw_), 0.0f, cosf(orbitYaw_) };
+
+        // pitchをCAMERA_ORBIT_PITCH_MIN〜MAXの範囲で0.0〜1.0に正規化し、
+        // CAMERA_ORBIT_AIM_DIST_MIN〜MAXへ線形補間する(武器に依存しない固定範囲)。
+        const float pitchRatio = std::clamp(
+            (orbitPitch_ - CAMERA_ORBIT_PITCH_MIN) / (CAMERA_ORBIT_PITCH_MAX - CAMERA_ORBIT_PITCH_MIN),
+            0.0f, 1.0f);
+        const float aimDistance = CAMERA_ORBIT_AIM_DIST_MIN + (CAMERA_ORBIT_AIM_DIST_MAX - CAMERA_ORBIT_AIM_DIST_MIN) * pitchRatio;
+
+        const tnl::Vector3 aimHitPoint = playerShip->getPosition() + horizontalDir * aimDistance;
+
+        // 実際の攻撃対象は、別途武器の最大射程でクランプする(火炎放射等、射程の短い武器では
+        // 見た目の狙い先より手前で頭打ちになる。理由はgmGameConfig.hのCAMERA_ORBIT_AIM_DIST_MIN/MAX
+        // のコメント参照)。
+        aimTargetDistance_ = std::min(aimDistance, weaponMaxRange);
+        aimTargetWorld_ = playerShip->getPosition() + horizontalDir * aimTargetDistance_;
 
         camera->setAngle(tnl::ToRadian(CAMERA_AIM_FOV_WIDE_DEG)); // 周回モードは常に基準画角(エイムモードのFOV_WIDEと同値を流用)
         camera->setPosition(pos);
-        camera->setTarget(target);
+        camera->setTarget(aimHitPoint); // 注視点=狙い先(船そのものではない)。武器射程による頭打ちの影響は受けない
         camera->update();
     }
 
@@ -137,18 +173,18 @@ namespace gm {
     // エイムモード: カメラをプレイヤー船の位置(+見張り台程度の高さ)に固定し、
     // マウス移動で狙う方向(yaw/pitch)を変える。画面中央が常に照準(フェーズ3のクロスヘア)。
     // ------------------------------------------------------------
-    void gmPlayerCameraController::updateAimMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera)
+    void gmPlayerCameraController::updateAimMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera, float weaponMaxRange)
     {
         aimYaw_ += frameMouseDeltaX_ * CAMERA_AIM_MOUSE_SENSITIVITY;
         aimPitch_ += frameMouseDeltaY_ * CAMERA_AIM_MOUSE_SENSITIVITY;
         
         // ------------------------------------------------------------
-        // pitch(見下ろし角)の上限(水平に近い側の限界)を、最大射程から逆算する。
+        // pitch(見下ろし角)の上限(水平に近い側の限界)を、選択中武器の最大射程から逆算する。
         //
         // カメラの高さ(CAMERA_AIM_HEIGHT_OFFSET)から角度pitchだけ見下ろした視線が、
         // 海面(y=0)と交わるまでの水平距離は、直角三角形(高さ=対辺、距離=隣辺)の関係から
         //   距離 = 高さ ÷ tan(見下ろし角)
-        // で求まる。この「距離」がちょうど最大射程(CAMERA_AIM_MAX_RANGE)と一致するpitch角度を、
+        // で求まる。この「距離」がちょうど最大射程(weaponMaxRange)と一致するpitch角度を、
         // 上式をpitchについて解いて求める:
         //   高さ ÷ tan(pitch_限界) = 最大射程
         //   ⇔ tan(pitch_限界) = 高さ ÷ 最大射程
@@ -162,7 +198,7 @@ namespace gm {
         // 必ず制限が厳しくなるとは限らないため、両者のうちより制限が厳しい方(より水平から
         // 遠い=より負側の値)を採用する。
         // ------------------------------------------------------------
-        const float pitchLimitForMaxRange = -atanf(CAMERA_AIM_HEIGHT_OFFSET / CAMERA_AIM_MAX_RANGE);
+        const float pitchLimitForMaxRange = -atanf(CAMERA_AIM_HEIGHT_OFFSET / weaponMaxRange);
         const float effectivePitchMax = std::min(CAMERA_AIM_PITCH_MAX, pitchLimitForMaxRange);
         aimPitch_ = std::clamp(aimPitch_, CAMERA_AIM_PITCH_MIN, effectivePitchMax);
 
@@ -180,13 +216,13 @@ namespace gm {
         tnl::Vector3 lookTarget = rayOrigin + rayDir * t;
 
         // ---- 狙い先(発射目標・HUD距離表示用) ----
-        // 上のpitchクランプにより、この時点でdistanceは理論上ほぼ必ずCAMERA_AIM_MAX_RANGE以下に
+        // 上のpitchクランプにより、この時点でdistanceは理論上ほぼ必ずweaponMaxRange以下に
         // 収まっているはずだが、浮動小数点誤差の保険として引き続きクランプしておく。
         tnl::Vector3 toTarget = lookTarget - playerShip->getPosition();
         float distance = toTarget.length();
-        if (distance > CAMERA_AIM_MAX_RANGE) {
-            toTarget = toTarget * (CAMERA_AIM_MAX_RANGE / distance);
-            distance = CAMERA_AIM_MAX_RANGE;
+        if (distance > weaponMaxRange) {
+            toTarget = toTarget * (weaponMaxRange / distance);
+            distance = weaponMaxRange;
         }
         aimTargetWorld_ = playerShip->getPosition() + toTarget;
         aimTargetDistance_ = distance;

@@ -211,8 +211,23 @@ namespace gm
     static const float CAMERA_ORBIT_MOUSE_SENSITIVITY = 0.005f;
 
     // 周回モード: pitch(見下ろし角。負値=見下ろす方向)の可動範囲(ラジアン)
-    static const float CAMERA_ORBIT_PITCH_MIN = -1.4f; // ほぼ真上から見下ろす
-    static const float CAMERA_ORBIT_PITCH_MAX = -0.05f; // ほぼ水平
+    static const float CAMERA_ORBIT_PITCH_MIN = -1.4f;      // ほぼ真上から見下ろす
+    static const float CAMERA_ORBIT_PITCH_MAX = -0.6f;      // 錯覚で水平に近づくと船と照準の距離が縮んだようにみえるのでその直前あたりで制限する(目視で調整した値)
+
+    // 周回モード: 狙い先(=カメラの注視点。船からの水平距離)の範囲(world単位)。
+    // pitch(見下ろし角)をCAMERA_ORBIT_PITCH_MIN〜MAXの範囲で0.0〜1.0に正規化し、
+    // その割合でMIN〜MAXへ線形補間する(急角度=MIN側の近距離、水平に近い=MAX側の遠距離)。
+    //
+    // 武器の最大射程(WEAPON_*_MAX_RANGE)は使わず、固定値にしている。
+    // 理由: 溶かす弾/割る弾の射程(1500)をそのまま使うと、周回モードのままでも遠くを狙えてしまい、
+    // ズームインしてエイムモードに入る意味が薄れる。逆に火炎放射の射程(200)をそのまま使うと、
+    // 周回モードの可動域が極端に狭くなってしまう。武器種によって周回モードの操作感(距離の可動域)が
+    // 変わるのは操作性として不自然なため、武器に依存しない固定範囲にする
+    // (ただし実際の攻撃対象は、別途武器の最大射程でクランプする。
+    //  gmPlayerCameraController::updateOrbitMode()参照)。
+    static const float CAMERA_ORBIT_AIM_DIST_MIN = 10.0f;   // 暫定値。テストで調整
+    static const float CAMERA_ORBIT_AIM_DIST_MAX = 600.0f;  // 暫定値。テストで調整
+
 
     // エイムモード: カメラ位置をプレイヤー船の位置からどれだけ高く持ち上げるか(world単位)。
     // 文字通り船の原点(y=0)にカメラを置くと、海面(y=0)へのレイキャストが
@@ -227,8 +242,8 @@ namespace gm
     static const float CAMERA_AIM_PITCH_MAX = -0.02f;   // ほぼ水平(0だと海面と平行になり狙い先が求まらないため僅かに残す)
 
     // エイムモード: 攻撃の最大射程(world単位)。狙い先(海面上の点)をこの距離までに制限する。
-    // 通常弾・割り砲弾・火炎放射のいずれにも、これまでこの概念は無かったため新規に定義する。
-    static const float CAMERA_AIM_MAX_RANGE = 1500.0f;
+    static const float WEAPON_PROJECTILE_MAX_RANGE      = 1500.0f;  // 溶かす弾・割る弾で共有(軌道関連の値が同じため)
+    static const float WEAPON_FLAMETHROWER_MAX_RANGE    = 200.0f;   // 火炎放射
 
     // エイムモード: ズーム値(閾値〜1.0)に応じて狭めるカメラの画角(度)。
     // 閾値でFOV_WIDE、zoomRatio_=1.0でFOV_NARROWになるよう線形補間する。

@@ -23,7 +23,7 @@ namespace gm {
 
     void gmAimReticleUI::update(float dt)
     {
-        if (!visible_) return;
+        if (!aimUIVisible_) return; // 目盛り・距離表示はエイムモード中のみ更新する(ドット自体はupdate不要)
 
         // 距離の単位は演出用の"m"表記(world単位をそのまま数値化しているだけで、
         // 実距離との対応は無い。速度HUDの"kt"表記と同じ扱い)。
@@ -44,37 +44,42 @@ namespace gm {
 
     void gmAimReticleUI::draw()
     {
-        if (!visible_) return;
-
         const float centerX = DXE_WINDOW_WIDTH_F * 0.5f;
         const float centerY = DXE_WINDOW_HEIGHT_F * 0.5f;
 
-        // ---- 目盛りメーター(半透明。画像自体が中心軸をぴったり合わせて作られているため、
-        //      画像全体を画面中央へ置くだけで位置補正は不要) ----
-        if (hScaleImage_ >= 0) {
-            SetDrawBlendMode(DX_BLENDMODE_ALPHA, SCALE_IMAGE_ALPHA);
+        // ---- 目盛りメーター・距離表示(エイムモード中のみ) ----
+        if (aimUIVisible_) {
+            // 画像自体が中心軸をぴったり合わせて作られているため、画面中央へ置くだけで位置補正は不要
+            if (hScaleImage_ >= 0) {
+                SetDrawBlendMode(DX_BLENDMODE_ALPHA, SCALE_IMAGE_ALPHA);
 
-            const int left = static_cast<int>(centerX - SCALE_IMAGE_WIDTH * 0.5f);
-            const int top  = static_cast<int>(centerY - SCALE_IMAGE_HEIGHT * 0.5f);
-            DrawExtendGraph(
-                left, top,
-                left + static_cast<int>(SCALE_IMAGE_WIDTH), top + static_cast<int>(SCALE_IMAGE_HEIGHT),
-                hScaleImage_, TRUE);
+                const int left = static_cast<int>(centerX - SCALE_IMAGE_WIDTH * 0.5f);
+                const int top  = static_cast<int>(centerY - SCALE_IMAGE_HEIGHT * 0.5f);
+                DrawExtendGraph(
+                    left, top,
+                    left + static_cast<int>(SCALE_IMAGE_WIDTH), top + static_cast<int>(SCALE_IMAGE_HEIGHT),
+                    hScaleImage_, TRUE);
 
-            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+                SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+            }
+
+            distanceText_->draw(); // 不透明のまま。視認性優先
         }
 
         // ---- 照準(画面中央、3x3ドット。半透明。画像ではなく図形描画) ----
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, RETICLE_ALPHA);
+        // 周回・エイムどちらのモードでも表示する。
+        if (dotVisible_) {
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, RETICLE_ALPHA);
 
-        const int reticleLeft = static_cast<int>(centerX - RETICLE_DOT_SIZE * 0.5f);
-        const int reticleTop  = static_cast<int>(centerY - RETICLE_DOT_SIZE * 0.5f);
-        DrawBox(
-            reticleLeft, reticleTop,
-            reticleLeft + static_cast<int>(RETICLE_DOT_SIZE), reticleTop + static_cast<int>(RETICLE_DOT_SIZE),
-            dxe::Colors::White, TRUE);
+            const int reticleLeft = static_cast<int>(centerX - RETICLE_DOT_SIZE * 0.5f);
+            const int reticleTop  = static_cast<int>(centerY - RETICLE_DOT_SIZE * 0.5f);
+            DrawBox(
+                reticleLeft, reticleTop,
+                reticleLeft + static_cast<int>(RETICLE_DOT_SIZE), reticleTop + static_cast<int>(RETICLE_DOT_SIZE),
+                dxe::Colors::White, TRUE);
 
-        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+        }
 
         // ---- 距離表示(不透明のまま。視認性優先) ----
         distanceText_->draw();

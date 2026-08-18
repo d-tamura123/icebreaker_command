@@ -3,9 +3,19 @@
 //
 // マウスホイールで0.0〜1.0の連続的なズーム値(zoomRatio_)を蓄積し、
 // 閾値未満なら「周回モード」、閾値以上なら「エイムモード」として振る舞う。
-//   周回モード: プレイヤー船を表示。船を中心に、マウス移動でカメラが周回する。
+//   周回モード: プレイヤー船を表示。カメラ位置は船を中心に周回するが、注視点は船そのもの
+//              ではなく狙い先(下記)にするため、船は画面中央より手前・下寄りに映る。
 //   エイムモード: プレイヤー船を非表示。カメラはほぼ船の位置に固定し、
 //                マウス移動で狙う方向(yaw/pitch)を変える(画面中央が常に照準)。
+//
+// 狙い先(海面上の点)の求め方はモードによって異なる:
+//   周回モード: 船から見た水平方向(orbitYaw_のみ)へ、距離をpitch(orbitPitch_)から
+//              線形補間で直接決めて置く(tan()等は経由しない。詳細はupdateOrbitMode()参照)。
+//              この狙い先をそのままカメラの注視点として使う(=画面中央に一致させる)ことで、
+//              照準ドットの表示位置と実際の狙い先を厳密に一致させている。
+//   エイムモード: 「船の位置+高さオフセット」を始点に、実際に見ている向き(yaw/pitch)から
+//                レイキャストして海面との交点を求める(詳細はupdateAimMode()参照)。
+// いずれも最大射程でクランプ済み。
 //
 // 上記の周回/エイムいずれのモードでも、カーソルは非表示にしウィンドウ内へロックした上、
 // 毎フレーム画面中央へ強制的に戻す(FPS等でよくある「マウスルック」の実装方式)。
@@ -40,17 +50,20 @@ namespace gm {
         // arg1... 前フレームからの経過秒
         // arg2... 追従対象のプレイヤー船
         // arg3... 更新対象のカメラ
-        void update(float dt, const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera);
+        // arg4... 選択中武器の最大射程(world単位)。エイムモードのpitch上限・狙い先クランプに使う
+        void update(float dt, const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera, float weaponMaxRange);
 
         // true: エイムモード中(プレイヤー船を非表示にすべきタイミング)
         bool isAimMode() const { return zoomRatio_ >= aimThreshold_; }
 
-        // エイムモード時の狙い先(海面上の点。最大射程でクランプ済み)。
-        // フェーズ3のHUD(距離表示)・武器発射の目標に使う想定。
-        // 周回モード中の値は未定義(呼び出し側でisAimMode()を確認してから使うこと)。
+        // 狙い先(海面上の点。最大射程でクランプ済み)。求め方はモードによって異なる
+        // (周回モード=船から見た水平方向へpitch由来の距離を線形補間、エイムモード=
+        //  船の位置基準のレイキャスト。詳細はヘッダ冒頭コメント・各update*Mode()参照)。
+        // 周回モードはこれをそのままカメラの注視点(画面中央)としても使っている。
+        // HUD(距離表示・照準ドット)・武器発射の目標に共通で使う。
         const tnl::Vector3& getAimTargetWorldPosition() const { return aimTargetWorld_; }
 
-        // プレイヤー船 〜 狙い先までの距離(world単位)。フェーズ3のHUD表示用。
+        // プレイヤー船 〜 狙い先までの距離(world単位)。HUD表示用。
         float getAimTargetDistance() const { return aimTargetDistance_; }
 
         // カーソルモード(Altキー押下中。カーソル表示+ロック解除+カメラ操作凍結)かどうか。
@@ -70,8 +83,8 @@ namespace gm {
 
     private:
         void updateZoomRatio();
-        void updateOrbitMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera);
-        void updateAimMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera);
+        void updateOrbitMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera, float weaponMaxRange);
+        void updateAimMode(const std::shared_ptr<gmPlayerShip>& playerShip, const Shared<dxe::Camera>& camera, float weaponMaxRange);
 
         Shared<dxe::Input> input_; // マウスの連続値(移動量・ホイール)専用。gmInputManagerとは別インスタンス
 
@@ -95,7 +108,7 @@ namespace gm {
 
         // 周回モード用の角度(gmKyleFreeCameraControllerと同じ考え方)
         float orbitYaw_ = tnl::PI;   // プレイヤー初期向き(南向き)に合わせた初期値
-        float orbitPitch_ = -0.3f;   // 少し見下ろす
+        float orbitPitch_ = -0.8f;   // 少し見下ろす(CAMERA_ORBIT_PITCH_MIN/MAXの可動範囲内であること)
 
         // エイムモード用の角度
         float aimYaw_ = tnl::PI;

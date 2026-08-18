@@ -36,9 +36,11 @@ namespace gm {
         ~gmUIManager();
 
         // UI全体の更新
-        // arg4... エイムモード中かどうか(gmAimReticleUIの表示/非表示に使う)
-        // arg5... プレイヤー船〜狙い先までの距離(world単位。gmAimReticleUIの距離表示に使う)
-        void update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive, bool isAimMode, float aimTargetDistance);
+        // arg4... 照準ドット(3x3)を表示するかどうか(周回・エイムいずれのモードでもtrue。
+        //         撃沈演出中・フリーカメラ中等、狙い先自体が無意味なタイミングのみfalse)
+        // arg5... エイムモード中かどうか(目盛りメーター・距離表示の表示/非表示に使う)
+        // arg6... プレイヤー船〜狙い先までの距離(world単位。距離表示に使う)
+        void update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive, bool showAimDot, bool isAimMode, float aimTargetDistance);
 
 
         // UI全体の描画（要件に合わせてrenderという名前にしています）

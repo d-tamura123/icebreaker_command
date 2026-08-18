@@ -52,7 +52,14 @@ namespace gm {
         // std::unique_ptr が自動的に解放するため、明示的なdeleteは不要です
     }
 
-    void gmUIManager::update(float dt, const Shared<dxe::Camera>& camera, bool cursorModeActive, bool isAimMode, float aimTargetDistance)
+    void gmUIManager::update(
+        float dt, 
+        const Shared<dxe::Camera>& camera, 
+        bool cursorModeActive, 
+        bool showAimDot, 
+        bool isAimMode, 
+        float aimTargetDistance
+    )
     {
         if (flowVisualizer_) {
             flowVisualizer_->update(camera);
@@ -85,7 +92,8 @@ namespace gm {
         }
 
         if (aimReticleUI_) {
-            aimReticleUI_->setVisible(isAimMode);
+            aimReticleUI_->setDotVisible(showAimDot);
+            aimReticleUI_->setAimUIVisible(isAimMode);
             aimReticleUI_->setAimTargetDistance(aimTargetDistance);
             aimReticleUI_->update(dt);
         }

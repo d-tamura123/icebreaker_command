@@ -286,10 +286,14 @@ namespace gm
             debugger_->getFreeCamera()->update(context_->camera);
         }
         else if (!playerShip_->isDestroyed()) {
-            // プレイヤーカメラ(周回モード/エイムモード。フェーズ2)
+            // プレイヤーカメラ(周回モード/エイムモード。)
             // Note: 撃沈中(isDestroyed())はこの分岐自体をスキップし、カメラを据え置きにする。
             if (cameraController_) {
-                cameraController_->update(dt, playerShip_, context_->camera);
+                float weaponMaxRange = WEAPON_PROJECTILE_MAX_RANGE;
+                if (weaponSelection_ && weaponSelection_->getSelectedWeapon() == gmWeaponType::Flamethrower) {
+                    weaponMaxRange = WEAPON_FLAMETHROWER_MAX_RANGE;
+                }
+                cameraController_->update(dt, playerShip_, context_->camera, weaponMaxRange);
             }
         }
 
@@ -344,9 +348,13 @@ namespace gm
 
         // UIマネージャーの更新処理
         if (uiManager_) {
+            const bool isFreeCameraActive = debugger_->isDebugModeOn() && debugger_->isFreeCameraEnabled();
+            const bool showAimDot = cameraController_ && !isFreeCameraActive && !playerShip_->isDestroyed();
+
             uiManager_->update(
                 dt, context_->camera,
                 cameraController_ && cameraController_->isCursorModeActive(),
+                showAimDot,
                 cameraController_ && cameraController_->isAimMode(),
                 cameraController_ ? cameraController_->getAimTargetDistance() : 0.0f);
         }
@@ -481,16 +489,10 @@ namespace gm
     }
 
     // ------------------------------------------------------------
-    // クリック位置を海面(y=0の平面)へレイキャストし、命中すれば割り砲弾を発射する。
+    // 狙い先(海面上の点)へ、選択中の武器を発射する。
     //
-    //   手順1: マウス座標から、カメラ位置を始点とするレイ(半直線)の方向を求める
-    //   手順2: そのレイが海面(y=0の平面)と交わる点を計算する
-    //   手順3: 交点(=クリックした地点)を目標に、弾を発射する
-    //
-    // レイの方向は、このプロジェクトに既にある tnl::Vector3::CreateScreenRay() を使う
-    // (ビュー行列の平行移動成分を除いた上で逆行列変換し、スクリーン座標に対応する
-    //  ワールド空間の方向ベクトルを求める、自前実装ではなくテスト済みの共通関数)。
-    // レイの始点はカメラのワールド座標そのものを使う。
+    // 狙い先自体はgmPlayerCameraController側で、周回モード・エイムモードいずれの場合も
+    // 「画面中央が指す海面上の座標」として毎フレーム計算済み(getAimTargetWorldPosition())。
     // ------------------------------------------------------------
     void gmGameScene::tryFireProjectileOnClick()
     {
@@ -512,48 +514,11 @@ namespace gm
             // リキャスト中(または状態が未初期化)なら発射しない
             return;
         }
-
-        tnl::Vector3 targetPos;
-
-        if (cameraController_ && cameraController_->isAimMode()) {
-            // エイムモード中: 画面中央の照準(≒カメラの向き)が狙い先(フェーズ2/3仕様)。
-            // 最大射程でクランプ済みの値をそのまま使う。
-            targetPos = cameraController_->getAimTargetWorldPosition();
-        }
-        else {
-            // 周回モード中(未エイム): 従来通り、マウスカーソル位置を海面へレイキャストする。
-            // ---- 手順1: レイ(半直線)の始点と方向を求める ----
-            const tnl::Vector3 mousePos = tnl::Input::GetMousePosition();
-            const float screenW = context_->camera->getScreenWidth();
-            const float screenH = context_->camera->getScreenHeight();
-
-            const tnl::Vector3 rayOrigin = context_->camera->getPosition();
-            const tnl::Vector3 rayDir = tnl::Vector3::CreateScreenRay(
-                mousePos.x, mousePos.y, screenW, screenH,
-                context_->camera->getViewMatrix(), context_->camera->getProjectionMatrix());
-
-            // ---- 手順2: レイと海面(y=0の平面)との交点を求める ----
-            // (実際の波の高さは無視する。狙い先の判定用途であれば十分な精度のため)
-            //
-            // レイ上の点は、始点rayOriginから方向rayDirへtだけ進んだ点として
-            //   点 = rayOrigin + rayDir × t
-            // と表せる(tは「どれだけ進んだか」を表す媒介変数)。
-            // この点のY座標がちょうど0になるtを求めれば、それが海面との交点になる。
-            //   rayOrigin.y + rayDir.y × t = 0
-            //   ⇔ t = -rayOrigin.y / rayDir.y
-            if (std::abs(rayDir.y) < 1e-5f) {
-                return; // レイがほぼ水平で、海面と交わらない(rayDir.yが0に近いと上の式で0除算になるため)
-            }
-
-            const float t = (0.0f - rayOrigin.y) / rayDir.y;
-            if (t <= 0.0f) {
-                return; // 海面がカメラの後ろ側にある(通常は起こらないはずだが念のため)
-            }
-
-            // ---- 手順3: 交点を目標地点とする ----
-            targetPos = rayOrigin + rayDir * t;
+        if (!cameraController_) {
+            return;
         }
 
+        const tnl::Vector3 targetPos = cameraController_->getAimTargetWorldPosition();
 
         // ---- 選択中の武器に応じて発射処理を振り分ける ----
         switch (weaponSelection_->getSelectedWeapon()) {
