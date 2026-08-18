@@ -73,17 +73,29 @@ namespace gm {
         // カメラ制御をおこなう:
         //   1) ズーム倍率の更新(連続値)
         //   2) 現在のカメラモードを判定(エイム/周回)
-        //   3) モードごとの角度・位置更新ロジックへ分岐
+        //   3) 周回→エイムへの切り替わりを検知し、直前まで見ていた向きを
+        //      エイムモード側の角度へ引き継ぐ(引き継がないと、前回エイムモードを使った時の
+        //      古い値、または未使用ならコンストラクタの初期値のまま向きがスナップしてしまう)。
+        //      逆方向(エイム→周回)は今回対象外(周回モードのpitch可動範囲がエイムモードより
+        //      大幅に狭いため、単純にコピーしてもupdateOrbitMode()側のクランプで意味を失う)。
+        //   4) モードごとの角度・位置更新ロジックへ分岐
         // ------------------------------------------------------------
         updateZoomRatio();
 
-        if (isAimMode()) {
+        const bool nowAimMode = isAimMode();
+        if (nowAimMode && !wasAimMode_) {
+            // ズームイン/アウトモードでカメラ(ヨウとピッチ)を同期
+            aimYaw_ = orbitYaw_;
+            aimPitch_ = orbitPitch_;
+        }
+        wasAimMode_ = nowAimMode;
+
+        if (nowAimMode) {
             updateAimMode(playerShip, camera, weaponMaxRange);
         }
         else {
             updateOrbitMode(playerShip, camera, weaponMaxRange);
         }
-
 
         // 今フレームの移動量読み取りは完了しているので、ここでカーソルを画面中央へ強制的に戻す。
         // (カーソルが画面端に到達すると、それ以上その方向の移動量が読めなくなるための対策)

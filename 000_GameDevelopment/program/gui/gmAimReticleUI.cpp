@@ -80,9 +80,6 @@ namespace gm {
 
             SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
         }
-
-        // ---- 距離表示(不透明のまま。視認性優先) ----
-        distanceText_->draw();
     }
 
 }

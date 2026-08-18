@@ -118,6 +118,10 @@ namespace gm {
         float aimTargetDistance_ = 0.0f;
 
         bool cursorModeActive_ = false;
+
+        // 周回→エイムへの切り替わり検知用(前フレームがエイムモードだったか)。
+        // 切り替わった瞬間、orbitYaw_/orbitPitch_をaimYaw_/aimPitch_へ引き継ぐために使う。
+        bool wasAimMode_ = false;
     };
 
 }
