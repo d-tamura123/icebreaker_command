@@ -205,20 +205,27 @@ namespace gm {
 
 	// ------------------------------------------------------------
 	// 衝突検出イベント
-	// 「移動前の位置に丸ごと戻す」ことで移動抑止を実現する
+	//
+	// resolveCollisionOrRevert()(gmObjectBase.h参照)で移動抑止する。相手から見て今回の移動が
+	// 離れる方向であればそのまま許可し、近づく方向であれば移動前の位置へ差し戻す。
+	//
+	// Note:
+	// 以前は無条件に「移動前の位置に丸ごと戻す」(revertToLastSafePosition())方式だったが、
+	// まれに衝突状態でスタックして抜け出せなくなる不具合があった。押し出し(瞬間移動)による
+	// 対策も試したが、稀に発動した瞬間、唐突なワープに見えてしまい手触りを損ねた(実機検証で
+	// 判明)。距離が改善する移動は許可するこの方式であれば、瞬間移動を発生させずに済む。
 	// ------------------------------------------------------------
 	void gmShip::onCollisionEnter(gmObjectBase* other) {
 
 		if (state_ == ShipState::Destroyed) return;		// 撃沈演出中(Destroyed状態)は衝突応答そのものを無視する。
 
-		revertToLastSafePosition();
+		resolveCollisionOrRevert(other);
 
 		// HUD表示用の「このフレームは衝突で進めなかった」という情報だけを別途フラグで残す
 		collidedThisFrame_ = true;
 
 		applyIcebergContactDamage(other);
 	}
-
 
 	// ------------------------------------------------------------
 	// ダメージ・HP管理

@@ -255,15 +255,26 @@ namespace gm {
             break;
 
         default:
-            // 船・島・他の氷山との衝突は、移動前の位置に丸ごと戻して移動抑止する。
-            // ただし、分裂直後の猶予期間中(collisionGraceTimer_>0)は、
+            // 船・島・他の氷山との衝突は、resolveCollisionOrRevert()(gmObjectBase.h参照)で
+            // 移動抑止する。相手から見て今回の移動が離れる方向であればそのまま許可し、
+            // 近づく方向であれば移動前の位置へ差し戻す。
+            //
+            // Note:
+            // 以前は無条件に「移動前の位置に丸ごと戻す」(revertToLastSafePosition())方式だったが、
+            // まれに衝突状態でスタックして抜け出せなくなる不具合があった。押し出し(瞬間移動)による
+            // 対策も試したが、稀に発動した瞬間、唐突なワープに見えてしまい手触りを損ねた
+            // (実機検証で判明)。距離が改善する移動は許可するこの方式であれば、瞬間移動を
+            // 発生させずに済む。
+            //
+            // また、分裂直後の猶予期間中(collisionGraceTimer_>0)は、
             // 他の氷山どうしの押し戻しだけは無視する(同座標で生まれた兄弟フラグメントが
             // 押し出しで十分に離れるまで、お互いを固定してしまうのを防ぐため)。
             // 船・島との衝突は猶予期間中も引き続き有効(すり抜けさせない)。
             if (collisionGraceTimer_ > 0.0f && other->getCollisionCategory() == gmCollisionCategory::Iceberg) {
                 break;
             }
-            revertToLastSafePosition();
+
+            resolveCollisionOrRevert(other);
             break;
         }
     }

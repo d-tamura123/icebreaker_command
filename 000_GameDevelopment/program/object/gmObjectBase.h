@@ -58,9 +58,27 @@ namespace gm {
         // ---- 移動抑止用の位置スナップショット ----
         // 「移動前の位置を退避しておき、衝突していたら丸ごと元に戻す」方式。
         // 各update()の先頭でsnapshotPosition()を呼び、
-        // onCollisionEnter()内でrevertToLastSafePosition()を呼ぶことで移動抑止する。
+        // onCollisionEnter()内でresolveCollisionOrRevert()を呼ぶことで移動抑止する。
         void snapshotPosition() { lastSafePosition_ = position_; }
         void revertToLastSafePosition() { position_ = lastSafePosition_; }
+
+        // ---- 衝突時の移動抑止(距離改善判定つき) ----
+        // 衝突相手(other)から見て、今回の移動(=現在のposition_)が直前の安全な位置
+        // (lastSafePosition_)より相手から離れる方向であれば、その移動をそのまま許可する
+        // (=何もしない)。逆に相手へ近づく方向であれば、revertToLastSafePosition()と同様に
+        // 移動前の位置へ差し戻す。
+        //
+        // 経緯: 単純にrevertToLastSafePosition()だけを使うと、lastSafePosition_自体が
+        // 既に衝突状態で記録されてしまっていた場合(分裂直後の氷山フラグメントが船と重なった
+        // 位置で生成された等)、「差し戻し→また衝突→差し戻し」のループでスタックし続ける
+        // ことがあった。かといって押し出し(瞬間移動)で解決しようとすると、稀に発動した瞬間、
+        // プレイヤーから見て唐突なワープに見えてしまい、手触りを損ねた(実機検証で判明)。
+        // 「重なった状態から抜け出そうとする移動は常に受け入れる」という、距離の改善有無だけを
+        // 見るこの方式であれば、瞬間移動を一切発生させずに、原理的にスタックを防げる
+        // (プレイヤー自身の操作で自然に離れていく)。
+        //
+        // arg1... 衝突相手(nullptrの場合は無条件にrevertToLastSafePosition()する)
+        void resolveCollisionOrRevert(const gmObjectBase* other);
 
     protected:
         // インスタンス識別用

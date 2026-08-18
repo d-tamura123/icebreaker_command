@@ -1,4 +1,7 @@
 ﻿#include "gmObjectBase.h"
+#undef min              // std::max, std::minのマクロ競合解消
+#undef max
+#include <algorithm>
 
 namespace gm {
 
@@ -45,5 +48,26 @@ namespace gm {
 
     void gmObjectBase::render(const Shared<dxe::Camera>& camera) {
         // 基底では何もしない
+    }
+
+    void gmObjectBase::resolveCollisionOrRevert(const gmObjectBase* other) {
+        if (!other) {
+            revertToLastSafePosition();
+            return;
+        }
+
+        tnl::Vector3 diffNew = position_ - other->getPosition();
+        diffNew.y = 0.0f; // 水平方向の距離だけで判定する(高さは無視する)
+
+        tnl::Vector3 diffOld = lastSafePosition_ - other->getPosition();
+        diffOld.y = 0.0f;
+
+        // 相手からの距離が、直前の安全な位置より今回の方が離れているなら、
+        // 「重なった状態から抜け出そうとする移動」とみなし、そのまま許可する。
+        if (diffNew.length() > diffOld.length()) {
+            return;
+        }
+
+        revertToLastSafePosition();
     }
 }
