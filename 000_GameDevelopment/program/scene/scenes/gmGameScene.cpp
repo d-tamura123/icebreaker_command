@@ -166,12 +166,15 @@ namespace gm
         context_->camera->setTarget(shipPos);
         context_->camera->update();
 
+        // NPC交易船のスポナー
+        tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_, context_->wallet);
+
         // UIマネージャーの初期化
         // 右マージン24px(1280 - 1000 - 256 = 24)、下マージン20pxで統一
         tnl::Vector2f miniMapPos(1000.0f, DXE_WINDOW_HEIGHT_F - 256.0f - 20.0f);
 
         uiManager_ = std::make_unique<gmUIManager>(
-            miniMapPos, context_->map, playerShip_, icebergManager_,
+            miniMapPos, context_->map, playerShip_, icebergManager_, tradeShipManager_,
         
             context_->wallet,
             [this]() {
@@ -194,9 +197,6 @@ namespace gm
         // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
         routeVisualizer_ = std::make_unique<gmRouteVisualizer>(context_->map);
 
-        // NPC交易船のスポナー
-        tradeShipManager_ = std::make_shared<gmTradeShipManager>(context_->map, water_, collisionSystem_, context_->wallet);
-    
         // 新しいシーン開始時は、直前のシーン(前回のポーズ中断等)がMenuレイヤーのまま
         // 残っている可能性があるため、念のため明示的にGameplayへ戻しておく
         // (context_(と、その中のinput)はシーンをまたいで共有されているため)。

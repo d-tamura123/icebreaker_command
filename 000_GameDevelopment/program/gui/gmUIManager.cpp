@@ -15,6 +15,7 @@ namespace gm {
         std::shared_ptr<gmMapManager> map,
         std::shared_ptr<gmPlayerShip> player,
         std::shared_ptr<gmIcebergManager> icebergManager,
+        std::shared_ptr<gmTradeShipManager> tradeShipManager,
         std::shared_ptr<gmWallet> wallet,
         std::function<void()> onMenuClick,
         std::shared_ptr<gmWeaponSelectionState> weaponSelection,
@@ -22,7 +23,7 @@ namespace gm {
     )
     {
         // gmMiniMap のインスタンスを生成して保持
-        miniMap_ = std::make_unique<gmMiniMap>(miniMapPos, map, player, icebergManager);
+        miniMap_ = std::make_unique<gmMiniMap>(miniMapPos, map, player, icebergManager, tradeShipManager);
 
         // gmOceanFlowVisualizer のインスタンスを生成して保持
         flowVisualizer_ = std::make_unique<gmOceanFlowVisualizer>(map);

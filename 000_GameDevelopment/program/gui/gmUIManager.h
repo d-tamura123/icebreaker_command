@@ -18,6 +18,7 @@ namespace gm {
     class gmMapManager;
     class gmPlayerShip;
     class gmIcebergManager;
+    class gmTradeShipManager;
     class gmWallet;
 
     class gmUIManager {
@@ -27,6 +28,7 @@ namespace gm {
             std::shared_ptr<gmMapManager> map,
             std::shared_ptr<gmPlayerShip> player,
             std::shared_ptr<gmIcebergManager> icebergManager,
+            std::shared_ptr<gmTradeShipManager> tradeShipManager,
             std::shared_ptr<gmWallet> wallet,
             std::function<void()> onMenuClick,
             std::shared_ptr<gmWeaponSelectionState> weaponSelection,

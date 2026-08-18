@@ -62,7 +62,7 @@ namespace gm
 
     // 中心線(遠心的Catmull-Romで補間した曲線)をポリライン化する際のサンプリング間隔(world単位)。
     // 小さいほど滑らかになるが、頂点数・ドローコール準備コストが増える。
-    static const float ROUTE_RIBBON_SAMPLE_STEP = 25.0f;
+    inline constexpr float ROUTE_RIBBON_SAMPLE_STEP = 25.0f;
 
     // 描画カリング用にチャンク分割する際の、1チャンクあたりの目安の長さ(world単位)。
     // gmIceberg等と同じ距離カリング(RENDER_DISTANCE_SQ)をチャンク単位で適用する。
