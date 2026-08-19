@@ -503,6 +503,9 @@
     <ClInclude Include="program\gui\gmUIStrings.h">
       <Filter>Source\[004] game\gui</Filter>
     </ClInclude>
+    <ClInclude Include="program\effect\gmMapBoundaryVisualizer.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -897,6 +900,9 @@
     </ClCompile>
     <ClCompile Include="program\gui\gmGameStopUIManager.cpp">
       <Filter>Source\[004] game\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmMapBoundaryVisualizer.cpp">
+      <Filter>Source\[004] game\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

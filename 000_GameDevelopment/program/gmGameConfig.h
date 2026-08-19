@@ -85,6 +85,22 @@ namespace gm
     static const uint8_t ROUTE_SHADOW_RIBBON_ALPHA_SCALE    = 90;     // 影リボンの最大アルファ(0〜255。空中リボンより控えめにする)
     static const uint8_t ROUTE_SHADOW_RIBBON_COLOR_SCALE    = 140;    // 影リボンの頂点色に掛ける明度スケール(0〜255。暗めにする)
 
+    // ------------------------------------------------------------
+    // マップの外枠(移動可能範囲の境界)可視化(gmMapBoundaryVisualizer)。
+    // 生成ロジックはgmRouteVisualizerと共通だが、以下が異なる:
+    //   ・中心線はマップの四辺(直線)を一定間隔でサンプリングした閉ループ
+    //   ・閉ループのため始点・終点のアルファフェードは行わない(常に不透明)
+    //   ・海面の影リボンは無し(水平・垂直の2層のみ)
+    //   ・専用の青系テクスチャを使う(航路のゴールドと視覚的に区別するため)
+    // 見た目のスケール感(高さ・太さ・サンプリング間隔・チャンク長・UV関連)は、
+    // 航路のリボンと統一するためROUTE_RIBBON_*の値をそのまま流用する。
+    // ------------------------------------------------------------
+    static const char* const GRAPHICS_FILE_PATH__MAP_BOUNDARY_RIBBON = "resource/graphics/route/outerframe_ribbon_gradient.png";
+
+    // プレイヤー船がマップ外へ出ないようにする際、マップの端からどれだけ内側で止めるか(world単位)。
+    // 船体のサイズぶんの余裕を持たせ、船が外枠を視覚的にはみ出さないようにするための簡易的な値
+    // (厳密なコライダーサイズは使わず、固定値で十分と判断)。
+    static const float MAP_BOUNDARY_MARGIN = 60.0f;
 
     // ------------------------------------------------------------
     // NPC交易船(gmTradeShip / gmTradeShipManager)

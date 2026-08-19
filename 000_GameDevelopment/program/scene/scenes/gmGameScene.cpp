@@ -197,6 +197,9 @@ namespace gm
         // context_->map は既にLoadRoutes()済み(gmSceneManagerのコンストラクタで実行)の前提
         routeVisualizer_ = std::make_unique<gmRouteVisualizer>(context_->map);
 
+        // マップ外枠の可視化(移動可能範囲の境界をリボンメッシュで描画。判定には関与しない)
+        mapBoundaryVisualizer_ = std::make_unique<gmMapBoundaryVisualizer>(context_->map);
+
         // 新しいシーン開始時は、直前のシーン(前回のポーズ中断等)がMenuレイヤーのまま
         // 残っている可能性があるため、念のため明示的にGameplayへ戻しておく
         // (context_(と、その中のinput)はシーンをまたいで共有されているため)。
@@ -363,6 +366,11 @@ namespace gm
         if (routeVisualizer_) {
             routeVisualizer_->update(dt);
         }
+
+        // マップ外枠可視化のUVスクロール更新(ジオメトリ自体は起動時に生成済みのため再生成しない)
+        if (mapBoundaryVisualizer_) {
+            mapBoundaryVisualizer_->update(dt);
+        }
     }
 
     // ------------------------------------------------------------
@@ -403,6 +411,11 @@ namespace gm
         // 航路の可視化(水面より奥、戦闘エフェクトより手前という背景寄りの扱い)
         if (routeVisualizer_) {
             routeVisualizer_->render(context_->camera);
+        }
+
+        // マップ外枠の可視化(航路と同じ扱い)
+        if (mapBoundaryVisualizer_) {
+            mapBoundaryVisualizer_->render(context_->camera);
         }
 
         if (projectileManager_) {

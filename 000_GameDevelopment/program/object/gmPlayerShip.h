@@ -82,6 +82,11 @@ namespace gm {
         void handleInput();
         void updateRecovery(float deltaTime); // リカバリのじわじわ回復の毎フレーム処理
 
+        // マップ外へ出ないよう、X/Z座標を独立にクランプする(gmShip::update()による移動の後に呼ぶ)。
+        // 軸ごとに独立してクランプするため、斜め方向に境界へ突っ込んだ場合も、
+        // 境界に沿ってすり抜けるように移動できる(いわゆる壁ズレが自然に実現される)。
+        void clampToMapBounds();
+
         std::weak_ptr<gmInputManager> inputManager_;
 
         std::function<void()> onDeathCallback_;

@@ -1,5 +1,6 @@
 ﻿#include "gmPlayerShip.h"
 #include "../input/gmInputManager.h"
+#include "../gmGameConfig.h"
 #include <dxe.h>
 #undef min              // std::max, std::minのマクロ競合解消
 #undef max
@@ -20,6 +21,8 @@ namespace gm {
         }
 
         gmShip::update(deltaTime);  // 共通ロジックは親に任せる
+
+        clampToMapBounds();
     }
 
     // ------------------------------------------------------------
@@ -35,6 +38,29 @@ namespace gm {
         const float step = std::min(deltaTime, recoveryTimeRemaining_);
         heal(recoveryRatePerSec_ * step);
         recoveryTimeRemaining_ -= step;
+    }
+
+    // ------------------------------------------------------------
+    // マップ外へ出ないよう、X/Z座標を独立にクランプする。
+    // マップの実寸(MAP_CHIP_WIDTH/HEIGHT × CELL_SIZE)から、船体ぶんの余白
+    // (MAP_BOUNDARY_MARGIN)を引いた範囲に収める。
+    // 
+    // Note: ワールドZ座標は、2D→3D変換の都合(gmMapManager::GetPlayerStartWorld()等参照。
+    // 「2D座標でY座標が小さいほど北になるため」マイナスを掛けている)により、
+    // 0〜-(MAP_CHIP_HEIGHT×CELL_SIZE)の範囲(マイナス方向)になる。Xはそのままプラス方向。
+    // ------------------------------------------------------------
+    void gmPlayerShip::clampToMapBounds()
+    {
+        const float minX = MAP_BOUNDARY_MARGIN;
+        const float maxX = static_cast<float>(MAP_CHIP_WIDTH) * CELL_SIZE - MAP_BOUNDARY_MARGIN;
+        const float minZ = -static_cast<float>(MAP_CHIP_HEIGHT) * CELL_SIZE + MAP_BOUNDARY_MARGIN;
+        const float maxZ = -MAP_BOUNDARY_MARGIN;
+
+
+        tnl::Vector3 pos = getPosition();
+        pos.x = std::clamp(pos.x, minX, maxX);
+        pos.z = std::clamp(pos.z, minZ, maxZ);
+        setPosition(pos);
     }
 
     // ------------------------------------------------------------

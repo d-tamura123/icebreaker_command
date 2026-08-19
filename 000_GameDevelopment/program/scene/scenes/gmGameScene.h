@@ -19,6 +19,7 @@
 #include "../../util/gmCursorUtil.h"
 
 #include "../../effect/gmRouteVisualizer.h"
+#include "../../effect/gmMapBoundaryVisualizer.h"
 #include "../../spawner/gmTradeShipManager.h"
 
 #include "../gmFadeTransitionEffect.h"
@@ -89,12 +90,13 @@ namespace gm
         std::shared_ptr<gmVFXManager>            vfxManager_;
         std::shared_ptr<gmProjectileManager>     projectileManager_;
         std::shared_ptr<gmFlameThrowerManager>   flameThrowerManager_;
-        std::shared_ptr<gmWeaponSelectionState>  weaponSelection_;      // 武器選択・リキャスト・リカバリのクールダウン状態(フェーズ1.4)
+        std::shared_ptr<gmWeaponSelectionState>  weaponSelection_;          // 武器選択・リキャスト・リカバリのクールダウン状態(フェーズ1.4)
         std::unique_ptr<gmUIManager>             uiManager_;
-        std::unique_ptr<gmGameStopUIManager>     gameStopUIManager_;    // ポーズメニュー等、ゲームを止めて表示するUIの中間管理層
-        std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;      // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
-        std::shared_ptr<gmTradeShipManager>      tradeShipManager_;     // NPC交易船のスポーンと一元管理
-        std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;          // プレイヤー撃沈時の再配置演出専用のフェード
+        std::unique_ptr<gmGameStopUIManager>     gameStopUIManager_;        // ポーズメニュー等、ゲームを止めて表示するUIの中間管理層
+        std::unique_ptr<gmRouteVisualizer>       routeVisualizer_;          // NPC交易船の航路をリボンメッシュで可視化する(判定には関与しない)
+        std::unique_ptr<gmMapBoundaryVisualizer> mapBoundaryVisualizer_;    // マップの外枠をリボンメッシュで可視化する(判定には関与しない。移動抑止はgmPlayerShip側)
+        std::shared_ptr<gmTradeShipManager>      tradeShipManager_;         // NPC交易船のスポーンと一元管理
+        std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;              // プレイヤー撃沈時の再配置演出専用のフェード
         
 
 

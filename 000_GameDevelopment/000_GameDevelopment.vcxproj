@@ -212,6 +212,7 @@
     <ClInclude Include="program\debugger\gmKyleFreeCameraController.h" />
     <ClInclude Include="program\debugger\gmKyleGridViewer.h" />
     <ClInclude Include="program\debugger\gmKyleWorldRuler.h" />
+    <ClInclude Include="program\effect\gmMapBoundaryVisualizer.h" />
     <ClInclude Include="program\effect\gmRouteVisualizer.h" />
     <ClInclude Include="program\effect\gmSpriteAnimClip.h" />
     <ClInclude Include="program\effect\gmSpriteAnimInstance.h" />
@@ -358,6 +359,7 @@
     <ClCompile Include="program\debugger\gmKyleFreeCameraController.cpp" />
     <ClCompile Include="program\debugger\gmKyleGridViewer.cpp" />
     <ClCompile Include="program\debugger\gmKyleWorldRuler.cpp" />
+    <ClCompile Include="program\effect\gmMapBoundaryVisualizer.cpp" />
     <ClCompile Include="program\effect\gmRouteVisualizer.cpp" />
     <ClCompile Include="program\effect\gmSpriteAnimInstance.cpp" />
     <ClCompile Include="program\effect\gmSpriteAnimRegistry.cpp" />
