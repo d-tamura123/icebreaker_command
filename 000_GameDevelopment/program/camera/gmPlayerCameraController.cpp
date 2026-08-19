@@ -28,6 +28,8 @@ namespace gm {
         // ------------------------------------------------------------
         // カーソルモード(Alt押しっぱなし): カーソルを表示・ウィンドウ内ロックを解除し、
         // カメラの角度・ズームは一切更新せず凍結する(UI操作中にカメラが暴れないように)。
+        // 
+        // ただし、船の位置追従(カメラの位置・向き自体)は凍結しない
         // ------------------------------------------------------------
         const bool cursorMode = input_->keep(dxe::Input::eButton::KB_LALT) || input_->keep(dxe::Input::eButton::KB_RALT);
 
@@ -41,52 +43,64 @@ namespace gm {
             // 誤差(そのフレームの移動量として跳ねてしまう)が乗らないよう基準点を破棄しておく。
             hasLastCursorPoint_ = false;
 
-            return;
-        }
-
-        // ------------------------------------------------------------
-        // 通常(カメラ捕捉)モード: カーソル非表示+ウィンドウ内ロック。
-        // フォーカス喪失(Alt+Tab等)からの復帰対策として毎フレーム再アサートする
-        // (Windows側がフォーカス喪失時にロックを自動解除するため)。
-        // ------------------------------------------------------------
-        dxe::SetVisibleMousePointer(false);
-        dxe::LockCursorToWindow();
-
-        // ---- マウスX/Y移動量を自前で計算する ----
-        int curX = 0, curY = 0;
-        gmCursorUtil::GetMousePoint(curX, curY);
-
-        if (hasLastCursorPoint_) {
-            frameMouseDeltaX_ = static_cast<float>(curX - lastCursorX_);
-            // Y軸は符号を反転させている: 画面座標は下方向が正(Y増加)だが、
-            // 「マウスを画面上へ動かす=視点が(船から)遠ざかる/カメラが遠くを見る」という
-            // 2D画面感覚に合わせるため、orbitPitch_/aimPitch_の増減方向を直感と一致させたい。
-            frameMouseDeltaY_ = static_cast<float>(lastCursorY_ - curY);
-        }
-        else {
-            // 初回フレーム、またはカーソルモードから復帰した直後: 基準点が無いので移動量は0扱いにする
+            // 角度の入力は無かったものとして扱う(=角度は凍結)。
+            // ズームもupdateZoomRatio()を呼ばないことで凍結する。
             frameMouseDeltaX_ = 0.0f;
             frameMouseDeltaY_ = 0.0f;
         }
+        else {
+            // ------------------------------------------------------------
+            // 通常(カメラ捕捉)モード: カーソル非表示+ウィンドウ内ロック。
+            // フォーカス喪失(Alt+Tab等)からの復帰対策として毎フレーム再アサートする
+            // (Windows側がフォーカス喪失時にロックを自動解除するため)。
+            // ------------------------------------------------------------
+            dxe::SetVisibleMousePointer(false);
+            dxe::LockCursorToWindow();
+
+            // ---- マウスX/Y移動量を自前で計算する ----
+            int curX = 0, curY = 0;
+            gmCursorUtil::GetMousePoint(curX, curY);
+
+            if (hasLastCursorPoint_) {
+                frameMouseDeltaX_ = static_cast<float>(curX - lastCursorX_);
+                // Y軸は符号を反転させている: 画面座標は下方向が正(Y増加)だが、
+                // 「マウスを画面上へ動かす=視点が(船から)遠ざかる/カメラが遠くを見る」という
+                // 2D画面感覚に合わせるため、orbitPitch_/aimPitch_の増減方向を直感と一致させたい。
+                frameMouseDeltaY_ = static_cast<float>(lastCursorY_ - curY);
+            }
+            else {
+                // 初回フレーム、またはカーソルモードから復帰した直後: 基準点が無いので移動量は0扱いにする
+                frameMouseDeltaX_ = 0.0f;
+                frameMouseDeltaY_ = 0.0f;
+            }
+
+            updateZoomRatio();  // ズーム倍率の更新(連続値)。カーソルモード中は凍結するためここでは呼ばない
+        }
 
         // ------------------------------------------------------------
-        // カメラ制御をおこなう:
-        //   1) ズーム倍率の更新(連続値)
-        //   2) 現在のカメラモードを判定(エイム/周回)
-        //   3) 周回→エイムへの切り替わりを検知し、直前まで見ていた向きを
-        //      エイムモード側の角度へ引き継ぐ(引き継がないと、前回エイムモードを使った時の
-        //      古い値、または未使用ならコンストラクタの初期値のまま向きがスナップしてしまう)。
-        //      逆方向(エイム→周回)は今回対象外(周回モードのpitch可動範囲がエイムモードより
-        //      大幅に狭いため、単純にコピーしてもupdateOrbitMode()側のクランプで意味を失う)。
-        //   4) モードごとの角度・位置更新ロジックへ分岐
+        // ここから先は、カーソルモード・通常モードいずれでも共通(位置追従は常に行う):
+        //   1) 現在のカメラモードを判定(エイム/周回)
+        //   2) モード切り替わり時、直前まで見ていた向きを引き継ぐ(バグ2対応)。
+        //      引き継がないと、前回そのモードを使った時の古い値(または未使用ならコンストラクタの
+        //      初期値)のまま向きがスナップしてしまう。
+        //        周回→エイム: yaw/pitch両方を引き継ぐ(エイムモードのpitch可動範囲は
+        //                    周回モードより広いため、そのままコピーして問題ない)。
+        //        エイム→周回: yawのみ引き継ぐ。pitchは、周回モードの可動範囲がエイムモードより
+        //                    大幅に狭いため、単純にコピーするとupdateOrbitMode()側のクランプで
+        //                    意味を失う(=結局、周回モードの限界値に張り付くだけになりがちで、
+        //                    引き継ぐ効果が薄い)ため対象外にしている。yaw(水平方向)には
+        //                    そもそも可動範囲の制限が無いため、この問題は起きない。
+        //   3) モードごとの角度・位置更新ロジックへ分岐(カーソルモード中はframeMouseDelta*_が
+        //      0のため、角度自体は実質変化しないが、船の位置追従は行われる)
         // ------------------------------------------------------------
-        updateZoomRatio();
 
         const bool nowAimMode = isAimMode();
         if (nowAimMode && !wasAimMode_) {
-            // ズームイン/アウトモードでカメラ(ヨウとピッチ)を同期
             aimYaw_ = orbitYaw_;
             aimPitch_ = orbitPitch_;
+        }
+        else if (!nowAimMode && wasAimMode_) {
+            orbitYaw_ = aimYaw_;
         }
         wasAimMode_ = nowAimMode;
 
@@ -95,6 +109,10 @@ namespace gm {
         }
         else {
             updateOrbitMode(playerShip, camera, weaponMaxRange);
+        }
+
+        if (cursorMode) {
+            return; // カーソル再センタリング(以下)は通常モードのみ行う
         }
 
         // 今フレームの移動量読み取りは完了しているので、ここでカーソルを画面中央へ強制的に戻す。
@@ -189,7 +207,7 @@ namespace gm {
     {
         aimYaw_ += frameMouseDeltaX_ * CAMERA_AIM_MOUSE_SENSITIVITY;
         aimPitch_ += frameMouseDeltaY_ * CAMERA_AIM_MOUSE_SENSITIVITY;
-        
+
         // ------------------------------------------------------------
         // pitch(見下ろし角)の上限(水平に近い側の限界)を、選択中武器の最大射程から逆算する。
         //
