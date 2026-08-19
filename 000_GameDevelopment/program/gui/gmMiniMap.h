@@ -16,7 +16,7 @@ namespace gm {
             std::shared_ptr<gmMapManager> map,
             std::shared_ptr<gmPlayerShip> player,
             std::shared_ptr<gmIcebergManager> icebergManager,
-            std::shared_ptr<gmTradeShipManager> tradeShipManage
+            std::shared_ptr<gmTradeShipManager> tradeShipManager
         );
 
         void update(float dt) override;
