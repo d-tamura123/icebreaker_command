@@ -23,7 +23,7 @@ namespace gm {
         // SKYBOX_Y_OFFSETで見た目の帳尻を合わせている
         // (精密なUVマッピングの解析はせず、実機で見ながら調整する前提の簡易的な値)。
         const tnl::Vector3 camPos = camera->getPosition();
-        mesh_->setPosition({ camPos.x, 0.0f + SKYBOX_Y_OFFSET, camPos.z });
+        mesh_->setPosition({ camPos.x, camPos.y + SKYBOX_Y_OFFSET, camPos.z });
     }
 
     void gmSkybox::render(const Shared<dxe::Camera>& camera)
