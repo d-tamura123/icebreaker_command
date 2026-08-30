@@ -57,6 +57,13 @@ void gmFadeTransitionEffect::update(float deltaTime)
 {
     switchTiming_ = false;
 
+    // 1フレームの処理が重くなった場合(テクスチャ読み込み等の一時的な処理落ち)への保険。
+    // deltaTimeをそのまま積算すると、その1フレームだけ経過時間が異常に大きくなり、
+    // フェードの経過度合いが一気に飛んで(暗転→即座に完全表示、のような段差になり)
+    // ちらついて見えることがあったため、上限を設けておく。
+    static constexpr float MAX_DELTA_TIME_SEC = 0.1f;
+    deltaTime = (deltaTime > MAX_DELTA_TIME_SEC) ? MAX_DELTA_TIME_SEC : deltaTime;
+
     switch (phase_) {
 
     case Phase::Idle:

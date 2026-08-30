@@ -54,6 +54,7 @@ namespace gm
 
         nextScene_ = std::move(nextScene);
         isTransitioning_ = true;
+        hasSwitchedScene_ = false;
 
         // フェードアウト → 切替 → フェードイン
         context_->fade->fadeOutIn([&]() {
@@ -61,6 +62,8 @@ namespace gm
 
             currentScene_ = std::move(nextScene_);
             currentScene_->onEnter(shared_from_this());
+            // 新シーンへの切り替わりが完了した合図。以後(フェードイン中も)update()を再開する。
+            hasSwitchedScene_ = true;
             });
     }
 
@@ -78,7 +81,19 @@ namespace gm
             if (context_->fade->isFinished()) {
                 isTransitioning_ = false;
             }
-            return;
+
+            // フェードアウト中(旧シーンがまだ画面に映っている間)は、意図的にupdate()を
+            // 凍結する(見えないところでゲームがこっそり進行し続けるのを防ぐため)。
+            //
+            // ただし、新シーンへの切り替わりが完了した後(hasSwitchedScene_==true。
+            // フェードイン中)は、ここでreturnせずに下まで進めてupdate()を再開する。
+            // 切り替わり直後からフェードイン完了まで新シーンのupdate()を止めたままにすると、
+            // 「一度もupdate()されていない生成直後の状態」がフェードイン中ずっと描画され続け、
+            // フェード完了の瞬間に一気に更新が追いつく「スナップ」が見えてしまうため
+            // (詳細な経緯はコミット時のコメント参照)。
+            if (!hasSwitchedScene_) {
+                return;
+            }
         }
 
         // 入力管理の更新(consumePress()の消費フラグのリセット処理)

@@ -28,7 +28,7 @@ namespace gm
     static const char* const ROUTE_FILE_PATH_PREFIX = "resource/map/route_";
 
     // 描画範囲の定義
-    static const float RENDER_DISTANCE      = 6400.0f;                              // カメラからの描画距離
+    static const float RENDER_DISTANCE      = 3900.0f;                              // カメラからの描画距離
     static const float RENDER_DISTANCE_SQ   = RENDER_DISTANCE * RENDER_DISTANCE;    // 距離比較を高速化するための2乗値
                                                                                     // ※ 距離の比較は本来sqrt()が必要だが、
                                                                                     //    両辺を2乗しても大小関係は変わらないため、
@@ -287,6 +287,53 @@ namespace gm
     
 
     // ------------------------------------------------------------
+    // スカイボックス・フォグ(gmSkybox)
+    // ------------------------------------------------------------
+    // dxe開発者側で用意済みのエミッシブ専用マテリアル(ResourceConstantHedder.hの
+    // FILE_PATH_BIN_SKYBOX_MATERIALと同一パス)。
+    static const char* const SKYBOX_MATERIAL_FILE_PATH = "resource/dxe_parameters/skybox_material/skybox_material.bin";
+    // サンプルテクスチャ(暫定。専用素材に差し替える場合はここを変更する)。
+    static const char* const SKYBOX_TEXTURE_FILE_PATH = "resource/graphics/skybox/skybox_c.png";
+
+    // スカイボックスの一辺のサイズ(world単位)。カメラのfar(dxe::Camera既定=50000)より
+    // 内側に収まるようにすること。
+    static const float SKYBOX_SIZE = 30000.0f;
+    // ゆっくり回転させ、静止した背景よりも空気感を出す(度/秒)。
+    static const float SKYBOX_ROTATION_SPEED_DEG_PER_SEC = 0.6f;
+
+    // スカイボックスの見た目上の地平線の高さ調整用(world単位。カメラのY座標に加算する)。
+    // テクスチャ自体が持つ「空:水面反射」の比率と、実際のゲーム画面での見え方の比率が
+    // ズレている(海面の映る割合が実機ではかなり多い)ため、精密なUVマッピングの解析はせず、
+    // このオフセットだけで見た目の帳尻を合わせる方針。プラスにすると地平線が下がって見える
+    // (=画面内の空の割合が増える)。実機で見ながら調整する前提の暫定値。
+    static const float SKYBOX_Y_OFFSET = 2500.0f;
+
+    // フォグ: 遠景(流氷・航路等がRENDER_DISTANCEでカリングされる境目)の見切れを、
+    // 霞ませることで自然にごまかす狙い。色・距離は暫定値、実機で見た目を見ながら調整する。
+    static const int   FOG_COLOR_R = 20;
+    static const int   FOG_COLOR_G = 40;
+    static const int   FOG_COLOR_B = 60;
+    static const float FOG_START_DIST = 3000.0f; // このあたりからフォグが掛かり始める
+
+    // 海面(gmWaterPlane)のサイズが8192(カメラ中心の正方形、半辺4096)であるため、
+    // 真横方向(最も厳しい条件)の海面の端(4096)より手前で完全にフォグが掛かるよう、
+    // 少し余裕を持たせた値にしている(斜め方向は正方形の対角ぶん海面がさらに先まで
+    // 届くが、そちらは早めにフォグで隠れるだけで、海面の切れ目が見えるといった
+    // 破綻は起きない安全側の誤差)。
+    static const float FOG_END_DIST = 3900.0f;
+
+
+    // 水面(gmWaterPlane)の反射色。dxe::WaterPlaneのSkyColorはデフォルトが黒(0,0,0)のため、
+    // 未設定のままだと反射先が何も無い真っ黒に見えてしまい、破綻しているように見える。
+    // 動的なキューブマップ反射(dxe::WaterPlane::writeToCubeMap()等)までは今回のスコープ外とし、
+    // スカイボックスのおおよその色味に近い、固定の反射色で代用する。
+    // 値は正規化済み(0.0〜1.0)float RGB。
+    static const float WATER_SKY_COLOR_R = 0.55f;
+    static const float WATER_SKY_COLOR_G = 0.62f;
+    static const float WATER_SKY_COLOR_B = 0.70f;
+
+
+    // ------------------------------------------------------------
     // サウンド(gmSoundManager)
     // パン(左右)のみで簡易的な位置表現をおこなう。距離は音量減衰のみで表現する。
     // いずれも「発火した瞬間に1回だけ計算し、以後は再生中でも更新しない」仕様
@@ -312,4 +359,5 @@ namespace gm
     // BGMフェードインのデフォルト所要時間(秒)。タイトル画面等、演出として徐々に音量を
     // 上げたい場面で使う。
     static const float SOUND_BGM_FADE_IN_DURATION_SEC = 6.0f;
+
 }

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <memory>
 #include "gmSceneBase.h"
 #include "gmSceneTransitionEffectBase.h"
@@ -12,35 +12,37 @@ namespace gm
         gmSceneManager();
         ~gmSceneManager() = default;
 
-        // ‰ŠúƒV[ƒ“İ’è
+        // åˆæœŸã‚·ãƒ¼ãƒ³è¨­å®š
         void setInitialScene(std::shared_ptr<gmSceneBase> initialScene);
 
-        // ƒV[ƒ“Ø‚è‘Ö‚¦—v‹iƒtƒF[ƒhƒAƒEƒg¨Ø‘Ö¨ƒtƒF[ƒhƒCƒ“j
+        // ã‚·ãƒ¼ãƒ³åˆ‡ã‚Šæ›¿ãˆè¦æ±‚ï¼ˆãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆâ†’åˆ‡æ›¿â†’ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ï¼‰
         void requestSceneChange(std::shared_ptr<gmSceneBase> nextScene);
 
-        // –ˆƒtƒŒ[ƒ€XV
+        // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°
         void update();
 
-        // –ˆƒtƒŒ[ƒ€•`‰æ
+        // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æç”»
         void draw();
 
-        // GameContext æ“¾
+        // GameContext å–å¾—
         std::shared_ptr<gmGameContext> getContext() const { return context_; }
 
-        // Œ»İ‚ÌƒV[ƒ“æ“¾
+        // ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³å–å¾—
         std::shared_ptr<gmSceneBase> getCurrentScene() const { return currentScene_; }
 
     private:
-        // ƒQ[ƒ€‘S‘Ì‚ÌˆË‘¶ƒRƒ“ƒeƒi
+        // ã‚²ãƒ¼ãƒ å…¨ä½“ã®ä¾å­˜ã‚³ãƒ³ãƒ†ãƒŠ
         std::shared_ptr<gmGameContext> context_;
 
-        // Œ»İ‚ÌƒV[ƒ“
+        // ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³
         std::shared_ptr<gmSceneBase> currentScene_;
 
-        // Ÿ‚ÌƒV[ƒ“iØ‚è‘Ö‚¦—v‹‚ÉƒZƒbƒgj
+        // æ¬¡ã®ã‚·ãƒ¼ãƒ³ï¼ˆåˆ‡ã‚Šæ›¿ãˆè¦æ±‚æ™‚ã«ã‚»ãƒƒãƒˆï¼‰
         std::shared_ptr<gmSceneBase> nextScene_;
 
-        // ƒtƒF[ƒh’†‚©H
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ä¸­ã‹ï¼Ÿ
         bool isTransitioning_ = false;
+
+        bool hasSwitchedScene_ = false;
     };
 }

@@ -1,13 +1,16 @@
-#include "gmWaterPlane.h"
+ï»¿#include "gmWaterPlane.h"
+#include "../gmGameConfig.h"
 
 namespace gm {
 
 	gmWaterPlane::gmWaterPlane(const std::string& path) {
 		water_ = std::make_shared<dxe::WaterPlane>(path.c_str());
 
-		// •`‰æ”ÍˆÍ‚É‡‚í‚¹‚ÄƒTƒCƒY‚ðÝ’è
+		// æç”»ç¯„å›²ã«åˆã‚ã›ã¦ã‚µã‚¤ã‚ºã‚’è¨­å®š
 		water_->setSizeWidth(dxe::WaterPlane::eSize::S8192);
 		water_->setSizeDepth(dxe::WaterPlane::eSize::S8192);
+
+		water_->setSkyColor(tnl::Vector3(WATER_SKY_COLOR_R, WATER_SKY_COLOR_G, WATER_SKY_COLOR_B));
 
 		syncParams();
 	}
@@ -27,7 +30,7 @@ namespace gm {
 		water_->render(camera);
 	}
 
-	// gmVirtualWave‚É“n‚·ƒpƒ‰ƒ[ƒ^‚Ì“¯Šú
+	// gmVirtualWaveã«æ¸¡ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®åŒæœŸ
 	void gmWaterPlane::syncParams() {
 		gmVirtualWave::WaveParams p;
 		p.amplitude = water_->getHeightMax() * water_->getBaseAmpFactor();

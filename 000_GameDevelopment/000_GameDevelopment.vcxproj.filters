@@ -515,6 +515,9 @@
     <ClInclude Include="program\sound\gmSoundFileConfig.h">
       <Filter>Source\[004] game\sound</Filter>
     </ClInclude>
+    <ClInclude Include="program\effect\gmSkybox.h">
+      <Filter>Source\[004] game\effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -915,6 +918,9 @@
     </ClCompile>
     <ClCompile Include="program\sound\gmSoundManager.cpp">
       <Filter>Source\[004] game\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="program\effect\gmSkybox.cpp">
+      <Filter>Source\[004] game\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

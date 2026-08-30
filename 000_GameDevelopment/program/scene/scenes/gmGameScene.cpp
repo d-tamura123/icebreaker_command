@@ -211,6 +211,9 @@ namespace gm
         // マップ外枠の可視化(移動可能範囲の境界をリボンメッシュで描画。判定には関与しない)
         mapBoundaryVisualizer_ = std::make_unique<gmMapBoundaryVisualizer>(context_->map);
 
+        // スカイボックス(判定には関与しない)
+        skybox_ = std::make_unique<gmSkybox>();
+
         // 新しいシーン開始時は、直前のシーン(前回のポーズ中断等)がMenuレイヤーのまま
         // 残っている可能性があるため、念のため明示的にGameplayへ戻しておく
         // (context_(と、その中のinput)はシーンをまたいで共有されているため)。
@@ -391,6 +394,11 @@ namespace gm
         if (mapBoundaryVisualizer_) {
             mapBoundaryVisualizer_->update(dt);
         }
+
+        // スカイボックスのゆっくりした回転更新
+        if (skybox_) {
+            skybox_->update(dt, context_->camera);
+        }
     }
 
     // ------------------------------------------------------------
@@ -400,6 +408,15 @@ namespace gm
     // ------------------------------------------------------------
     void gmGameScene::draw()
     {
+        // スカイボックス(背景)を最初に描画する。
+        // フォグの設定は必ずこの直後に行うこと(スカイボックス自体が霞んでしまうのを防ぐため)。
+        if (skybox_) {
+            skybox_->render(context_->camera);
+        }
+        SetFogEnable(TRUE);
+        SetFogColor(FOG_COLOR_R, FOG_COLOR_G, FOG_COLOR_B);
+        SetFogStartEnd(FOG_START_DIST, FOG_END_DIST);
+
         // エイムモード中はプレイヤー船本体を非表示にする
         //
         // ただし撃沈演出中(isDestroyed())は、死亡した瞬間のエイム状態がそのまま残っていても
@@ -460,6 +477,7 @@ namespace gm
         SetUseZBuffer3D(TRUE);                      // Zバッファを使用する
         SetWriteZBuffer3D(TRUE);                    // Zバッファへの書き込みを行う
         SetUseBackCulling(TRUE);                    // バックカリングを行う（デフォルトに戻す）
+        SetFogEnable(FALSE);                        // フォグを無効に戻す(2D UI描画へフォグが影響しないように)
 
         if (uiManager_) {
             uiManager_->render(context_->camera);
