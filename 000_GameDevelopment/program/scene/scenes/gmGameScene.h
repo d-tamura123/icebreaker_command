@@ -3,6 +3,8 @@
 #include "../gmSceneBase.h"
 #include "../../gmGameContext.h"
 
+#include "../../sound/gmSoundManager.h"
+
 #include "../../camera/gmPlayerCameraController.h"
 #include "../../object/gmPlayerShip.h"
 #include "../../object/gmWaterPlane.h"
@@ -78,6 +80,8 @@ namespace gm
 
         std::shared_ptr<gmGameContext> context_;
 
+        gmSoundManager soundManager_;
+
         std::shared_ptr<gmKyleDebugger>          debugger_;
         std::unique_ptr<gmPlayerCameraController> cameraController_;
         std::shared_ptr<gmPlayerShip>            playerShip_;
@@ -99,6 +103,7 @@ namespace gm
         std::shared_ptr<gmFadeTransitionEffect>  respawnFade_;              // プレイヤー撃沈時の再配置演出専用のフェード
         
 
+        bool bgmStartedAfterFade_ = false; // シーン切替の暗転フェードが明けた直後にBGMを鳴らすためのワンショットフラグ
 
         // デバッグ専用(updateTradeShipDebugHotkeys()参照): Oキーでのトグル状態を保持する。
         // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。

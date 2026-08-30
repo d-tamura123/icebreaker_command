@@ -4,6 +4,10 @@
 #include "../gmSceneManager.h"
 #include "../../gui/gmUIManager.h"
 #include "../../gui/gmGameStopUIManager.h"
+
+#include "../../sound/gmSoundFileConfig.h"
+#include "../../gmGameConfig.h"
+
 #include "dxe.h"
 #include <cmath>
 
@@ -26,6 +30,13 @@ namespace gm
     {
         sceneManager_ = manager;
         context_ = manager->getContext();
+
+        // サウンド(インゲームBGM)。
+        // 読み込みだけ先に済ませておく。
+        // 再生開始は、シーン切替の暗転フェードが明けた直後(update()参照)。
+        soundManager_.loadBgm(BGM_NAME__INGAME, SOUND_FILE_PATH__INGAME_BGM);
+        soundManager_.setMasterBgmVolumeScale(0.66f);   // 控えめに再生
+        bgmStartedAfterFade_ = false;
 
         // デバッガ
         debugger_ = std::make_shared<gmKyleDebugger>();
@@ -251,6 +262,15 @@ namespace gm
     {
         float dt = dxe::GetDeltaTime();
 
+        soundManager_.update(dt); // BGMフェード等
+
+        // シーン切替の暗転フェード(context_->fade)が明けた直後に、
+        // インゲームBGMを鳴らす。
+        if (!bgmStartedAfterFade_ && context_->fade && context_->fade->isFinished()) {
+            soundManager_.playBgm(BGM_NAME__INGAME, /*loop=*/true);
+            bgmStartedAfterFade_ = true;
+        }
+
         respawnFade_->update(dt); // プレイヤー撃沈時の再配置演出用フェード(Idle中は何もしない)
 
         // ------------------------------------------------------------
@@ -458,6 +478,9 @@ namespace gm
 
     void gmGameScene::onExit()
     {
+        // インゲームBGMのハンドルを解放する
+        soundManager_.finalize();
+
         // gmPlayerCameraController::update()がプレイ中に非表示+ウィンドウ内ロックしている
         // マウスカーソルを、他のシーン(タイトル/リザルト/将来のポーズメニュー等)へ
         // 抜ける前に必ず通常状態へ戻す。

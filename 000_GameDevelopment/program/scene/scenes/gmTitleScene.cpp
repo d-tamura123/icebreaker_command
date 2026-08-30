@@ -2,6 +2,7 @@
 #include "gmTitleScene.h"
 #include "gmGameScene.h"
 #include "../gmSceneManager.h"
+#include "../../sound/gmSoundFileConfig.h"
 #include <DxLib.h>
 
 namespace gm {
@@ -76,11 +77,22 @@ namespace gm {
         // ゲームシーンから戻ってきた場合等を考慮し、カーソルは念のため明示的に表示しておく
         // (gmGameScene::onExit()側で既に表示に戻しているはずだが、二重の保険として)
         dxe::SetVisibleMousePointer(true);
+
+        // ---- タイトルBGM ----
+        // 再生開始はオープニング動画が終わったタイミング(Menuフェーズへの切り替わり時。
+        // update()内のvideoToMenuFade_のコールバック参照)。ここでは読み込みだけ済ませておく。
+        // ただし、動画をスキップ/未読み込みで最初からMenuフェーズの場合は、ここで即再生する。
+        soundManager_.loadBgm(BGM_NAME__TITLE, SOUND_FILE_PATH__TITLE_BGM);
+        if (phase_ == Phase::Menu) {
+            soundManager_.fadeInBgm(BGM_NAME__TITLE, SOUND_BGM_FADE_IN_DURATION_SEC, /*loop=*/true);
+        }
     }
 
     void gmTitleScene::update()
     {
         const float dt = dxe::GetDeltaTime();
+
+        soundManager_.update(dt); // BGMフェード等(タイトルでは現状フェード無しだが、毎フレーム呼んでおく)
 
         // 動画→メニューのフェード進行中は、他の判定(動画終了判定・ボタン操作)より優先して
         // フェードの経過だけを進める。phase_の切り替え自体はフェードのコールバック
@@ -113,6 +125,7 @@ namespace gm {
                         hMovie_ = -1;
                     }
                     phase_ = Phase::Menu;
+                    soundManager_.fadeInBgm(BGM_NAME__TITLE, SOUND_BGM_FADE_IN_DURATION_SEC, /*loop=*/true); // 動画終了のタイミングでBGMをフェードインしながら再生開始
                     });
             }
             break;
@@ -152,6 +165,8 @@ namespace gm {
 
     void gmTitleScene::onExit()
     {
+        soundManager_.finalize(); // タイトルBGMのハンドルを解放する
+
         if (hMovie_ >= 0) {
             DeleteGraph(hMovie_);
             hMovie_ = -1;

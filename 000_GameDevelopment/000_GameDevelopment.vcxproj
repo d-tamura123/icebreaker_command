@@ -265,6 +265,8 @@
     <ClInclude Include="program\scene\gmSceneTransitionEffectBase.h" />
     <ClInclude Include="program\scene\scenes\gmGameScene.h" />
     <ClInclude Include="program\scene\scenes\gmTitleScene.h" />
+    <ClInclude Include="program\sound\gmSoundFileConfig.h" />
+    <ClInclude Include="program\sound\gmSoundManager.h" />
     <ClInclude Include="program\spawner\gmIcebergManager.h" />
     <ClInclude Include="program\spawner\gmSpawnerManagerBase.h" />
     <ClInclude Include="program\spawner\gmTradeShipManager.h" />
@@ -403,6 +405,7 @@
     <ClCompile Include="program\scene\gmSceneManager.cpp" />
     <ClCompile Include="program\scene\scenes\gmGameScene.cpp" />
     <ClCompile Include="program\scene\scenes\gmTitleScene.cpp" />
+    <ClCompile Include="program\sound\gmSoundManager.cpp" />
     <ClCompile Include="program\spawner\gmIcebergManager.cpp" />
     <ClCompile Include="program\spawner\gmTradeShipManager.cpp" />
     <ClCompile Include="program\util\gmCursorUtil.cpp" />

@@ -12,6 +12,7 @@
 #include "../gmSceneBase.h"
 #include "../gmFadeTransitionEffect.h"
 #include "../../gui/gmUIImageButton.h"
+#include "../../sound/gmSoundManager.h"
 #include <dxe.h>
 #include <memory>
 
@@ -51,6 +52,9 @@ namespace gm {
 
         std::unique_ptr<gmUIImageButton> startButton_;
         std::unique_ptr<gmUIImageButton> exitButton_;
+
+        // サウンド(タイトルBGM)。シーンスコープ(onEnter()でロード・再生、onExit()で破棄)。
+        gmSoundManager soundManager_;
 
         // ---- レイアウト定数(暫定配置。座標決めの経緯はhud_spec参照) ----
         // ボタンは高さ基準(BUTTON_HEIGHT)でアスペクト比を保ったまま縮小して配置する。

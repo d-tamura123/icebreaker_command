@@ -78,6 +78,9 @@
     <Filter Include="Source\[004] game\camera">
       <UniqueIdentifier>{7d0f0c23-2f0c-4e64-afde-05a1bbca3dd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\[004] game\sound">
+      <UniqueIdentifier>{57db5ab9-0ab5-4b57-8fc0-b797aa39ca8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\tnl\json11.hpp">
@@ -506,6 +509,12 @@
     <ClInclude Include="program\effect\gmMapBoundaryVisualizer.h">
       <Filter>Source\[004] game\effect</Filter>
     </ClInclude>
+    <ClInclude Include="program\sound\gmSoundManager.h">
+      <Filter>Source\[004] game\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="program\sound\gmSoundFileConfig.h">
+      <Filter>Source\[004] game\sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="000_GameDevelopment.cpp">
@@ -903,6 +912,9 @@
     </ClCompile>
     <ClCompile Include="program\effect\gmMapBoundaryVisualizer.cpp">
       <Filter>Source\[004] game\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="program\sound\gmSoundManager.cpp">
+      <Filter>Source\[004] game\sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

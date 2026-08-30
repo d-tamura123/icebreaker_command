@@ -284,5 +284,32 @@ namespace gm
     // リカバリ: クールタイム(秒)
     static const float RECOVERY_COOLDOWN_SEC            = 90.0f;
 
+    
 
+    // ------------------------------------------------------------
+    // サウンド(gmSoundManager)
+    // パン(左右)のみで簡易的な位置表現をおこなう。距離は音量減衰のみで表現する。
+    // いずれも「発火した瞬間に1回だけ計算し、以後は再生中でも更新しない」仕様
+    // (再生中もリアルタイムに追従させると、カメラを振った時に耳障りになりうるため)。
+    // ------------------------------------------------------------
+    // パン: この距離以内は中央(パン無効)として扱う。近距離での耳障りな左右の揺れを防ぐ。
+    static const float SOUND_PAN_DEADZONE_DIST = 300.0f;
+    // パン: この距離で最大パン値(SOUND_PAN_MAX_VALUE)に達する。
+    static const float SOUND_PAN_MAX_DIST = 2000.0f;
+    // パン: 最大値(DxLibの仕様上は±255まで指定できるが、完全に片耳へ寄り切ると
+    // 耳障りなため、少し余裕を持たせて抑えている)。
+    static const int   SOUND_PAN_MAX_VALUE = 180;
+
+    // 音量: この距離で最小音量(SOUND_VOLUME_MIN)まで減衰する。
+    static const float SOUND_VOLUME_MAX_DIST = 3000.0f;
+    static const int   SOUND_VOLUME_MIN = 40;   // 遠距離でも完全に無音にはしない
+    static const int   SOUND_VOLUME_MAX = 255;
+
+    // 同時発音数の制限: 同じ名前のSEを、同時にこの数までしか鳴らさない
+    // (流氷の密集地帯をまとめて割った場合等、同じ音が過剰に重なるのを防ぐ)。
+    static const int   SOUND_MAX_CONCURRENT_SAME_SE = 4;
+
+    // BGMフェードインのデフォルト所要時間(秒)。タイトル画面等、演出として徐々に音量を
+    // 上げたい場面で使う。
+    static const float SOUND_BGM_FADE_IN_DURATION_SEC = 6.0f;
 }
