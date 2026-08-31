@@ -52,9 +52,9 @@ namespace gm
 
         // プレイヤー船
         playerShip_ = std::make_shared<gmPlayerShip>("player", startPos3D);
-        playerShip_->create("resource/mesh/mv/test/S1.mv1", 0.5f);
+        playerShip_->create("resource/mesh/mv/player/S1.mv1", 0.5f);
 
-        auto tex = dxe::Texture::CreateFromFile("resource/graphics/test/S1_BaseColor.png");
+        auto tex = dxe::Texture::CreateFromFile("resource/graphics/player/S1_BaseColor.png");
         playerShip_->getMesh()->setTexture(tex);
         playerShip_->setWater(water_);
 
@@ -90,27 +90,15 @@ namespace gm
 
 
         // 氷塊
-        auto iceTex = dxe::Texture::CreateFromFile("resource/graphics/test/White-Ice4.jpg");
-
         std::vector<std::string> crystalPaths = {
-            "resource/mesh/mv/test/crystals/Crystal_13.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_14.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_16.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_17.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_18.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_19.mv1",
-            "resource/mesh/mv/test/crystals/Crystal_20.mv1"
+            "resource/mesh/mv/iceberg/Crystal_13.mv1",
+            "resource/mesh/mv/iceberg/Crystal_14.mv1",
+            "resource/mesh/mv/iceberg/Crystal_16.mv1",
+            "resource/mesh/mv/iceberg/Crystal_17.mv1",
+            "resource/mesh/mv/iceberg/Crystal_18.mv1",
+            "resource/mesh/mv/iceberg/Crystal_19.mv1",
+            "resource/mesh/mv/iceberg/Crystal_20.mv1"
         };
-
-        iceChunk_ = gm::MeshEX::CreateIceChunk(
-            crystalPaths,
-            iceTex,
-            1.0f,
-            8,
-            -1
-        );
-        iceChunk_->setDefaultLightEnable(true);
-        iceChunk_->setPosition({ 100, 20, 200 });
 
         // 島
         auto islandList = context_->map->GetIslands();
@@ -120,8 +108,8 @@ namespace gm
             auto islandObj = std::make_shared<gmIsland>(
                 "island",
                 tnl::Vector3(isl.worldX, -20.0f, isl.worldZ),
-                "resource/graphics/test/heightmap_island.png",
-                "resource/graphics/test/lawn.png",
+                "resource/graphics/island/heightmap_island.png",
+                "resource/graphics/island/lawn.png",
                 isl.width,
                 isl.depth,
                 60.0f,       // heightMax
@@ -138,7 +126,7 @@ namespace gm
             context_->map,
             water_,
             crystalPaths,
-            "resource/graphics/test/White-Ice4.jpg",
+            "resource/graphics/iceberg/White-Ice4.jpg",
             collisionSystem_,
             context_->wallet
         );
@@ -423,10 +411,6 @@ namespace gm
         // 必ず表示する(沈む姿を見せるため。カメラ側はenterDestroyedShowcase()で既に俯瞰へ切替済み)。
         if (playerShip_->isDestroyed() || !cameraController_ || !cameraController_->isAimMode()) {
             playerShip_->render(context_->camera);
-        }
-
-        if (iceChunk_) {
-            iceChunk_->render(context_->camera);
         }
 
         for (auto& isl : islands_) {

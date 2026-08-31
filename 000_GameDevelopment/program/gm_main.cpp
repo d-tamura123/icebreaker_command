@@ -27,6 +27,10 @@ void gameStart()
     // 自動的に透過色として扱ってしまう(お節介機能)。この機能自体を無効化する。
     // アルファチャンネル付きの画像(武器アイコン等)の透過には一切影響しない。
     SetUseTransColor(FALSE);
+    
+    // ウィンドウタイトル。DxLibが自前生成するウィンドウは既定で"DxLib"のままになるため、
+    // 明示的に上書きする。
+    SetMainWindowText("Icebreaker Command");
 
     // SceneManager 生成（内部で GameContext も生成される）
     g_sceneManager = std::make_shared<gm::gmSceneManager>();

@@ -35,7 +35,7 @@ namespace gm
                                                                                     //    平方根の計算を省略できる
 
     // 画像ファイルパス
-    static const char* const GRAPHICS_FILE_PATH__OCEAN_FLOW_ARROW       = "resource/graphics/test/wf_arrow.png";
+    static const char* const GRAPHICS_FILE_PATH__OCEAN_FLOW_ARROW       = "resource/graphics/hud/wf_arrow.png";
 
     // VFX(エフェクト)関連パス
     static const char* const VFX_SPRITE_METADATA_CSV_PATH               = "resource/csv/tktk_sprite_metadata.csv";
@@ -293,7 +293,7 @@ namespace gm
     // FILE_PATH_BIN_SKYBOX_MATERIALと同一パス)。
     static const char* const SKYBOX_MATERIAL_FILE_PATH = "resource/dxe_parameters/skybox_material/skybox_material.bin";
     // サンプルテクスチャ(暫定。専用素材に差し替える場合はここを変更する)。
-    static const char* const SKYBOX_TEXTURE_FILE_PATH = "resource/graphics/skybox/skybox_c.png";
+    static const char* const SKYBOX_TEXTURE_FILE_PATH = "resource/graphics/skybox/skybox.png";
 
     // スカイボックスの一辺のサイズ(world単位)。カメラのfar(dxe::Camera既定=50000)より
     // 内側に収まるようにすること。
@@ -306,7 +306,7 @@ namespace gm
     // ズレている(海面の映る割合が実機ではかなり多い)ため、精密なUVマッピングの解析はせず、
     // このオフセットだけで見た目の帳尻を合わせる方針。プラスにすると地平線が下がって見える
     // (=画面内の空の割合が増える)。実機で見ながら調整する前提の暫定値。
-    static const float SKYBOX_Y_OFFSET = 2500.0f;
+    static const float SKYBOX_Y_OFFSET = 0.0f;
 
     // フォグ: 遠景(流氷・航路等がRENDER_DISTANCEでカリングされる境目)の見切れを、
     // 霞ませることで自然にごまかす狙い。色・距離は暫定値、実機で見た目を見ながら調整する。

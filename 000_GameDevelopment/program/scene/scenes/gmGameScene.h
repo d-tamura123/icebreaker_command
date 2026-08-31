@@ -88,7 +88,7 @@ namespace gm
         std::shared_ptr<gmPlayerShip>            playerShip_;
         std::shared_ptr<gmWaterPlane>            water_;
         std::vector<std::shared_ptr<gmIsland>>   islands_;
-        Shared<dxe::Mesh>                        iceChunk_;
+
         std::shared_ptr<gmIcebergManager>        icebergManager_;
         std::shared_ptr<gmCollisionSystem>       collisionSystem_;
         std::shared_ptr<gmSpriteAnimRegistry>    spriteAnimRegistry_;

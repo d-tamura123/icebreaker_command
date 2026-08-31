@@ -49,6 +49,10 @@ namespace gm {
     // ------------------------------------------------------------
     void gmKyleDebugger::render(const Shared<dxe::Camera>& camera, const std::shared_ptr<gmCollisionSystem>& collisionSystem)
     {
+        if (!debugModeOn_) {
+            return;
+        }
+
 #ifdef _DEBUG
         if (axisCompass_) {
             axisCompass_->draw(camera);
@@ -58,10 +62,6 @@ namespace gm {
             worldRuler_->draw(camera, { 0,0,0 }, 50.0f, 500.0f);
         }
 #endif
-
-        if (!debugModeOn_) {
-            return;
-        }
 
         if (gridViewer_) {
             gridViewer_->render(camera);

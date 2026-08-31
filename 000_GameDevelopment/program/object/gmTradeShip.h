@@ -48,6 +48,8 @@ namespace gm {
 
         void update(float deltaTime) override;
 
+        void render(const Shared<dxe::Camera>& camera) override;
+
         // 衝突検出イベント。
         // 相手に応じてバック要否を決める。
         // 流氷が相手ならgmShip::applyIcebergContactDamage()でダメージ判定も行う。

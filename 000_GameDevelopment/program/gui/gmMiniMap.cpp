@@ -71,8 +71,8 @@ namespace gm {
         , tradeShipManager_(std::move(tradeShipManager))
     {
         // DXLib の LoadGraph で読み込み
-        hBackground_ = LoadGraph("resource/graphics/test/minimap/mini_bkground.png");
-        hIsland_ = LoadGraph("resource/graphics/test/lawn.png");
+        hBackground_ = LoadGraph("resource/graphics/minimap/mini_bkground.png");
+        hIsland_ = LoadGraph("resource/graphics/island/lawn.png");
     }
 
     void gmMiniMap::update(float dt)

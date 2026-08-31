@@ -41,6 +41,23 @@ namespace gm {
 
         dynamics_.targetSpeed = TRADE_SHIP_CRUISE_SPEED;
     }
+    // ------------------------------------------------------------
+    // カメラからRENDER_DISTANCEを超えて離れている場合は描画を省く
+    // ------------------------------------------------------------
+    void gmTradeShip::render(const Shared<dxe::Camera>& camera)
+    {
+        const tnl::Vector3 camPos = camera->getPosition();
+        const tnl::Vector3 pos = getPosition();
+
+        const float dx = pos.x - camPos.x;
+        const float dz = pos.z - camPos.z;
+
+        if ((dx * dx + dz * dz) > RENDER_DISTANCE_SQ) {
+            return;
+        }
+
+        gmShip::render(camera);
+    }
 
     void gmTradeShip::update(float deltaTime)
     {
