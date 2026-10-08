@@ -77,6 +77,10 @@ namespace gm
         // (呼び出し先のgmTradeShip側のdebug*系メソッドも同様に#ifdef _DEBUGで囲んである)。
 #ifdef _DEBUG
         void updateTradeShipDebugHotkeys();
+
+        // デバッグ専用: 水面(dxe::WaterPlane)の調整用GUIパネルの表示/非表示を、F8キーで切り替える。
+        // デバッグモード([Pause]キー)のON/OFFとは独立して動作する。リリースビルドの成果物には含めない。
+        void updateWaterGuiToggle();
 #endif
 
         std::shared_ptr<gmGameContext> context_;
@@ -111,5 +115,10 @@ namespace gm
         // 新しくスポーンした交易船にも継続して適用するため、単発のトリガーではなく状態として持つ。
         bool debugTradeShipForcedBadSteering_ = false;
         
+        // デバッグ専用(updateWaterGuiToggle()参照): 水面調整GUIパネルの表示状態。
+        // 初期状態は非表示。F8キーでトグルする。
+#ifdef _DEBUG
+        bool debugShowWaterGui_ = false;
+#endif
     };
 }

@@ -9,9 +9,10 @@ namespace gm {
 		// 描画範囲に合わせてサイズを設定
 		water_->setSizeWidth(dxe::WaterPlane::eSize::S8192);
 		water_->setSizeDepth(dxe::WaterPlane::eSize::S8192);
+		water_->setFarFade(dxe::WaterPlane::eFarFade::FOG);
 
 		water_->setSkyColor(tnl::Vector3(WATER_SKY_COLOR_R, WATER_SKY_COLOR_G, WATER_SKY_COLOR_B));
-
+		
 		syncParams();
 	}
 
@@ -45,6 +46,10 @@ namespace gm {
 
 	float gmWaterPlane::getTimeScale() const {
 		return water_->getTimeScale();
+	}
+
+	void gmWaterPlane::addLandingMesh(const Shared<dxe::Mesh>& mesh, dxe::WaterPlane::fLandingMeshUse f_use, const float projection_volume) const {
+		water_->addLandingMesh(mesh, f_use, projection_volume);
 	}
 }
 

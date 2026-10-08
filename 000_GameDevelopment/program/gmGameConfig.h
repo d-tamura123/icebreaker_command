@@ -310,9 +310,9 @@ namespace gm
 
     // フォグ: 遠景(流氷・航路等がRENDER_DISTANCEでカリングされる境目)の見切れを、
     // 霞ませることで自然にごまかす狙い。色・距離は暫定値、実機で見た目を見ながら調整する。
-    static const int   FOG_COLOR_R = 20;
-    static const int   FOG_COLOR_G = 40;
-    static const int   FOG_COLOR_B = 60;
+    static const int   FOG_COLOR_R = 169;
+    static const int   FOG_COLOR_G = 209;
+    static const int   FOG_COLOR_B = 199;
     static const float FOG_START_DIST = 3000.0f; // このあたりからフォグが掛かり始める
 
     // 海面(gmWaterPlane)のサイズが8192(カメラ中心の正方形、半辺4096)であるため、

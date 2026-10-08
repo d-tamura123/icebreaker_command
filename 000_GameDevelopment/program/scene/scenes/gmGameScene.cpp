@@ -112,12 +112,16 @@ namespace gm
                 "resource/graphics/island/lawn.png",
                 isl.width,
                 isl.depth,
-                60.0f,       // heightMax
+                30.0f,       // heightMax
                 120, 120     // 分割数
             );
 
             islands_.push_back(islandObj);
             collisionSystem_->registerObject(islandObj);
+
+            // 島の周りに泡を発生させる
+            water_->addLandingMesh(islandObj->getMesh(), dxe::WaterPlane::fLandingMeshUse::BUBLLE);
+
         }
 
         // 氷山マネージャー（南端スポナー + 海流連動の動的な氷山群）
@@ -324,6 +328,7 @@ namespace gm
         // NPC交易船の異常系デバッグ用ホットキー(O/P。デバッグモード時のみ。リリースビルドには含めない)
 #ifdef _DEBUG
         updateTradeShipDebugHotkeys();
+        updateWaterGuiToggle(); // 水面調整GUIの表示/非表示(F8。デバッグモードとは独立)
 #endif
 
         // プレイヤーのクリック発射(デバッグモード中はフリーカメラ操作を優先し、発射は行わない)
@@ -475,6 +480,14 @@ namespace gm
             gameStopUIManager_->draw(); // ポーズメニュー(一時停止中のみ、内部で判定して描画。最前面)
         }
 
+        // 水面の調整用GUIパネル(デバッグ専用。F8キーで表示/非表示を切り替え)。
+        // 「save to file」ボタンがwater_plane.binをプロジェクトのルート直下へ上書き保存する
+        // 開発用機能のため、リリースビルドには含めない。
+#ifdef _DEBUG
+        if (debugShowWaterGui_) {
+            water_->getWaterMesh()->drawGuiController({ 0, 0 });
+        }
+#endif
         dxe::DrawFpsIndicator({ 10, DXE_WINDOW_HEIGHT - 10 });
     }
 
@@ -646,6 +659,22 @@ namespace gm
             }
         }
     }
+
+    // ------------------------------------------------------------
+    // デバッグ専用: 水面(dxe::WaterPlane)の調整用GUIパネルの表示/非表示を、F8キーで切り替える。
+    //
+    // 初期状態は非表示。デバッグモード([Pause]キー)のON/OFFとは独立して動作する。
+    // パネルを操作する際は、ALTキー(カーソルモード)を押している間だけマウスカーソルが
+    // 使えるようになる(通常時はカーソルが非表示+中央固定のため)。カーソルモード中は
+    // 武器の発射も無効になるので、パネルをクリックしても誤射は起きない。
+    // ------------------------------------------------------------
+    void gmGameScene::updateWaterGuiToggle()
+    {
+        if (tnl::Input::IsKeyDownTrigger(tnl::Input::eKeys::KB_F8)) {
+            debugShowWaterGui_ = !debugShowWaterGui_;
+        }
+    }
+
 #endif
 
 }

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <dxe.h>
 #include "gmVirtualWave.h"
@@ -9,18 +9,22 @@ namespace gm {
 	public:
 		gmWaterPlane(const std::string& path);
 		
-		// XViƒJƒƒ‰ˆÊ’u‚É‰‚¶‚Äƒ^ƒCƒ‹“WŠJ’†S‚ğXVj
+		// æ›´æ–°ï¼ˆã‚«ãƒ¡ãƒ©ä½ç½®ã«å¿œã˜ã¦ã‚¿ã‚¤ãƒ«å±•é–‹ä¸­å¿ƒã‚’æ›´æ–°ï¼‰
 		void update(const Shared<dxe::Camera>& camera);
 
-		// dxe::WaterPlane‚Ì•`‰æ
+		// dxe::WaterPlaneã®æç”»
 		void render(const Shared<dxe::Camera>& camera);
 	
-		// gmVirtualWave‚É“n‚·ƒpƒ‰ƒ[ƒ^‚Ì“¯Šú
+		// gmVirtualWaveã«æ¸¡ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®åŒæœŸ
 		void syncParams();
 
-		// ”g‚Ì‚‚³‚ğ•Ô‚·
+		// æ³¢ã®é«˜ã•ã‚’è¿”ã™
 		float sampleHeight(const tnl::Vector3& pos, float time) const;
 		float getTimeScale() const;
+
+		const Shared<dxe::WaterPlane>& getWaterMesh() { return water_; }
+		
+		void addLandingMesh(const Shared<dxe::Mesh>& mesh, dxe::WaterPlane::fLandingMeshUse f_use, const float projection_volume = 5.0f) const;
 
 	private:
 		Shared<dxe::WaterPlane> water_;
